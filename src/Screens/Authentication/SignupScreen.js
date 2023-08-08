@@ -1,37 +1,24 @@
-import React, { useState } from 'react';
-import {
-  Alert,
-  Button,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
+import React, { useState ,useRef} from 'react';
+import { Alert, Button, SafeAreaView, StyleSheet, Text, Picker, ImagePickerIOS, Image, TouchableOpacity, View, Dimensions, } from 'react-native';
+const colors = ['#FEBBCC', '#FFDDCC', '#F6F4EB'];
+import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkUserStatus, registerUser, sendOtpApi } from '../../actions/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
+const { width, height } = Dimensions.get('screen');
+import { logo } from '../../const';
+import ImagePicker from 'react-native-image-picker';
 
-const DemoSignUp = {
-  name: 'Hemant Joshi',
-  designation: 'God Knows',
-  user_type: 'USER',
-  gender: 'male',
-  leader_images: [
-    'https://d61uti3sxgkhy.cloudfront.net/rahul.jpg',
-    'https://d61uti3sxgkhy.cloudfront.net/rahul.jpg',
-    'https://d61uti3sxgkhy.cloudfront.net/rahul.jpg',
-  ],
-  profile_photo_url: 'https://d61uti3sxgkhy.cloudfront.net/Snapchat-829944579',
-  leader: '+919027062322',
-  // phone_number: '+919557376884',
-  // password: 'hemantjoshi',
-};
 
 const SignupScreen = ({ navigation }) => {
+  const [name, setName] = useState('');
+  const [designation, setDesignation] = useState('');
+  const [gender, setGender] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
-
+  const [profile,setProfile] = useState('https://d61uti3sxgkhy.cloudfront.net/rahul.jpg');
+  const [cover,setCover] = useState('https://d61uti3sxgkhy.cloudfront.net/rahul.jpg');
   let [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
   const dispatch = useDispatch();
@@ -76,83 +63,241 @@ const SignupScreen = ({ navigation }) => {
         });
       }
     }
-    // console.log(res);
   };
 
-  return (
-    <SafeAreaView>
-      <View>
-        <View
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: 10,
-          }}>
-          <Text style={{ backgroundColor: 'red', padding: 10, fontSize: 20 }}>
-            SignUp Screen
-          </Text>
-        </View>
 
-        <View>
-          <TextInput
-            style={styles.input}
-            onChangeText={(e) => {
-              setPhoneNumber(e);
-            }}
-            maxLength={10}
-            autoCorrect={false}
-            value={phoneNumber}
-            autoFocus={true}
-            placeholder="Phone Number"
-          />
-          <View>
-            <TextInput
-              style={styles.input}
-              onChangeText={(e) => {
-                setPassword(e);
-              }}
-              autoCorrect={false}
-              value={password}
-              secureTextEntry={true}
-              placeholder="Password"
-            />
-          </View>
+  //gender picker
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [selectedGender, setSelectedGender] = useState('Male');
+
+  const genders = ['Male', 'Female', 'Other'];
+
+  const handleToggleDropdown = () => {
+    setIsDropdownVisible(!isDropdownVisible);
+  };
+
+  const handleSelectGender = (gender) => {
+    setSelectedGender(gender);
+    setIsDropdownVisible(false);
+  };
+
+  //designation
+
+
+
+
+  const Main = styled(View)`
+    widht:80vw;
+    height:900px;
+    margin:30px;
+  `;
+
+  const Input = styled(TextInput)`
+  `;
+
+  const Logo = styled(Image)`
+  border:3px solid #1D5B79;
+  border-radius: 50px;
+  `;
+
+  return (
+    <>
+      <ScrollView>
+        <View style={styles.container}>
+          {colors.map((x, i) => (
+            <View style={[styles.bgCircle1, {
+              backgroundColor: x,
+              transform: [
+                { translateX: -(width / 1.5) + (i * width / colors.length) },
+                { translateY: -(width * 1.25) - (i / 1.35 * width / colors.length) }
+              ]
+            }]} key={i.toString()} />
+          ))}
+
+
+          <Main style={styles.main}>
+            <Logo source={logo} style={styles.logo} />
+            <Text style={styles.heading}>SignUp</Text>
+
+            <Input placeholder='Username' style={styles.Input} value={name}/>
+            <Input placeholder='Designation' style={styles.Input} value={designation} />
+
+
+            <TouchableOpacity style={styles.selectButton} value={gender} onPress={handleToggleDropdown}>
+              <Text>{selectedGender}</Text>
+            </TouchableOpacity>
+            {isDropdownVisible && (
+              <View style={styles.dropdownOptions}>
+                {genders.map((gender) => (
+                  <TouchableOpacity key={gender} onPress={() => handleSelectGender(gender)}>
+                    <Text style={styles.option}>{gender}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+
+
+            <TouchableOpacity style={styles.selectButton} value={profile}>
+              <Text style={{ color: '#FEA1A1' }}>Upload Profile</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.selectButton} value={cover}>
+              <Text style={{ color: '#FEA1A1' }}>Upload Cover</Text>
+            </TouchableOpacity>
+
+
+
+
+
+            <Input placeholder='Phone number' value={phoneNumber} keyboardType='numeric' style={styles.Input} />
+            <Input placeholder='Password' value={password} style={styles.Input} />
+
+
+            <TouchableOpacity style={styles.regbtn} title='Create account' onPress={async () => await sendOtp()}>
+              <Text style={{ color: "#fff", fontSize: 18 }}>Create Account</Text>
+            </TouchableOpacity>
+
+
+
+
+
+            {otpSent && (
+              <View>
+                <Input
+                  style={styles.input}
+                  onChangeText={(e) => {
+                    setOtp(e);
+                  }}
+                  // autoComplete={false}
+                  value={otp}
+                  placeholder="Enter Otp"
+                />
+                <TouchableOpacity
+                  style={styles.regbtn}
+                  title="Confirm OTP"
+                  onPress={async () => await confirmSignup()}>Verify OTP</TouchableOpacity>
+              </View>
+            )}
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text style={styles.loginLinkText}>Already have an account? Login</Text>
+            </TouchableOpacity>
+          </Main>
+
+
         </View>
-        <Button title="Create Account" onPress={async () => await sendOtp()}>
-          Create Account
-        </Button>
-        {otpSent && (
-          <View>
-            <TextInput
-              style={styles.input}
-              onChangeText={(e) => {
-                setOtp(e);
-              }}
-              // autoComplete={false}
-              value={otp}
-              placeholder="Enter Otp"
-            />
-            <Button
-              title="Confirm OTP"
-              onPress={async () => await confirmSignup()}></Button>
-          </View>
-        )}
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text>Go To Login Screen</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+      </ScrollView>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
+  scrollContainer: {
+    flexGrow: 1,
   },
+  container: {
+    flex: 1,
+    height: height,
+    top: 0,
+  },
+
+  bgCircle1: {
+    position: 'absolute',
+    height: width * 2,
+    width: width * 2,
+    borderRadius: width,
+    left: 0,
+    top: 0
+  },
+  main: {
+    height: height - 50,
+  },
+  Input: {
+    paddingHorizontal: 20,
+    fontSize: 18,
+    borderColor: '#FF8989',
+    width: '100%',
+    height: 40,
+    textAlign: 'center',
+    borderWidth: 1.8,
+    borderRadius: 19,
+    marginBottom: 15,
+  },
+  heading: {
+    fontSize: 28,
+    fontWeight: "bold",
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+  logo: {
+    width: 80,
+    height: 80,
+    marginLeft: width / 2 - 68,
+    marginTop: 30,
+    marginBottom: 20,
+    alignItems: "center",
+  },
+  selectButton: {
+    paddingHorizontal: 5,
+    paddingVertical: 8,
+    fontSize: 18,
+    width: '100%',
+    borderColor: '#FF8989',
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFECEC',
+    height: 40,
+    borderWidth: 1.8,
+    borderRadius: 19,
+    marginBottom: 15,
+  },
+  regbtn: {
+    paddingHorizontal: 5,
+    paddingVertical: 8,
+    width: '60%',
+    borderColor: '#30A2FF',
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#30A2FF',
+    height: 40,
+    left: 65,
+    top: 30,
+    borderWidth: 1.8,
+    borderRadius: 19,
+    marginBottom: 15,
+
+  },
+  loginLinkText: {
+    fontSize: 16,
+    marginTop: 20,
+    textAlign: 'center',
+    color: 'blue',
+    textDecorationLine: 'underline',
+  },
+  dropdownButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: 'lightgray',
+    borderRadius: 5,
+  },
+  dropdownOptions: {
+    marginTop: 5,
+    borderWidth: 1,
+    borderColor: '#FF8989',
+    borderRadius: 9,
+    backgroundColor: '#FFECEC',
+  },
+  option: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    fontSize: 16,
+    textAlign: 'center',
+  },
+
+
+
 });
+
 
 export default SignupScreen;
