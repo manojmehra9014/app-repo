@@ -131,14 +131,28 @@ const SignupScreen = ({ navigation }) => {
               {/*input for username  */}
               <View style={styles.inputView}>
                 <Icon color='#333' name='user' type='font-awesome' size={20} />
-                <TextInput style={{ flex: 1, paddingHorizontal: 12, }} placeholder={'Full name'} value={name} autoCorrect={false} autoFocus={true} onChangeText={(e) => { setName(e); }} />
+                <TextInput style={{ flex: 1, paddingHorizontal: 12, }} 
+              onChangeText={(e) => {
+                setName(e);
+              }}
+              autoCorrect={false}
+              value={name}
+              autoFocus={true}
+              placeholder="Enter Username" />
               </View>
 
 
               {/*input for designation  */}
               <View style={styles.inputView}>
                 <Icon color='#333' name='briefcase' type='font-awesome' size={20} />
-                <TextInput style={{ flex: 1, paddingHorizontal: 12, }} placeholder={'Enter designation'} value={designation} autoCorrect={false} autoFocus={true} />
+                <TextInput style={{ flex: 1, paddingHorizontal: 12, }}
+              onChangeText={(e) => {
+                setDesignation(e);
+              }}
+              autoCorrect={false}
+              value={designation}
+              autoFocus={true}
+              placeholder="Enter Designation" />
               </View>
 
 
@@ -171,12 +185,26 @@ const SignupScreen = ({ navigation }) => {
 
               <View style={styles.inputView}>
                 <Icon color='#333' name='phone' type='font-awesome' size={20} />
-                <TextInput style={{ flex: 1, paddingHorizontal: 12, }} placeholder={'Enter Phone number'} value={phoneNumber} autoCorrect={false} autoFocus={true} />
+                <TextInput style={{ flex: 1, paddingHorizontal: 12, }} maxLength={10}
+              onChangeText={(e) => {
+                setPhoneNumber(e);
+              }}
+              autoCorrect={false}
+              value={phoneNumber}
+              autoFocus={true}
+              placeholder="Phone Number" />
               </View>
 
               <View style={styles.inputView}>
                 <Icon color='#333' name='lock' type='font-awesome' size={20} />
-                <TextInput style={{ flex: 1, paddingHorizontal: 12, }} placeholder={'Enter password'} autoCorrect={false} autoFocus={true} />
+                <TextInput style={{ flex: 1, paddingHorizontal: 12, }} 
+              onChangeText={(e) => {
+                setPassword(e);
+              }}
+              autoCorrect={false}
+              value={password}
+              autoFocus={true}
+              placeholder="Password" />
               </View>
 
 
@@ -291,7 +319,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#30A2FF',
-    height: 40,
+    height: 44,
     left: 75,
     top: 20,
     borderWidth: 1.8,
