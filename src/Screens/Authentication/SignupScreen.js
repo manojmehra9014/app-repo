@@ -177,9 +177,7 @@ const SignupScreen = ({ navigation }) => {
           <Main style={styles.main}>
             <Logo source={logo} style={styles.logo} />
             <Text style={styles.heading}>SignUp</Text>
-            <TextInput placeholder='name'  style={styles}value={name} onChangeText={() => {
-              setName();
-            }}></TextInput>
+          
             <Input placeholder='Username' style={styles.Input} value={name} onChangeText={() => {
               setName();
             }} />
@@ -288,7 +286,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     fontSize: 18,
     height: 40,
+    borderColor: '#FF8989',
+    width: '100%',
+    height: 40,
     textAlign: 'center',
+    borderWidth: 1.8,
+    borderRadius: 19,
+    marginBottom: 15,
   },
   heading: {
     fontSize: 28,
