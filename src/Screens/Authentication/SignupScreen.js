@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Alert, Button, SafeAreaView, StyleSheet, Text, Picker, ImagePickerIOS, Image, TouchableOpacity, View, Dimensions, } from 'react-native';
+import { Alert, Button, SafeAreaView, StyleSheet, Text, Image, TouchableOpacity, View, Dimensions, } from 'react-native';
 const colors = ['#FEBBCC', '#FFDDCC', '#F6F4EB'];
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,13 +8,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('screen');
 import { logo } from '../../const';
-import useDrivePicker from 'react-google-drive-picker'
-
+import useDrivePicker from 'react-google-drive-picker';
+import { Icon } from 'react-native-elements';
+import { Picker } from '@react-native-picker/picker';
 
 const SignupScreen = ({ navigation }) => {
   const [name, setName] = useState('');
   const [designation, setDesignation] = useState('');
-  const [gender, setGender] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [profile, setProfile] = useState('https://d61uti3sxgkhy.cloudfront.net/rahul.jpg');
@@ -65,80 +65,16 @@ const SignupScreen = ({ navigation }) => {
     }
   };
 
-  //image picker
 
-  const [openPicker ,data , authResponse]=useDrivePicker()
-
-  const handleOpenPicker = () => {
-    openPicker({
-      clientId:"137775640070-s88tlidvuie925ieecjdfg9rs5ggqh45.apps.googleusercontent.com",
-      developerKey: "AIzaSyATrzPzorr0EKubCJKLPKOPcak1BHqAefg",
-      viewId:"DOCS_IMAGES",
-      showUploadView:true,
-      showUploadFolders:true,
-      supportDrives:true,
-      multiselect:false,
-
-    })
-  }
-  useEffect(() => {
- if(data){
-  
-    data.docs.map((i) => console.log(i))
-  
- }
-  }),[data]
-
-
-
-  //gender picker
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const [selectedGender, setSelectedGender] = useState('Male');
-
-  const genders = ['Male', 'Female', 'Other'];
-
-  const handleToggleDropdown = () => {
-    setIsDropdownVisible(!isDropdownVisible);
-  };
-
-  const handleSelectGender = (gender) => {
-    setSelectedGender(gender);
-
-    setGender(gender);
-    setIsDropdownVisible(false);
-  };
-
-  //name
-
-  // const handleChangeTextName = (text) => {
-  //   setName(text);
-
-  // };
-
-  // const handleChangeTextDesignation = (text) => {
-  //   setDesignation(text);
-  // };
-  // const handleChangeTextGender = (text) => {
-  //   setGender(text);
-  //   // console.log(text);
-  // };
-
-  // const handleChangeProfile = (text) => {
-  //   setProfile(text);
-  //   console.log('Profile uploaded !');
-  // }
-  // const handleChangeCover = (text) => {
-  //   setCover(text);
-  //   console.log('Cover uploaded !');
-  // }
-  // const handleChangeTextPhone = (text) => {
-  //   setPhoneNumber(text);
-  //   // console.log(text);
-  // }
-  // const handleChangeTextPassword = (text) => {
-  //   setPassword(text);
-  //   // console.log(text);
-  // }
+  //gender picker 
+  const [selectedGender, setSelectedGender] = useState('male');
+  const [gender] = useState(
+    [
+      'male',
+      'female',
+      'other',
+    ].sort()
+  );
 
 
   const Main = styled(View)`
@@ -147,17 +83,27 @@ const SignupScreen = ({ navigation }) => {
     margin:30px;
   `;
 
-  const Input = styled(TextInput)`
-  border:2px solid #FF8989;
-  font-size:18px;
-  border-radius:19px;
-  margin-bottom:10px;
-  `;
+  //image pickerr
 
-  const Logo = styled(Image)`
-  border:3px solid #1D5B79;
-  border-radius: 50px;
-  `;
+  //   const [openPicker ,data , authResponse]=useDrivePicker()
+
+  //   const handleOpenPicker = () => {
+  //     openPicker({
+  //       clientId:"137775640070-s88tlidvuie925ieecjdfg9rs5ggqh45.apps.googleusercontent.com",
+  //       developerKey: "AIzaSyATrzPzorr0EKubCJKLPKOPcak1BHqAefg",
+  //       viewId:"DOCS",
+  //       showUploadView:true,
+  //       showUploadFolders:true,
+  //       supportDrives:true,
+  //       multiselect:true,
+  //     })
+  //   }
+  //   useEffect(() => {
+  //  if(data){
+  //     data.docs.map((i) => console.log(i))
+  //  }
+  //   }),[data]
+
 
   return (
     <>
@@ -175,83 +121,93 @@ const SignupScreen = ({ navigation }) => {
 
 
           <Main style={styles.main}>
-            <Logo source={logo} style={styles.logo} />
-            <Text style={styles.heading}>SignUp</Text>
-          
-            <Input placeholder='Username' style={styles.Input} value={name} onChangeText={() => {
-              setName();
-            }} />
-            <Input placeholder='Designation' style={styles.Input} value={designation} onChangeText={() => {
-              setDesignation();
-            }} />
 
+            <View style={styles.imageContainer}>
+              <Image source={logo} style={styles.logoImage} />
+              <Text style={{ fontSize: 24, top: 20, fontWeight: "900", textAlign: "center" }}>SignUp</Text>
+            </View>
 
-            <TouchableOpacity style={styles.selectButton} value={gender} onPress={handleToggleDropdown}>
-              <Text>{selectedGender}</Text>
-            </TouchableOpacity>
-            {isDropdownVisible && (
-              <View style={styles.dropdownOptions}>
-                {genders.map((gender) => (
-                  <TouchableOpacity key={gender} onPress={() => handleSelectGender(gender)}>
-                    <Text style={styles.option}>{gender}</Text>
-                  </TouchableOpacity>
-                ))}
+            <View style={styles.inputFileds}>
+              {/*input for username  */}
+              <View style={styles.inputView}>
+                <Icon color='#333' name='user' type='font-awesome' size={20} />
+                <TextInput style={{ flex: 1, paddingHorizontal: 12, }} placeholder={'Full name'} value={name} autoCorrect={false} autoFocus={true} onChangeText={(e) => { setName(e); }} />
               </View>
-            )}
 
 
-            <TouchableOpacity style={styles.selectButton} value={profile} onPress={() => {
-              handleOpenPicker();
-            }}>
-              <Text style={{ color: '#FEA1A1' }}>Upload Profile</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.selectButton} value={cover} onPress={() => {
-              handleOpenPicker();
-            }}>
-              <Text style={{ color: '#FEA1A1' }}>Upload Cover</Text>
-            </TouchableOpacity>
-
-
-
-
-
-            <Input placeholder='Phone number' value={phoneNumber} keyboardType='numeric' style={styles.Input} onChangeText={() => {
-              setPhoneNumber();
-            }} />
-            <Input placeholder='Password' secureTextEntry={true} value={password} style={styles.Input} onChangeText={() => {
-              setPassword();
-            }} />
-
-
-            <TouchableOpacity style={styles.regbtn} title='Create account' onPress={async () => await sendOtp()}>
-              <Text style={{ color: "#fff", fontSize: 18 }}>Create Account</Text>
-            </TouchableOpacity>
-
-
-
-
-
-            {otpSent && (
-              <View>
-                <Input
-                  style={styles.input}
-                  onChangeText={(e) => {
-                    setOtp(e);
-                  }}
-                  // autoComplete={false}
-                  value={otp}
-                  placeholder="Enter Otp"
-                />
-                <TouchableOpacity
-                  style={styles.regbtn}
-                  title="Confirm OTP"
-                  onPress={async () => await confirmSignup()}>Verify OTP</TouchableOpacity>
+              {/*input for designation  */}
+              <View style={styles.inputView}>
+                <Icon color='#333' name='briefcase' type='font-awesome' size={20} />
+                <TextInput style={{ flex: 1, paddingHorizontal: 12, }} placeholder={'Enter designation'} value={designation} autoCorrect={false} autoFocus={true} />
               </View>
-            )}
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-              <Text style={styles.loginLinkText}>Already have an account? Login</Text>
-            </TouchableOpacity>
+
+
+              {/*input picker for gender  */}
+              <View style={styles.inputView}>
+
+                <Picker
+                  style={styles.inputViewPicker}
+                  selectedValue={selectedGender}
+                  onValueChange={(itemVal) => {
+                    setSelectedGender(itemVal);
+                  }}>
+                  {
+                    gender.map((l) => (
+                      <Picker.Item label={l} value={l} />
+                    ))
+                  }
+                </Picker>
+              </View>
+
+
+              {/*input image picker  */}
+              <TouchableOpacity style={styles.selectButton} value={profile} >
+                <Text style={{ color: '#FEA1A1' }}>Upload Profile</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.selectButton} value={cover} >
+                <Text style={{ color: '#FEA1A1' }}>Upload Cover</Text>
+              </TouchableOpacity>
+
+              <View style={styles.inputView}>
+                <Icon color='#333' name='phone' type='font-awesome' size={20} />
+                <TextInput style={{ flex: 1, paddingHorizontal: 12, }} placeholder={'Enter Phone number'} value={phoneNumber} autoCorrect={false} autoFocus={true} />
+              </View>
+
+              <View style={styles.inputView}>
+                <Icon color='#333' name='lock' type='font-awesome' size={20} />
+                <TextInput style={{ flex: 1, paddingHorizontal: 12, }} placeholder={'Enter password'} autoCorrect={false} autoFocus={true} />
+              </View>
+
+
+
+              <TouchableOpacity style={styles.regbtn} title='Create account' onPress={async () => await sendOtp()}>
+                <Text style={{ color: "#fff", fontSize: 18 }}>Create Account</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                <Text style={styles.loginLinkText}>Already have an account? Login</Text>
+              </TouchableOpacity>
+              {otpSent && (
+                <View>
+                  <Input
+                    style={styles.inputView}
+                    onChangeText={(e) => {
+                      setOtp(e);
+                    }}
+                    // autoComplete={false}
+                    value={otp}
+                    placeholder="Enter Otp"
+                  />
+                  <TouchableOpacity
+                    style={styles.regbtn}
+                    title="Confirm OTP"
+                    onPress={async () => await confirmSignup()}>Verify OTP</TouchableOpacity>
+                </View>
+              )}
+            </View>
+
+
           </Main>
 
 
@@ -270,7 +226,15 @@ const styles = StyleSheet.create({
     height: height,
     top: 0,
   },
-
+  imageContainer: {
+    alignItems: 'center',
+    top: 30,
+  },
+  logoImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
   bgCircle1: {
     position: 'absolute',
     height: width * 2,
@@ -281,32 +245,27 @@ const styles = StyleSheet.create({
   },
   main: {
     height: height - 50,
+
   },
-  Input: {
-    paddingHorizontal: 20,
-    fontSize: 18,
-    height: 40,
-    borderColor: '#FF8989',
+  inputFileds: {
+    top: 70,
+  },
+  inputView: {
     width: '100%',
-    height: 40,
-    textAlign: 'center',
-    borderWidth: 1.8,
-    borderRadius: 19,
-    marginBottom: 15,
+    height: 44,
+    marginBottom: 8,
+    backgroundColor: '#f1f3f6',
+    borderColor: '#FFDDCC',
+    borderWidth: 1.5,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  heading: {
-    fontSize: 28,
-    fontWeight: "bold",
-    textAlign: 'center',
-    marginBottom: 30,
-  },
-  logo: {
-    width: 80,
-    height: 80,
-    marginLeft: width / 2 - 45,
-    marginTop: 30,
-    marginBottom: 20,
-    alignItems: "center",
+  inputViewPicker: {
+    width: '100%',
+    height: 30,
   },
   selectButton: {
     paddingHorizontal: 5,
@@ -334,11 +293,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#30A2FF',
     height: 40,
     left: 75,
-    top: 0,
+    top: 20,
     borderWidth: 1.8,
     borderRadius: 19,
     marginBottom: 15,
-
   },
   loginLinkText: {
     fontSize: 16,
@@ -347,28 +305,6 @@ const styles = StyleSheet.create({
     color: 'blue',
     textDecorationLine: 'underline',
   },
-  dropdownButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: 'lightgray',
-    borderRadius: 5,
-  },
-  dropdownOptions: {
-    marginTop: 5,
-    borderWidth: 1,
-    borderColor: '#FF8989',
-    borderRadius: 9,
-    backgroundColor: '#FFECEC',
-  },
-  option: {
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    fontSize: 16,
-    textAlign: 'center',
-  },
-
-
-
 });
 
 
