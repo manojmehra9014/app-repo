@@ -71,9 +71,9 @@ const SignupScreen = ({ navigation }) => {
 
   const handleOpenPicker = () => {
     openPicker({
-      clientId:"137775640070-5sh6r0i8aera2sgp4fd0skua1q2mv212.apps.googleusercontent.com",
-      developerKey: "AIzaSyBiiUuimTi0m3BggOZMRHDMSqID6cJzFBQ",
-      viewId:"DOCS",
+      clientId:"137775640070-s88tlidvuie925ieecjdfg9rs5ggqh45.apps.googleusercontent.com",
+      developerKey: "AIzaSyATrzPzorr0EKubCJKLPKOPcak1BHqAefg",
+      viewId:"DOCS_IMAGES",
       showUploadView:true,
       showUploadFolders:true,
       supportDrives:true,
