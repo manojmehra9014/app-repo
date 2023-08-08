@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Alert, Button, SafeAreaView, StyleSheet, Text, Picker, ImagePickerIOS, Image, TouchableOpacity, View, Dimensions, } from 'react-native';
 const colors = ['#FEBBCC', '#FFDDCC', '#F6F4EB'];
 import styled from 'styled-components';
@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('screen');
 import { logo } from '../../const';
-import ImagePicker from 'react-native-image-picker';
+import useDrivePicker from 'react-google-drive-picker'
 
 
 const SignupScreen = ({ navigation }) => {
@@ -64,6 +64,31 @@ const SignupScreen = ({ navigation }) => {
       }
     }
   };
+
+  //image picker
+
+  const [openPicker ,data , authResponse]=useDrivePicker()
+
+  const handleOpenPicker = () => {
+    openPicker({
+      clientId:"137775640070-5sh6r0i8aera2sgp4fd0skua1q2mv212.apps.googleusercontent.com",
+      developerKey: "AIzaSyBiiUuimTi0m3BggOZMRHDMSqID6cJzFBQ",
+      viewId:"DOCS",
+      showUploadView:true,
+      showUploadFolders:true,
+      supportDrives:true,
+      multiselect:false,
+
+    })
+  }
+  useEffect(() => {
+ if(data){
+  
+    data.docs.map((i) => console.log(i))
+  
+ }
+  }),[data]
+
 
 
   //gender picker
@@ -178,13 +203,13 @@ const SignupScreen = ({ navigation }) => {
 
 
             <TouchableOpacity style={styles.selectButton} value={profile} onPress={() => {
-              setProfile();
+              handleOpenPicker();
             }}>
               <Text style={{ color: '#FEA1A1' }}>Upload Profile</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.selectButton} value={cover} onPress={() => {
-              setCover();
+              handleOpenPicker();
             }}>
               <Text style={{ color: '#FEA1A1' }}>Upload Cover</Text>
             </TouchableOpacity>
