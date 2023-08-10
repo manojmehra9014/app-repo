@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Alert, Button, SafeAreaView, StyleSheet, Text, Image, TouchableOpacity, View, Dimensions, } from 'react-native';
+import { Alert, Button, SafeAreaView, StyleSheet, Text, Image, TouchableOpacity, Input, View, Dimensions, } from 'react-native';
 const colors = ['#FEBBCC', '#FFDDCC', '#F6F4EB'];
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,19 +9,37 @@ import { ScrollView, TextInput } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('screen');
 import { logo } from '../../const';
 import useDrivePicker from 'react-google-drive-picker';
+import picker from 'react-google-drive-picker';
 import { Icon } from 'react-native-elements';
 import { Picker } from '@react-native-picker/picker';
+import { WebView } from 'react-native-webview';
+
 
 const SignupScreen = ({ navigation }) => {
+  const DemoSignUp = {
+    name: '', // Initialize with an empty string
+    designation: '',
+    user_type: '',
+    gender: '', // Initialize with an empty string
+    // phoneNumber: '',
+    // password: '', // Initialize with an empty string
+    leader_images: ['https://d61uti3sxgkhy.cloudfront.net/rahul.jpg'],
+    profile_photo_url: 'https://d61uti3sxgkhy.cloudfront.net/rahul.jpg',
+  };
+
+
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [designation, setDesignation] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('9368667021');
   const [password, setPassword] = useState('');
   const [profile, setProfile] = useState('https://d61uti3sxgkhy.cloudfront.net/rahul.jpg');
   const [cover, setCover] = useState('https://d61uti3sxgkhy.cloudfront.net/rahul.jpg');
+
+
+
   let [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
-  const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user);
 
@@ -29,30 +47,68 @@ const SignupScreen = ({ navigation }) => {
     const userPhoneNumber = `+91${phoneNumber}`;
     try {
       const res = await sendOtpApi(userPhoneNumber);
-      console.log(res);
+      // console.log(res);
 
       if (res.status === 'success') {
         setOtpSent(true);
         Alert.alert('Otp Sent!!', res.message);
       }
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       Alert.alert('OOps', e);
     }
   };
 
+
+  // const sendOtp = async () => {
+  //   const userPhoneNumber = `+91${phoneNumber}`;
+  //   try {
+  //     const res = await sendOtpApi(userPhoneNumber);
+  //     console.log(res, "ho gya bhai");
+
+  //     if (res.status === 'success') {
+  //       setOtpSent(true);
+  //       Alert.alert('Otp Sent!!', res.message);
+  //     } else {
+  //       // Display error message from the response
+  //       Alert.alert('Error', res.message || 'An error occurred');
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //     Alert.alert('Error', 'An error occurred while sending OTP');
+  //   }
+  // };
+
+
   const confirmSignup = async () => {
+    DemoSignUp.name = name;
+    DemoSignUp.designation = designation;
+    DemoSignUp.user_type = selectedusertype;
+    DemoSignUp.gender = selectedGender;
+    // DemoSignUp.phone_number = phoneNumber;
+    // DemoSignUp.password = password;
+    DemoSignUp.leader_images = [profile];
+    DemoSignUp.profile_photo_url = cover;
+    DemoSignUp.leader = '+911111111111';
+
     let data = DemoSignUp;
     data.phone_number = `+91${phoneNumber}`;
     data.password = password;
     data.code = otp;
-
+    console.log(data);
     const res = await registerUser(data); // api request to server
-    // console.log(res.data.token);
+    if(res.status === "failed"){
+      Alert.alert('Registion failed!', res.message);
+    }
+    if(res.status === "suceess"){
+      Alert.alert('Registion seccesfully!', res.message);
+    }
+    console.log(res,' line 100 ');
     if (res.data.token) {
       await AsyncStorage.setItem('user-key', res.data.token);
 
       const keyUser = await AsyncStorage.getItem('user-key');
+      // console.log(keyUser);
       if (keyUser !== null) {
         dispatch({
           type: 'LOGGED_IN',
@@ -75,23 +131,28 @@ const SignupScreen = ({ navigation }) => {
       'other',
     ].sort()
   );
+  const [selectedusertype, setSelectedtype] = useState('USER');
+  const [usertypes] = useState(
+    [
+      'USER',
+      'LEADER',
+      'OTHER',
+    ].sort()
+  );
 
 
-  const Main = styled(View)`
-    widht:80vw;
-    height:900px;
-    margin:30px;
-  `;
 
-  //image pickerr
 
-  //   const [openPicker ,data , authResponse]=useDrivePicker()
+  // image picker
+
+  // const [openPicker ,data , authResponse]=useDrivePicker()
 
   //   const handleOpenPicker = () => {
   //     openPicker({
   //       clientId:"137775640070-s88tlidvuie925ieecjdfg9rs5ggqh45.apps.googleusercontent.com",
   //       developerKey: "AIzaSyATrzPzorr0EKubCJKLPKOPcak1BHqAefg",
-  //       viewId:"DOCS",
+  //       scope:'https://www.googleapis.com/auth/drive.readonly',
+  //       viewId:"DOCS_IMAGES",
   //       showUploadView:true,
   //       showUploadFolders:true,
   //       supportDrives:true,
@@ -99,10 +160,12 @@ const SignupScreen = ({ navigation }) => {
   //     })
   //   }
   //   useEffect(() => {
-  //  if(data){
-  //     data.docs.map((i) => console.log(i))
-  //  }
+  //     if (data) {
+  //       console.log("Data received:", data);
+  //       data.docs.map((i) => console.log(i));
+  //     }
   //   }),[data]
+
 
 
   return (
@@ -120,25 +183,24 @@ const SignupScreen = ({ navigation }) => {
           ))}
 
 
-          <Main style={styles.main}>
+          <View style={styles.main}>
 
             <View style={styles.imageContainer}>
               <Image source={logo} style={styles.logoImage} />
-              <Text style={{ fontSize: 24, top: 20, fontWeight: "900", textAlign: "center" }}>SignUp</Text>
+              <Text style={{ fontSize: 24, top: 10, fontWeight: "900", textAlign: "center" }}>SignUp</Text>
             </View>
 
             <View style={styles.inputFileds}>
               {/*input for username  */}
               <View style={styles.inputView}>
                 <Icon color='#333' name='user' type='font-awesome' size={20} />
-                <TextInput style={{ flex: 1, paddingHorizontal: 12, }} 
-              onChangeText={(e) => {
-                setName(e);
-              }}
-              autoCorrect={false}
-              value={name}
-              autoFocus={true}
-              placeholder="Enter Username" />
+                <TextInput style={{ flex: 1, paddingHorizontal: 12, }}
+                  onChangeText={(e) => {
+                    setName(e);
+                  }}
+                  autoCorrect={false}
+                  value={name}
+                  placeholder="Enter Username" />
               </View>
 
 
@@ -146,15 +208,30 @@ const SignupScreen = ({ navigation }) => {
               <View style={styles.inputView}>
                 <Icon color='#333' name='briefcase' type='font-awesome' size={20} />
                 <TextInput style={{ flex: 1, paddingHorizontal: 12, }}
-              onChangeText={(e) => {
-                setDesignation(e);
-              }}
-              autoCorrect={false}
-              value={designation}
-              autoFocus={true}
-              placeholder="Enter Designation" />
+                  onChangeText={(e) => {
+                    setDesignation(e);
+                  }}
+                  autoCorrect={false}
+                  value={designation}
+                  placeholder="Enter Designation" />
               </View>
 
+
+              {/*input picker for usertype  */}
+              <View style={styles.inputView}>
+                <Picker
+                  style={styles.inputViewPicker}
+                  selectedValue={selectedusertype}
+                  onValueChange={(itemVal1) => {
+                    setSelectedtype(itemVal1);
+                  }}>
+                  {
+                    usertypes.map((l) => (
+                      <Picker.Item label={l} value={l} />
+                    ))
+                  }
+                </Picker>
+              </View>
 
               {/*input picker for gender  */}
               <View style={styles.inputView}>
@@ -186,25 +263,23 @@ const SignupScreen = ({ navigation }) => {
               <View style={styles.inputView}>
                 <Icon color='#333' name='phone' type='font-awesome' size={20} />
                 <TextInput style={{ flex: 1, paddingHorizontal: 12, }} maxLength={10}
-              onChangeText={(e) => {
-                setPhoneNumber(e);
-              }}
-              autoCorrect={false}
-              value={phoneNumber}
-              autoFocus={true}
-              placeholder="Phone Number" />
+                  onChangeText={(e) => {
+                    setPhoneNumber(e);
+                  }}
+                  autoCorrect={false}
+                  value={phoneNumber}
+                  placeholder="Phone Number" />
               </View>
 
               <View style={styles.inputView}>
                 <Icon color='#333' name='lock' type='font-awesome' size={20} />
-                <TextInput style={{ flex: 1, paddingHorizontal: 12, }} 
-              onChangeText={(e) => {
-                setPassword(e);
-              }}
-              autoCorrect={false}
-              value={password}
-              autoFocus={true}
-              placeholder="Password" />
+                <TextInput style={{ flex: 1, paddingHorizontal: 12, }}
+                  onChangeText={(e) => {
+                    setPassword(e);
+                  }}
+                  autoCorrect={false}
+                  value={password}
+                  placeholder="Password" />
               </View>
 
 
@@ -218,27 +293,28 @@ const SignupScreen = ({ navigation }) => {
               </TouchableOpacity>
               {otpSent && (
                 <View>
-                  <Input
-                    style={styles.inputView}
-                    onChangeText={(e) => {
-                      setOtp(e);
-                    }}
-                    // autoComplete={false}
-                    value={otp}
-                    placeholder="Enter Otp"
-                  />
-                  <TouchableOpacity
-                    style={styles.regbtn}
-                    title="Confirm OTP"
-                    onPress={async () => await confirmSignup()}>Verify OTP</TouchableOpacity>
+                  <View style={[styles.inputView, { top: 40 }]}>
+                    <Icon color='#333' name='lock' type='font-awesome' size={20} />
+                    <TextInput style={{ flex: 1, paddingHorizontal: 12, }}
+                      onChangeText={(e) => {
+                        setOtp(e);
+                      }}
+                      autoCorrect={false}
+                      value={otp}
+                      placeholder="Enter OTP" />
+                  </View>
+
+                  <TouchableOpacity style={[styles.regbtn, { top: 50 }]} title="Confirm OTP"
+                    onPress={async () => await confirmSignup()}>
+                    <Text style={{ color: "#fff", fontSize: 18 }}>Verify OTP</Text>
+                  </TouchableOpacity>
+
                 </View>
               )}
             </View>
 
 
-          </Main>
-
-
+          </View>
         </View>
       </ScrollView>
     </>
@@ -250,13 +326,12 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   container: {
-    flex: 1,
-    height: height,
+    height: height + 200,
     top: 0,
   },
   imageContainer: {
     alignItems: 'center',
-    top: 30,
+    top: 10,
   },
   logoImage: {
     width: 100,
@@ -272,11 +347,12 @@ const styles = StyleSheet.create({
     top: 0
   },
   main: {
-    height: height - 50,
+    flex: 1,
+    padding: 30,
 
   },
   inputFileds: {
-    top: 70,
+    top: 40,
   },
   inputView: {
     width: '100%',
@@ -316,11 +392,10 @@ const styles = StyleSheet.create({
     width: '50%',
     borderColor: '#30A2FF',
     textAlign: 'center',
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#30A2FF',
     height: 44,
-    left: 75,
+    alignSelf: "center",
     top: 20,
     borderWidth: 1.8,
     borderRadius: 19,
@@ -333,6 +408,7 @@ const styles = StyleSheet.create({
     color: 'blue',
     textDecorationLine: 'underline',
   },
+
 });
 
 
