@@ -101,6 +101,9 @@ const LoginScreen = ({ navigation }) => {
 
 
           
+          {/* {loading ? (
+            <Image style={{ width: 70, height: 70, top: height / 2 - 60, left: width / 2 - 35, alignItems: "center", justifyContent: "center" }} source={spinner} />
+          ) : ( */}
             <View style={styles.main}>
 
 
@@ -108,6 +111,7 @@ const LoginScreen = ({ navigation }) => {
                 <Image source={logo} style={styles.logoImage} />
                 <Text style={{ fontSize: 24, top: 20, fontWeight: "900", textAlign: "center" }}>Login</Text>
               </View>
+
 
 
 
