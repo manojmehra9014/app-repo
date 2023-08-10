@@ -3,7 +3,7 @@ import { Alert, Button, SafeAreaView, StyleSheet, Text, Image, TouchableOpacity,
 const colors = ['#FEBBCC', '#FFDDCC', '#F6F4EB'];
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { checkUserStatus, registerUser, sendOtpApi } from '../../actions/auth';
+import {image_bg_remove_api, checkUserStatus, registerUser, sendOtpApi } from '../../actions/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('screen');
@@ -14,6 +14,8 @@ import { Icon } from 'react-native-elements';
 import { Picker } from '@react-native-picker/picker';
 import { WebView } from 'react-native-webview';
 import { spinner } from '../../const';
+import * as ImagePicker from 'expo-image-picker';
+
 
 
 const SignupScreen = ({ navigation }) => {
@@ -68,7 +70,32 @@ const SignupScreen = ({ navigation }) => {
     }
   }
  
-  
+  //iamge picker
+  const openImagePicker = async (setImageFunction) => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      alert('Permission to access media library is required.');
+      return;
+    }
+
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing:true,
+      aspect:[4,4],
+      quality:1,
+    });
+
+    if (!pickerResult.cancelled) {
+      const phoneNumber = '1234567890'; // Replace with actual phone number
+      const currentDate = new Date();
+      const formattedDate = `${currentDate.getFullYear()}${(currentDate.getMonth() + 1).toString().padStart(2, '0')}${currentDate.getDate().toString().padStart(2, '0')}`;
+      const formattedTime = `${currentDate.getHours().toString().padStart(2, '0')}${currentDate.getMinutes().toString().padStart(2, '0')}${currentDate.getSeconds().toString().padStart(2, '0')}`;
+      const imageFileType = pickerResult.uri.split('.').pop(); // Extract file extension from the URI
+      const imageUrl = `https://+91${phoneNumber}_${formattedDate}_Now_${formattedTime}.${imageFileType}`;
+      
+      setImageFunction(imageUrl);
+    }
+  };
   
 
 
@@ -87,6 +114,18 @@ const SignupScreen = ({ navigation }) => {
       }
     } catch (e) {
       Alert.alert('OOps', e);
+    }
+  };
+
+
+  //bgremove api
+  const image_bg_remove = async (profile) => {
+    try{
+      const res = await image_bg_remove_api(profile);
+      setProfile(res.s3_object_url);
+    }
+    catch(error){
+      console.error('API Error:', error);
     }
   };
 
@@ -377,11 +416,11 @@ const SignupScreen = ({ navigation }) => {
 
 
                   {/*input image picker  */}
-                  <TouchableOpacity style={styles.selectButton} value={profile} >
+                  <TouchableOpacity style={styles.selectButton} value={profile} onPress={() => openImagePicker(setProfile)} onBlur={image_bg_remove(profile)}>
                     <Text style={{ color: '#FEA1A1' }}>Upload Profile</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={styles.selectButton} value={cover} >
+                  <TouchableOpacity style={styles.selectButton} value={cover} onPress={() => openImagePicker(setCover)}>
                     <Text style={{ color: '#FEA1A1' }}>Upload Cover</Text>
                   </TouchableOpacity>
 

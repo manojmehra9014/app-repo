@@ -1,3 +1,34 @@
+export const image_bg_remove_api = async (profile) => {
+  try {
+    const data = new FormData();
+    data.append('image', profile);
+    let res = await fetch('http://13.200.103.27:5000/api/remove_background',
+      {
+        method: 'post',
+        body: data,
+        headers: {
+          'Content-Type': 'multipart/form-data; ',
+        },
+      }
+    );
+    let responseJson = await res.json();
+    console.log(responseJson, 'res data from api ');
+    return responseJson;
+
+
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
+}
+
+
+
+
+
+
+
+
 export const checkUserStatus = async (phone_number) => {
   try {
     return await fetch('http://13.200.103.27:8001/api/user-status', {
@@ -58,7 +89,7 @@ export const registerUser = async (data) => {
       body: JSON.stringify(data),
     })
       .then((response) => {
-        console.log(response , "api resp");
+        console.log(response, "api resp");
         return response.json();
       })
       .catch((e) => {
