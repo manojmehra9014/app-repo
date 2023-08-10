@@ -1,19 +1,18 @@
 import { Auth } from 'aws-amplify';
 import React, { useState } from 'react';
-import {  Button,  SafeAreaView,  StyleSheet,   View,} from 'react-native';
+import {  Button,  SafeAreaView,  StyleSheet,TouchableOpacity,Text,   View,} from 'react-native';
 import {image_bg_remove_api, } from '../../actions/auth';
 import * as ImagePicker from 'expo-image-picker';
 
 const ImageScreen = ({}) => {
 
-const [profile, setProfile] = useState('https://d61uti3sxgkhy.cloudfront.net/rahul.jpg');
+const [profile, setProfile] = useState('');
 
-  //bgremove api
+  // bgremove api
   const image_bg_remove = async (profile) => {
     try{
       const res = await image_bg_remove_api(profile);
-      setProfile(res.s3_object_url);
-      console.log(res.s3_object_url , 'image_bg_remove');
+      console.log(res , " from api log");
     }
     catch(error){
       console.error('API Error:', error);
@@ -36,15 +35,11 @@ const [profile, setProfile] = useState('https://d61uti3sxgkhy.cloudfront.net/rah
       quality:1,
     });
 
-    if (!pickerResult.canceled) {
-      const phoneNumber = '1234567890'; // Replace with actual phone number
-      const currentDate = new Date();
-      const formattedDate = `${currentDate.getFullYear()}${(currentDate.getMonth() + 1).toString().padStart(2, '0')}${currentDate.getDate().toString().padStart(2, '0')}`;
-      const formattedTime = `${currentDate.getHours().toString().padStart(2, '0')}${currentDate.getMinutes().toString().padStart(2, '0')}${currentDate.getSeconds().toString().padStart(2, '0')}`;
-      const imageFileType = pickerResult.uri.split('.').pop(); // Extract file extension from the URI
-      const imageUrl = `https://+91${phoneNumber}_${formattedDate}_Now_${formattedTime}.${imageFileType}`;
-      
-      setProfile(imageUrl);
+    if (!pickerResult.canceled){
+      setProfile(pickerResult.uri);
+      console.log(pickerResult.uri);
+       image_bg_remove(pickerResult.uri);
+      // console.log(res,' image k link hoga syd ye');
     }
   };
   
@@ -53,26 +48,14 @@ const [profile, setProfile] = useState('https://d61uti3sxgkhy.cloudfront.net/rah
     <SafeAreaView>
       
         <View style={{top:100}}>
-          <Button
-            title="pick image"
-            value={profile}
-            onPress={() => openImagePicker(setProfile)}
-            style={{
-              padding: 10,
-              backgroundColor: '#cdd1cf',
-              width: '100%',
-            }}></Button>
+        <TouchableOpacity style={styles.selectButton} value={profile} onPress={() => openImagePicker(setProfile)}>
+                    <Text style={{ color: '#FEA1A1' }}>Upload Profile</Text>
+        </TouchableOpacity>
+        {/* <TouchableOpacity style={styles.selectButton} onPress={image_bg_remove(profile)}>
+                    <Text style={{ color: '#FEA1A1' }}>Get Profile</Text>
+        </TouchableOpacity> */}
 
-            <Button
-            title="log data"
-            onPress={image_bg_remove}
-            style={{
-              top:300,
-              padding: 10,
-              backgroundColor: '#cdd1cf',
-              width: '100%',
-            }}
-            ></Button>
+            
         </View>
     </SafeAreaView>
   );
@@ -84,6 +67,21 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+  },
+  selectButton: {
+    paddingHorizontal: 5,
+    paddingVertical: 8,
+    fontSize: 18,
+    width: '100%',
+    borderColor: '#FF8989',
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFECEC',
+    height: 40,
+    borderWidth: 1.8,
+    borderRadius: 19,
+    marginBottom: 15,
   },
 });
 

@@ -1,33 +1,51 @@
 export const image_bg_remove_api = async (profile) => {
   try {
-    const data = new FormData();
-    data.append('image', profile);
-    let res = await fetch('http://13.200.103.27:5000/api/remove_background',
-      {
-        method: 'post',
-        body: data,
-        headers: {
-          'Content-Type': 'multipart/form-data; ',
-        },
-      }
-    );
-    let responseJson = await res.json();
-    console.log(responseJson, 'res data from api ');
-    return responseJson;
+    console.log("line ye hoga ", profile);
+    const formData = new FormData();
+    formData.append('image', {
+      image: profile
+    });
+    console.log(formData);
+    const response = await fetch('http://13.200.103.27:5000/api/remove_background', {
+      method: 'POST',
+      body: formData,
+    });
 
-
+    const responseData = await response.json();
+    // setProfile(responseData);
+    console.log(responseData);
   } catch (error) {
-    console.error('Error:', error);
-    return null;
+    console.log(error);
   }
-}
+};
 
 
 
+// export const image_bg_remove_api = async (profile) => {
+//   try {
+//     const data = new FormData('image', 'profile');
+//     console.log("line 4");
+//     // data.append('image', image);
+//     let res = await fetch('http://13.200.103.27:5000/api/remove_background',
+//       {
+//         method: 'post',
+//         body: data,
+//         headers: {
+//           'Content-Type': 'multipart/form-data; ',
+//         },
+//       }
+//     );
+//     console.log("line 15")
+//       const responseJson = await res.json(); // If the response is JSON
+//       console.log('Success:', responseJson);
 
-
-
-
+//     // console.log(data, 'res data from api ');
+//     return responseJson;
+//   } catch (error) {
+//     console.error('Error:', error);
+//     return null;
+//   }
+// }
 
 export const checkUserStatus = async (phone_number) => {
   try {
