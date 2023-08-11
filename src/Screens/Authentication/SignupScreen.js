@@ -9,7 +9,8 @@ import { ScrollView, TextInput } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('screen');
 import { Icon } from 'react-native-elements';
 import { Picker } from '@react-native-picker/picker';
-import { logo, spinner, error_color, seccess_color, default_color, reg_failed, reg_seccess, btn_text_color, leader_img } from '../../const';
+import { logo, spinner, error_color, seccess_color, default_color, reg_failed, reg_seccess, btn_text_color, leader_img ,error_usercheck,userexist_txt_header,userexist_txt} from '../../const';
+// import  * as cdn  from '../../const';
 import * as ImagePicker from 'expo-image-picker';
 import { validateName, validateDesignation, validatePassword, validatePhoneNumber } from '../../validation';
 
@@ -45,21 +46,15 @@ const SignupScreen = ({ navigation }) => {
 
       if (res.user === true) {
         Alert.alert(
-          'User Already Exist!',
-          'Try to login!',
-          [
-            {
-              text: 'OK',
-              onPress: () => navigation.navigate('Login'), // Navigate to 'Login' screen
-            },
-          ]
+          userexist_txt_header, userexist_txt,
+          [{ text: 'OK', onPress: () => navigation.navigate('Login'), },]
         );
       } else {
         setUser(false); // Set the user status to false if the user does not exist
       }
     } catch (error) {
       setLoading(false);
-      console.error('Error checking user status:', error);
+      console.error(error_usercheck, error);
       // Handle the error here, you can show an error message to the user if needed
     }
   }
@@ -76,7 +71,6 @@ const SignupScreen = ({ navigation }) => {
 
     console.log(result);
     if (!result.canceled) {
-      console.log("Line !result.cancled")
       const resp = await image_bg_remove_api(result.assets[0].uri, phoneNumber);
       console.log(resp);
       setImage(resp);
