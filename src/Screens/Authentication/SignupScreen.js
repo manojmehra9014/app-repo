@@ -27,6 +27,7 @@ const SignupScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   let [userexist, setUser] = useState(true);
   const [isbgremoved, set_is_bg_removed] = useState(false);
+  const [profileuploaded, setProfileUploaded] = useState(false);
 
   const checkUserexist = async () => {
     try {
@@ -215,9 +216,18 @@ const SignupScreen = ({ navigation }) => {
     ].sort()
   );
 
+  const closepreviewofimage = () => {
+    set_is_bg_removed(false);
+    setProfileUploaded(true);
+  }
 
 
-
+  // const reuploadimage=()=>{
+  //   setProfileUploaded(false);
+  // } onPress={() =>reuploadimage() }
+  // const set_chnages_on_profile_choose = () => {
+  //   setProfileUploaded(false);
+  // }
 
   return (
     <>
@@ -234,15 +244,15 @@ const SignupScreen = ({ navigation }) => {
           ))}
 
 
-          
+
 
           {isbgremoved && (
             <View style={styles.imageprev}>
-            <Image source={{ uri: profile }} style={styles.image} />
-            <TouchableOpacity style={styles.closeButton} onPress={()=>set_is_bg_removed(false)}>
-              <Text style={styles.closeButtonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
+              <Image source={{ uri: profile }} style={styles.image} />
+              <TouchableOpacity style={styles.closeButton} onPress={() => closepreviewofimage()}>
+                <Text style={styles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
           )}
 
           {loading && (
@@ -340,10 +350,19 @@ const SignupScreen = ({ navigation }) => {
 
 
                   {/*input image picker  */}
-                  <TouchableOpacity style={styles.selectButton} onPress={() => openImagePicker(setProfile, 1)} >
-                    <Text style={btn_text_color}>Upload Profile</Text>
-                  </TouchableOpacity>
-
+                  {!profileuploaded && (
+                    <TouchableOpacity style={styles.selectButton} onPress={() => openImagePicker(setProfile, 1)} >
+                      <Text style={btn_text_color}>Upload Profile</Text>
+                    </TouchableOpacity>
+                  )}
+                  {profileuploaded && (
+                    <View style={styles.imageprevprofile}>
+                      <TouchableOpacity style={styles.closeButtonprofile} onPress={() => reuploadimage()} >
+                        <Text style={styles.closeButtonTextprofile}>×</Text>
+                      </TouchableOpacity>
+                      <Image source={{ uri: profile }} style={styles.imageprofile} />
+                    </View>
+                  )}
                   {/* Render the upload button for leaders */}
                   {isLeader && (
                     <TouchableOpacity
@@ -557,23 +576,56 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     resizeMode: 'contain',
-    backgroundColor:'#fff',
-    borderRadius:12,
+    backgroundColor: '#fff',
+    borderRadius: 12,
   },
   closeButton: {
     marginTop: 10,
     padding: 8,
     borderRadius: 5,
-    width:90,
-    textAlign:"center",
+    width: 90,
+    textAlign: "center",
     backgroundColor: '#6528F7',
   },
   closeButtonText: {
     color: 'white',
-    padding:3,
-    textAlign:"center",
+    padding: 3,
+    textAlign: "center",
     fontWeight: 'bold',
   },
+  imageprevprofile: {
+    position: 'relative', // Make the container relative for positioning
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    width: 200,
+    height: 200,
+    borderRadius:19,
+    
+    bottom:2,
+    alignSelf: "center",
+    zIndex: 1000,
+  },
+  imageprofile: {
+    width: 200,
+    height: 200,
+    resizeMode: 'contain',
+  },
+  closeButtonprofile: {
+    position: 'absolute',
+    top: 1,
+    right: 1,
+    paddingVertical:0,
+    paddingHorizontal:11,
+    borderRadius: 50,
+    backgroundColor: '#071952',
+  },
+  closeButtonTextprofile: {
+    color: 'white',
+    fontSize:34,
+    fontWeight: 'bold',
+  },
+
 });
 
 
