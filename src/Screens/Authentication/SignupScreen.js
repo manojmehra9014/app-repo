@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Alert, Button, SafeAreaView, StyleSheet, Text, Image, TouchableOpacity, Input, View, Dimensions, } from 'react-native';
+import React, { useState, } from 'react';
+import { Alert, StyleSheet, Text, Image, TouchableOpacity, View, Dimensions, } from 'react-native';
 const colors = ['#FEBBCC', '#FFDDCC', '#F6F4EB'];
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,25 +7,20 @@ import { image_bg_remove_api, checkUserStatus, registerUser, sendOtpApi } from '
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('screen');
-import useDrivePicker from 'react-google-drive-picker';
-import picker from 'react-google-drive-picker';
 import { Icon } from 'react-native-elements';
 import { Picker } from '@react-native-picker/picker';
-import { WebView } from 'react-native-webview';
-import { logo, spinner, error_color, seccess_color, default_color,reg_failed,reg_seccess, btn_text_color } from '../../const';
+import { logo, spinner, error_color, seccess_color, default_color, reg_failed, reg_seccess, btn_text_color, leader_img } from '../../const';
 import * as ImagePicker from 'expo-image-picker';
-import { validateName,validateDesignation,validatePassword, validatePhoneNumber} from '../../validation';
+import { validateName, validateDesignation, validatePassword, validatePhoneNumber } from '../../validation';
 
 
 const SignupScreen = ({ navigation }) => {
   const UserSignUpData = {
-    name: '', // Initialize with an empty string
-    designation: '',
-    user_type: '',
-    gender: '', // Initialize with an empty string
-    // phoneNumber: '',
-    // password: '', // Initialize with an empty string
-    leader_images: ['https://d61uti3sxgkhy.cloudfront.net/rahul.jpg', 'https://d61uti3sxgkhy.cloudfront.net/rahul.jpg', 'https://d61uti3sxgkhy.cloudfront.net/rahul.jpg'],
+    name: '', designation: '', user_type: '', gender: '',
+    leader_images: [
+      leader_img,
+      leader_img,
+      leader_img,],
     profile_photo_url: '',
   };
 
@@ -37,10 +32,10 @@ const SignupScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [profile, setProfile] = useState('');
   const [leader, setLeader] = useState('');
-
-
   const [loading, setLoading] = useState(false);
   let [userexist, setUser] = useState(true);
+
+
   const checkUserexist = async () => {
     try {
       setLoading(true);
@@ -80,7 +75,6 @@ const SignupScreen = ({ navigation }) => {
     });
 
     console.log(result);
-
     if (!result.canceled) {
       console.log("Line !result.cancled")
       const resp = await image_bg_remove_api(result.assets[0].uri, phoneNumber);
@@ -93,9 +87,6 @@ const SignupScreen = ({ navigation }) => {
 
   let [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
-
-  const user = useSelector((state) => state.user);
-
   const sendOtp = async () => {
     const userPhoneNumber = `+91${phoneNumber}`;
     try {
@@ -128,10 +119,8 @@ const SignupScreen = ({ navigation }) => {
   //designation validation
   const [designationValidationMsg, setDesignationValidationMsg] = useState('');
   const [designationBorderColor, setDesignationBorderColor] = useState(default_color);
-
   const handleDesignationChange = (input) => {
     setDesignation(input);
-
     const validationMsg = validateDesignation(input);
     if (validationMsg) {
       setDesignationValidationMsg(validationMsg);
@@ -161,7 +150,6 @@ const SignupScreen = ({ navigation }) => {
   //password validation
   const [passwordValidationMsg, setPasswordValidationMsg] = useState('');
   const [passwordBorderColor, setPasswordBorderColor] = useState(default_color);
-
   const handlePasswordChange = (input) => {
     setPassword(input);
     const validationMsg = validatePassword(input);
@@ -177,7 +165,6 @@ const SignupScreen = ({ navigation }) => {
 
   const confirmSignup = async () => {
     setLoading(true);
-
     UserSignUpData.name = name;
     UserSignUpData.designation = designation;
     UserSignUpData.user_type = selectedusertype;
