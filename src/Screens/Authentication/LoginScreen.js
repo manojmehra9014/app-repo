@@ -42,7 +42,6 @@ const LoginScreen = ({ navigation }) => {
     const userPassword = password;
     try {
       const res = await loginUser(userPhoneNumber, userPassword);
-      console.log("login api called");
       setLoading(false);
       console.log(res);
       if (res.status === 'failed') {
@@ -65,10 +64,8 @@ const LoginScreen = ({ navigation }) => {
         }
       }
     } catch (e) {
-      // console.log(e);
+      console.log(e);
       Alert.alert('Login Failed', e);
-
-      // Alert.alert('OOps', e.message);
     }
   };
 
@@ -87,70 +84,52 @@ const LoginScreen = ({ navigation }) => {
               ]
             }]} key={i.toString()} />
           ))}
-
-
-
-
-
           {loading && (
             <View style={styles.loadingContainer}>
-              <Image style={{ width: 70, height: 70}} source={spinner} />
+              <Image style={styles.spinner} source={spinner} />
             </View>
           )}
-
-
-
-          
-            <View style={styles.main}>
-
-
-              <View style={styles.imageContainer}>
-                <Image source={logo} style={styles.logoImage} />
-                <Text style={{ fontSize: 24, top: 20, fontWeight: "900", textAlign: "center" }}>Login</Text>
-              </View>
-
-
-
-              <View style={styles.inputFileds}>
-
-
-                <View style={styles.inputView}>
-                  <Icon color='#333' name='user' type='font-awesome' size={20} />
-                  <TextInput style={{ flex: 1, paddingHorizontal: 12, }} maxLength={10}
-                    onChangeText={(e) => {
-                      setPhoneNumber(e);
-                    }}
-                    autoCorrect={false}
-                    value={phoneNumber}
-                    autoFocus={true}
-                    placeholder="Phone Number" />
-                </View>
-                <View style={styles.inputView}>
-                  <Icon color='#333' name='lock' type='font-awesome' size={20} />
-                  <TextInput style={{ flex: 1, paddingHorizontal: 12, }}
-                    onChangeText={(e) => {
-                      setPassword(e);
-                    }}
-                    autoCorrect={false}
-                    value={password}
-                    autoFocus={true}
-                    placeholder="Password" />
-                </View>
-
-                <TouchableOpacity style={styles.regbtn} title="Login"
-                  onPress={async () => await login()}>
-                  <Text style={{ color: "#fff", fontSize: 18 }}>Login</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                  <Text style={styles.loginLinkText}>Don't have an account? SingUp</Text>
-                </TouchableOpacity>
-              </View>
+          <View style={styles.main}>
+            <View style={styles.imageContainer}>
+              <Image source={logo} style={styles.logoImage} />
+              <Text style={styles.loginText}>Login</Text>
             </View>
 
+            <View style={styles.inputFileds}>
+              <View style={styles.inputView}>
+                <Icon style={styles.icon} name='user' type='font-awesome' />
+                <TextInput style={styles.inpf}
+                  maxLength={10}
+                  onChangeText={(e) => {
+                    setPhoneNumber(e);
+                  }}
+                  autoCorrect={false}
+                  value={phoneNumber}
+                  autoFocus={true}
+                  placeholder="Phone Number" />
+              </View>
+              <View style={styles.inputView}>
+                <Icon style={styles.icon} name='lock' type='font-awesome'/>
+                <TextInput style={{ flex: 1, paddingHorizontal: 12, }}
+                  onChangeText={(e) => {
+                    setPassword(e);
+                  }}
+                  autoCorrect={false}
+                  value={password}
+                  autoFocus={true}
+                  placeholder="Password" />
+              </View>
 
-          {/* )} */}
+              <TouchableOpacity style={styles.regbtn} title="Login"
+                onPress={async () => await login()}>
+                <Text style={styles.loginBtnText}>Login</Text>
+              </TouchableOpacity>
 
+              <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+                <Text style={styles.loginLinkText}>Don't have an account? SingUp</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </ScrollView>
     </>
@@ -164,12 +143,33 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: height + 200,
-
     top: 0,
+  },
+  loginText: {
+    fontSize: 24, 
+    top: 20, 
+    fontWeight: "900", 
+    textAlign: "center",
+  },
+  loginBtnText:{
+    color: "#fff",
+     fontSize: 18,
+  },
+  spinner: {
+    width: 70,
+    height: 70,
   },
   imageContainer: {
     alignItems: 'center',
     top: 30,
+  },
+  inpf: {
+    flex: 1,
+    paddingHorizontal: 12,
+  },
+  icon: {
+    color: '#333',
+    size: 20,
   },
   logoImage: {
     width: 100,
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     width: width * 2,
     borderRadius: width,
     left: 0,
-    top: 0
+    top: 0,
   },
   input: {
     height: 40,
@@ -240,8 +240,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    width:width,
-    height:height,
+    width: width,
+    height: height,
     backgroundColor: 'rgba(39, 40, 41,0.5)', // Semi-transparent white background
     zIndex: 1, // Place it above other content
     alignItems: "center", justifyContent: "center"

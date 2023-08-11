@@ -16,16 +16,7 @@ import { validateName, validateDesignation, validatePassword, validatePhoneNumbe
 
 
 const SignupScreen = ({ navigation }) => {
-  const UserSignUpData = {
-    name: '', designation: '', user_type: '', gender: '',
-    leader_images: [
-      leader_img,
-      leader_img,
-      leader_img,],
-    profile_photo_url: '',
-  };
-
-
+  
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [designation, setDesignation] = useState('');
@@ -163,8 +154,8 @@ const SignupScreen = ({ navigation }) => {
     UserSignUpData.designation = designation;
     UserSignUpData.user_type = selectedusertype;
     UserSignUpData.gender = selectedGender;
-    UserSignUpData.leader_images = [];
-    UserSignUpData.profile_photo_url = removed_bg_Profile;
+    UserSignUpData.leader_images = [leader_img , leader_img, leader_img];
+    UserSignUpData.profile_photo_url = profile;
     UserSignUpData.leader = '+911111111111';
 
     let data = UserSignUpData;
@@ -250,7 +241,7 @@ const SignupScreen = ({ navigation }) => {
             <View style={styles.inputFileds}>
 
               {userexist && (
-                <View>
+                <View style={styles.firstscr}>
 
                   {phoneNumberValidationMsg ? <Text style={styles.validationText} > {phoneNumberValidationMsg}</Text> : null}
                   <View style={[styles.inputView, { borderColor: phoneNumberBorderColor }]}>
@@ -452,7 +443,7 @@ const styles = StyleSheet.create({
     width: width * 2,
     borderRadius: width,
     left: 0,
-    top: 0
+    top: 0,
   },
   main: {
     flex: 1,
@@ -518,6 +509,9 @@ const styles = StyleSheet.create({
   },
   validationText: {
     color: 'red',
+  },
+  firstscr:{
+    top:height/2-200,
   },
   loadingContainer: {
     position: 'absolute',
