@@ -9,14 +9,14 @@ import { ScrollView, TextInput } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('screen');
 import { Icon } from 'react-native-elements';
 import { Picker } from '@react-native-picker/picker';
-import { logo, spinner, error_color, seccess_color, default_color, reg_failed, reg_seccess, btn_text_color, leader_img ,error_usercheck,userexist_txt_header,userexist_txt} from '../../const';
+import { logo, spinner, error_color, seccess_color, default_color, reg_failed, reg_seccess, btn_text_color, leader_img, error_usercheck, userexist_txt_header, userexist_txt } from '../../const';
 // import  * as cdn  from '../../const';
 import * as ImagePicker from 'expo-image-picker';
 import { validateName, validateDesignation, validatePassword, validatePhoneNumber } from '../../validation';
 
 
 const SignupScreen = ({ navigation }) => {
-  
+
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [designation, setDesignation] = useState('');
@@ -26,7 +26,7 @@ const SignupScreen = ({ navigation }) => {
   const [leader, setLeader] = useState('');
   const [loading, setLoading] = useState(false);
   let [userexist, setUser] = useState(true);
-
+  const [isbgremoved, set_is_bg_removed] = useState(false);
 
   const checkUserexist = async () => {
     try {
@@ -61,13 +61,16 @@ const SignupScreen = ({ navigation }) => {
     });
 
     console.log(result);
-    if (!result.canceled) {
+    if (!result.canceled && is_bg_remove) {
       const resp = await image_bg_remove_api(result.assets[0].uri, phoneNumber);
       console.log(resp);
       setImage(resp);
+      setLoading(false);
+      set_is_bg_removed(true);
     }
     setLoading(false);
-  };
+  }
+
 
 
   let [otpSent, setOtpSent] = useState(false);
@@ -154,9 +157,9 @@ const SignupScreen = ({ navigation }) => {
     UserSignUpData.designation = designation;
     UserSignUpData.user_type = selectedusertype;
     UserSignUpData.gender = selectedGender;
-    UserSignUpData.leader_images = [leader_img , leader_img, leader_img];
+    UserSignUpData.leader_images = [leader_img, leader_img, leader_img];
     UserSignUpData.profile_photo_url = profile;
-    UserSignUpData.leader = '+911111111111';
+    UserSignUpData.leader = null;
 
     let data = UserSignUpData;
     data.phone_number = `+91${phoneNumber}`;
@@ -212,6 +215,10 @@ const SignupScreen = ({ navigation }) => {
     ].sort()
   );
 
+
+
+
+
   return (
     <>
       <ScrollView>
@@ -225,6 +232,18 @@ const SignupScreen = ({ navigation }) => {
               ]
             }]} key={i.toString()} />
           ))}
+
+
+          
+
+          {isbgremoved && (
+            <View style={styles.imageprev}>
+            <Image source={{ uri: profile }} style={styles.image} />
+            <TouchableOpacity style={styles.closeButton} onPress={()=>set_is_bg_removed(false)}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+          )}
 
           {loading && (
             <View style={styles.loadingContainer}>
@@ -510,8 +529,8 @@ const styles = StyleSheet.create({
   validationText: {
     color: 'red',
   },
-  firstscr:{
-    top:height/2-200,
+  firstscr: {
+    top: height / 2 - 200,
   },
   loadingContainer: {
     position: 'absolute',
@@ -522,6 +541,38 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(39, 40, 41,0.5)', // Semi-transparent white background
     zIndex: 1, // Place it above other content
     alignItems: "center", justifyContent: "center"
+  },
+  imageprev: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 180,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(145, 200, 228,0.7)',
+    zIndex: 1000,
+  },
+  image: {
+    width: 250,
+    height: 250,
+    resizeMode: 'contain',
+    backgroundColor:'#fff',
+    borderRadius:12,
+  },
+  closeButton: {
+    marginTop: 10,
+    padding: 8,
+    borderRadius: 5,
+    width:90,
+    textAlign:"center",
+    backgroundColor: '#6528F7',
+  },
+  closeButtonText: {
+    color: 'white',
+    padding:3,
+    textAlign:"center",
+    fontWeight: 'bold',
   },
 });
 

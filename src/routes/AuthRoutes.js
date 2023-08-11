@@ -5,7 +5,6 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LoginScreen from '../Screens/Authentication/LoginScreen';
 import SignupScreen from '../Screens/Authentication/SignupScreen';
-import ImageScreen from '../Screens/Authentication/ImageScreen';
 const Stack = createStackNavigator();
 const AuthRoute = () => {
   return (
