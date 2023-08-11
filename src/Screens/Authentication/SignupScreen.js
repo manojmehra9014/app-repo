@@ -1,22 +1,51 @@
-import React, { useState, } from 'react';
-import { Alert, StyleSheet, Text, Image, TouchableOpacity, View, Dimensions, } from 'react-native';
+import React, { useState } from 'react';
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  View,
+  Dimensions,
+} from 'react-native';
 const colors = ['#FEBBCC', '#FFDDCC', '#F6F4EB'];
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { image_bg_remove_api, checkUserStatus, registerUser, sendOtpApi } from '../../actions/auth';
+import {
+  image_bg_remove_api,
+  checkUserStatus,
+  registerUser,
+  sendOtpApi,
+} from '../../actions/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('screen');
 import { Icon } from 'react-native-elements';
 import { Picker } from '@react-native-picker/picker';
-import { logo, spinner, error_color, seccess_color, default_color, reg_failed, reg_seccess, btn_text_color, leader_img, error_usercheck, userexist_txt_header, userexist_txt } from '../../const';
+import {
+  logo,
+  spinner,
+  error_color,
+  seccess_color,
+  default_color,
+  reg_failed,
+  reg_seccess,
+  btn_text_color,
+  leader_img,
+  error_usercheck,
+  userexist_txt_header,
+  userexist_txt,
+} from '../../const';
 // import  * as cdn  from '../../const';
 import * as ImagePicker from 'expo-image-picker';
-import { validateName, validateDesignation, validatePassword, validatePhoneNumber } from '../../validation';
-
+import {
+  validateName,
+  validateDesignation,
+  validatePassword,
+  validatePhoneNumber,
+} from '../../utils/validation';
 
 const SignupScreen = ({ navigation }) => {
-
   const UserSignUpData = {
     name: '', // Initialize with an empty string
     designation: '',
@@ -48,10 +77,9 @@ const SignupScreen = ({ navigation }) => {
       setLoading(false);
 
       if (res.user === true) {
-        Alert.alert(
-          userexist_txt_header, userexist_txt,
-          [{ text: 'OK', onPress: () => navigation.navigate('Login'), },]
-        );
+        Alert.alert(userexist_txt_header, userexist_txt, [
+          { text: 'OK', onPress: () => navigation.navigate('Login') },
+        ]);
       } else {
         setUser(false); // Set the user status to false if the user does not exist
       }
@@ -60,7 +88,7 @@ const SignupScreen = ({ navigation }) => {
       console.error(error_usercheck, error);
       // Handle the error here, you can show an error message to the user if needed
     }
-  }
+  };
 
   //iamge picker
   const openImagePicker = async (setImage, is_bg_remove) => {
@@ -81,9 +109,7 @@ const SignupScreen = ({ navigation }) => {
       set_is_bg_removed(true);
     }
     setLoading(false);
-  }
-
-
+  };
 
   let [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
@@ -118,7 +144,8 @@ const SignupScreen = ({ navigation }) => {
 
   //designation validation
   const [designationValidationMsg, setDesignationValidationMsg] = useState('');
-  const [designationBorderColor, setDesignationBorderColor] = useState(default_color);
+  const [designationBorderColor, setDesignationBorderColor] =
+    useState(default_color);
   const handleDesignationChange = (input) => {
     setDesignation(input);
     const validationMsg = validateDesignation(input);
@@ -133,7 +160,8 @@ const SignupScreen = ({ navigation }) => {
 
   //phone number validation
   const [phoneNumberValidationMsg, setPhoneNumberValidationMsg] = useState('');
-  const [phoneNumberBorderColor, setPhoneNumberBorderColor] = useState(default_color);
+  const [phoneNumberBorderColor, setPhoneNumberBorderColor] =
+    useState(default_color);
   const handlePhoneNumberChange = (input) => {
     setPhoneNumber(input);
     const validationMsg = validatePhoneNumber(input);
@@ -145,7 +173,6 @@ const SignupScreen = ({ navigation }) => {
       setPhoneNumberBorderColor(seccess_color);
     }
   };
-
 
   //password validation
   const [passwordValidationMsg, setPasswordValidationMsg] = useState('');
@@ -161,7 +188,6 @@ const SignupScreen = ({ navigation }) => {
       setPasswordBorderColor(seccess_color);
     }
   };
-
 
   const confirmSignup = async () => {
     setLoading(true);
@@ -181,10 +207,10 @@ const SignupScreen = ({ navigation }) => {
     const res = await registerUser(data);
     setLoading(false);
     // api request to server
-    if (res.status === "failed") {
+    if (res.status === 'failed') {
       Alert.alert(reg_failed, res.message);
     }
-    if (res.status === "suceess") {
+    if (res.status === 'suceess') {
       Alert.alert(reg_seccess, res.message);
     }
     console.log(res, ' line 100 ');
@@ -204,34 +230,18 @@ const SignupScreen = ({ navigation }) => {
     }
   };
 
-
-
-
-  //gender picker 
+  //gender picker
   const [selectedGender, setSelectedGender] = useState('male');
-  const [gender] = useState(
-    [
-      'male',
-      'female',
-      'other',
-    ].sort()
-  );
+  const [gender] = useState(['male', 'female', 'other'].sort());
 
   const [selectedusertype, setSelectedtype] = useState('USER');
   const isLeader = selectedusertype === 'LEADER';
-  const [usertypes] = useState(
-    [
-      'USER',
-      'LEADER',
-      'OTHER',
-    ].sort()
-  );
+  const [usertypes] = useState(['USER', 'LEADER', 'OTHER'].sort());
 
   const closepreviewofimage = () => {
     set_is_bg_removed(false);
     setProfileUploaded(true);
-  }
-
+  };
 
   // const reuploadimage=()=>{
   //   setProfileUploaded(false);
@@ -245,22 +255,32 @@ const SignupScreen = ({ navigation }) => {
       <ScrollView>
         <View style={styles.container}>
           {colors.map((x, i) => (
-            <View style={[styles.bgCircle1, {
-              backgroundColor: x,
-              transform: [
-                { translateX: -(width / 1.5) + (i * width / colors.length) },
-                { translateY: -(width * 1.25) - (i / 1.35 * width / colors.length) }
-              ]
-            }]} key={i.toString()} />
+            <View
+              style={[
+                styles.bgCircle1,
+                {
+                  backgroundColor: x,
+                  transform: [
+                    {
+                      translateX: -(width / 1.5) + (i * width) / colors.length,
+                    },
+                    {
+                      translateY:
+                        -(width * 1.25) - ((i / 1.35) * width) / colors.length,
+                    },
+                  ],
+                },
+              ]}
+              key={i.toString()}
+            />
           ))}
-
-
-
 
           {isbgremoved && (
             <View style={styles.imageprev}>
               <Image source={{ uri: profile }} style={styles.image} />
-              <TouchableOpacity style={styles.closeButton} onPress={() => closepreviewofimage()}>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => closepreviewofimage()}>
                 <Text style={styles.closeButtonText}>Close</Text>
               </TouchableOpacity>
             </View>
@@ -272,60 +292,94 @@ const SignupScreen = ({ navigation }) => {
             </View>
           )}
           <View style={styles.main}>
-
             <View style={styles.imageContainer}>
               <Image source={logo} style={styles.logoImage} />
               <Text style={styles.signupheading}>SignUp</Text>
             </View>
 
             <View style={styles.inputFileds}>
-
               {userexist && (
                 <View style={styles.firstscr}>
-
-                  {phoneNumberValidationMsg ? <Text style={styles.validationText} > {phoneNumberValidationMsg}</Text> : null}
-                  <View style={[styles.inputView, { borderColor: phoneNumberBorderColor }]}>
-                    <Icon style={styles.icon} name='phone' type='font-awesome' />
-                    <TextInput style={styles.phone_check}
+                  {phoneNumberValidationMsg ? (
+                    <Text style={styles.validationText}>
+                      {' '}
+                      {phoneNumberValidationMsg}
+                    </Text>
+                  ) : null}
+                  <View
+                    style={[
+                      styles.inputView,
+                      { borderColor: phoneNumberBorderColor },
+                    ]}>
+                    <Icon
+                      style={styles.icon}
+                      name="phone"
+                      type="font-awesome"
+                    />
+                    <TextInput
+                      style={styles.phone_check}
                       maxLength={10}
                       onChangeText={handlePhoneNumberChange}
                       autoCorrect={false}
                       value={phoneNumber}
                       keyboardType="numeric"
-                      placeholder="Phone Number" />
+                      placeholder="Phone Number"
+                    />
                   </View>
-                  <TouchableOpacity style={styles.regbtn} onPress={async () => await checkUserexist()}>
+                  <TouchableOpacity
+                    style={styles.regbtn}
+                    onPress={async () => await checkUserexist()}>
                     <Text style={styles.regbtntext}>Next</Text>
                   </TouchableOpacity>
-
                 </View>
               )}
               {!userexist && (
                 <View>
                   {/*input for username  */}
-                  {nameValidationMsg ? <Text style={styles.validationText}>{nameValidationMsg}</Text> : null}
-                  <View style={[styles.inputView, { borderColor: nameBorderColor }]}>
-
-                    <Icon style={styles.icon} name='user' type='font-awesome' />
-                    <TextInput style={{ flex: 1, paddingHorizontal: 12, }}
+                  {nameValidationMsg ? (
+                    <Text style={styles.validationText}>
+                      {nameValidationMsg}
+                    </Text>
+                  ) : null}
+                  <View
+                    style={[
+                      styles.inputView,
+                      { borderColor: nameBorderColor },
+                    ]}>
+                    <Icon style={styles.icon} name="user" type="font-awesome" />
+                    <TextInput
+                      style={{ flex: 1, paddingHorizontal: 12 }}
                       onChangeText={handleNameChange}
                       autoCorrect={false}
                       value={name}
-                      placeholder="Enter Username" />
+                      placeholder="Enter Username"
+                    />
                   </View>
 
-
                   {/*input for designation  */}
-                  {designationValidationMsg ? <Text style={styles.validationText}>{designationValidationMsg}</Text> : null}
-                  <View style={[styles.inputView, { borderColor: designationBorderColor }]}>
-                    <Icon style={styles.icon} name='briefcase' type='font-awesome' />
-                    <TextInput style={{ flex: 1, paddingHorizontal: 12, }}
+                  {designationValidationMsg ? (
+                    <Text style={styles.validationText}>
+                      {designationValidationMsg}
+                    </Text>
+                  ) : null}
+                  <View
+                    style={[
+                      styles.inputView,
+                      { borderColor: designationBorderColor },
+                    ]}>
+                    <Icon
+                      style={styles.icon}
+                      name="briefcase"
+                      type="font-awesome"
+                    />
+                    <TextInput
+                      style={{ flex: 1, paddingHorizontal: 12 }}
                       onChangeText={handleDesignationChange}
                       autoCorrect={false}
                       value={designation}
-                      placeholder="Enter Designation" />
+                      placeholder="Enter Designation"
+                    />
                   </View>
-
 
                   {/*input picker for usertype  */}
                   <View style={styles.inputView}>
@@ -335,11 +389,9 @@ const SignupScreen = ({ navigation }) => {
                       onValueChange={(itemVal1) => {
                         setSelectedtype(itemVal1);
                       }}>
-                      {
-                        usertypes.map((l) => (
-                          <Picker.Item label={l} value={l} />
-                        ))
-                      }
+                      {usertypes.map((l) => (
+                        <Picker.Item label={l} value={l} />
+                      ))}
                     </Picker>
                   </View>
 
@@ -351,98 +403,130 @@ const SignupScreen = ({ navigation }) => {
                       onValueChange={(itemVal) => {
                         setSelectedGender(itemVal);
                       }}>
-                      {
-                        gender.map((l) => (
-                          <Picker.Item label={l} value={l} />
-                        ))
-                      }
+                      {gender.map((l) => (
+                        <Picker.Item label={l} value={l} />
+                      ))}
                     </Picker>
                   </View>
 
-
-                  {/*input image picker  */}
                   {!profileuploaded && (
-                    <TouchableOpacity style={styles.selectButton} onPress={() => openImagePicker(setProfile, 1)} >
+                    <TouchableOpacity
+                      style={styles.selectButton}
+                      onPress={() => openImagePicker(setProfile, 1)}>
                       <Text style={btn_text_color}>Upload Profile</Text>
                     </TouchableOpacity>
                   )}
                   {profileuploaded && (
                     <View style={styles.imageprevprofile}>
-                      <TouchableOpacity style={styles.closeButtonprofile} onPress={() => reuploadimage()} >
+                      <TouchableOpacity
+                        style={styles.closeButtonprofile}
+                        onPress={() => reuploadimage()}>
                         <Text style={styles.closeButtonTextprofile}>×</Text>
                       </TouchableOpacity>
-                      <Image source={{ uri: profile }} style={styles.imageprofile} />
+                      <Image
+                        source={{ uri: profile }}
+                        style={styles.imageprofile}
+                      />
                     </View>
                   )}
                   {/* Render the upload button for leaders */}
                   {isLeader && (
                     <TouchableOpacity
                       style={styles.selectButton}
-                      onPress={() => openImagePicker(setLeader)}
-                    >
+                      onPress={() => openImagePicker(setLeader)}>
                       <Text style={btn_text_color}>Upload Leader Image</Text>
                     </TouchableOpacity>
                   )}
 
-                  {phoneNumberValidationMsg ? <Text style={styles.validationText}>{phoneNumberValidationMsg}</Text> : null}
-                  <View style={[styles.inputView, { borderColor: phoneNumberBorderColor }]}>
-                    <Icon style={styles.icon} name='phone' type='font-awesome' />
-                    <TextInput style={styles.phone_check}
+                  {phoneNumberValidationMsg ? (
+                    <Text style={styles.validationText}>
+                      {phoneNumberValidationMsg}
+                    </Text>
+                  ) : null}
+                  <View
+                    style={[
+                      styles.inputView,
+                      { borderColor: phoneNumberBorderColor },
+                    ]}>
+                    <Icon
+                      style={styles.icon}
+                      name="phone"
+                      type="font-awesome"
+                    />
+                    <TextInput
+                      style={styles.phone_check}
                       maxLength={10}
                       onChangeText={handlePhoneNumberChange}
                       autoCorrect={false}
                       value={phoneNumber}
                       onBlur={async () => await checkUserexist()}
                       keyboardType="numeric"
-                      placeholder="Phone Number" />
+                      placeholder="Phone Number"
+                    />
                   </View>
 
-                  {passwordValidationMsg ? <Text style={styles.validationText}>{passwordValidationMsg}</Text> : null}
-                  <View style={[styles.inputView, { borderColor: passwordBorderColor }]}>
-                    <Icon style={styles.icon} name='lock' type='font-awesome' />
-                    <TextInput style={styles.phone_check}
+                  {passwordValidationMsg ? (
+                    <Text style={styles.validationText}>
+                      {passwordValidationMsg}
+                    </Text>
+                  ) : null}
+                  <View
+                    style={[
+                      styles.inputView,
+                      { borderColor: passwordBorderColor },
+                    ]}>
+                    <Icon style={styles.icon} name="lock" type="font-awesome" />
+                    <TextInput
+                      style={styles.phone_check}
                       onChangeText={handlePasswordChange}
                       autoCorrect={false}
                       value={password}
-                      placeholder="Password" />
+                      placeholder="Password"
+                    />
                   </View>
 
-
-
-                  <TouchableOpacity style={styles.regbtn} title='Create account' onPress={async () => await sendOtp()}>
+                  <TouchableOpacity
+                    style={styles.regbtn}
+                    title="Create account"
+                    onPress={async () => await sendOtp()}>
                     <Text style={styles.regbtntext}>Create Account</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                    <Text style={styles.loginLinkText}>Already have an account? Login</Text>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate('Login')}>
+                    <Text style={styles.loginLinkText}>
+                      Already have an account? Login
+                    </Text>
                   </TouchableOpacity>
                 </View>
               )}
               {otpSent && (
                 <View>
                   <View style={[styles.inputView, { top: 40 }]}>
-                    <Icon style={styles.icon} name='lock' type='font-awesome' />
-                    <TextInput style={styles.phone_check}
+                    <Icon style={styles.icon} name="lock" type="font-awesome" />
+                    <TextInput
+                      style={styles.phone_check}
                       onChangeText={(e) => {
                         setOtp(e);
                       }}
                       autoCorrect={false}
                       value={otp}
-                      placeholder="Enter OTP" />
+                      placeholder="Enter OTP"
+                    />
                   </View>
 
-                  <TouchableOpacity style={[styles.regbtn, { top: 50 }]} title="Confirm OTP"
+                  <TouchableOpacity
+                    style={[styles.regbtn, { top: 50 }]}
+                    title="Confirm OTP"
                     onPress={async () => await confirmSignup()}>
                     <Text style={styles.regbtntext}>Verify OTP</Text>
                   </TouchableOpacity>
-
                 </View>
               )}
             </View>
-
           </View>
         </View>
-      </ScrollView >
+      </ScrollView>
     </>
   );
 };
@@ -457,7 +541,7 @@ const styles = StyleSheet.create({
   },
   spinner: {
     width: 70,
-    height: 70
+    height: 70,
   },
   regbtntext: {
     color: '#fff',
@@ -475,7 +559,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     top: 10,
     fontWeight: 900,
-    textAlign: "center",
+    textAlign: 'center',
   },
   imageContainer: {
     alignItems: 'center',
@@ -497,7 +581,6 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     padding: 30,
-
   },
   inputFileds: {
     top: 40,
@@ -543,7 +626,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#30A2FF',
     height: 44,
-    alignSelf: "center",
+    alignSelf: 'center',
     top: 20,
     borderWidth: 1.8,
     borderRadius: 19,
@@ -570,7 +653,8 @@ const styles = StyleSheet.create({
     height: height,
     backgroundColor: 'rgba(39, 40, 41,0.5)', // Semi-transparent white background
     zIndex: 1, // Place it above other content
-    alignItems: "center", justifyContent: "center"
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   imageprev: {
     position: 'absolute',
@@ -595,13 +679,13 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 5,
     width: 90,
-    textAlign: "center",
+    textAlign: 'center',
     backgroundColor: '#6528F7',
   },
   closeButtonText: {
     color: 'white',
     padding: 3,
-    textAlign: "center",
+    textAlign: 'center',
     fontWeight: 'bold',
   },
   imageprevprofile: {
@@ -611,10 +695,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: 200,
     height: 200,
-    borderRadius:19,
-    
-    bottom:2,
-    alignSelf: "center",
+    borderRadius: 19,
+
+    bottom: 2,
+    alignSelf: 'center',
     zIndex: 1000,
   },
   imageprofile: {
@@ -626,18 +710,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 1,
     right: 1,
-    paddingVertical:0,
-    paddingHorizontal:11,
+    paddingVertical: 0,
+    paddingHorizontal: 11,
     borderRadius: 50,
     backgroundColor: '#071952',
   },
   closeButtonTextprofile: {
     color: 'white',
-    fontSize:34,
+    fontSize: 34,
     fontWeight: 'bold',
   },
-
 });
-
 
 export default SignupScreen;
