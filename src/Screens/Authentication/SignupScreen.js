@@ -7,19 +7,18 @@ import { image_bg_remove_api, checkUserStatus, registerUser, sendOtpApi } from '
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('screen');
-import { logo } from '../../const';
 import useDrivePicker from 'react-google-drive-picker';
 import picker from 'react-google-drive-picker';
 import { Icon } from 'react-native-elements';
 import { Picker } from '@react-native-picker/picker';
 import { WebView } from 'react-native-webview';
-import { spinner } from '../../const';
+import { logo, spinner, error_color, seccess_color, default_color,reg_failed,reg_seccess, btn_text_color } from '../../const';
 import * as ImagePicker from 'expo-image-picker';
-
+import { validateName,validateDesignation,validatePassword, validatePhoneNumber} from '../../validation';
 
 
 const SignupScreen = ({ navigation }) => {
-  const DemoSignUp = {
+  const UserSignUpData = {
     name: '', // Initialize with an empty string
     designation: '',
     user_type: '',
@@ -36,7 +35,7 @@ const SignupScreen = ({ navigation }) => {
   const [designation, setDesignation] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
-  const [removed_bg_Profile, setProfile] = useState('');
+  const [profile, setProfile] = useState('');
   const [leader, setLeader] = useState('');
 
 
@@ -71,42 +70,25 @@ const SignupScreen = ({ navigation }) => {
   }
 
   //iamge picker
-  const openImagePicker = async (setProfile, is_bg_remove) => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (!permissionResult.granted) {
-      alert('Permission to access media library is required.');
-      return;
-    }
-
-    const pickerResult = await ImagePicker.launchImageLibraryAsync({
+  const openImagePicker = async (setImage, is_bg_remove) => {
+    setLoading(true);
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 4],
+      aspect: [1, 1],
       quality: 1,
     });
 
-    if (!pickerResult.canceled) {
-      setProfile(pickerResult.uri);
-      // console.log(pickerResult.uri," uri result");
-      if (is_bg_remove) {
-        image_bg_remove(removed_bg_Profile, phoneNumber);
-      }
+    console.log(result);
+
+    if (!result.canceled) {
+      console.log("Line !result.cancled")
+      const resp = await image_bg_remove_api(result.assets[0].uri, phoneNumber);
+      console.log(resp);
+      setImage(resp);
     }
+    setLoading(false);
   };
-
-  const image_bg_remove = async (removed_bg_Profile, phoneNumber) => {
-    try {
-      // console.log(removed_bg_Profile , "resquest to api");
-      const res = await image_bg_remove_api(removed_bg_Profile, phoneNumber);
-      setProfile(res);
-      console.log(res, " from api log");
-    }
-    catch (error) {
-      console.error('API Error:', error);
-    }
-  };
-
-
 
 
   let [otpSent, setOtpSent] = useState(false);
@@ -129,101 +111,82 @@ const SignupScreen = ({ navigation }) => {
 
   //username validation
   const [nameValidationMsg, setNameValidationMsg] = useState('');
-  const [nameBorderColor, setNameBorderColor] = useState('#FFDDCC');
+  const [nameBorderColor, setNameBorderColor] = useState(default_color);
   const handleNameChange = (input) => {
     setName(input);
 
-    if (/\d/.test(input)) {
-      setNameValidationMsg("Username cannot contain numbers.");
-      setNameBorderColor('red');
-    } else if (input.length < 3 && input.length > 0) {
-      setNameValidationMsg("Username must have at least 3 characters.");
-      setNameBorderColor('red');
-    } else if (input.length === 0) {
-      setNameValidationMsg('');
-      setNameBorderColor('#FFDDCC');
+    const validationMsg = validateName(input);
+    if (validationMsg) {
+      setNameValidationMsg(validationMsg);
+      setNameBorderColor(error_color);
     } else {
       setNameValidationMsg('');
-      setNameBorderColor('green');
+      setNameBorderColor(seccess_color);
     }
   };
 
   //designation validation
   const [designationValidationMsg, setDesignationValidationMsg] = useState('');
-  const [designationBorderColor, setDesignationBorderColor] = useState('#FFDDCC');
+  const [designationBorderColor, setDesignationBorderColor] = useState(default_color);
 
   const handleDesignationChange = (input) => {
     setDesignation(input);
 
-    if (/\d/.test(input)) {
-      setDesignationValidationMsg("Designation cannot contain numbers.");
-      setDesignationBorderColor('red');
-    } else if (input.length < 3 && input.length > 0) {
-      setDesignationValidationMsg("Designation must have at least 3 characters.");
-      setDesignationBorderColor('red');
-    } else if (input.length == 0) {
+    const validationMsg = validateDesignation(input);
+    if (validationMsg) {
+      setDesignationValidationMsg(validationMsg);
+      setDesignationBorderColor(error_color);
+    } else {
       setDesignationValidationMsg('');
-      setDesignationBorderColor('#FFDDCC');
-    }
-    else {
-      setDesignationValidationMsg('');
-      setDesignationBorderColor('green');
+      setDesignationBorderColor(seccess_color);
     }
   };
 
   //phone number validation
   const [phoneNumberValidationMsg, setPhoneNumberValidationMsg] = useState('');
-  const [phoneNumberBorderColor, setPhoneNumberBorderColor] = useState('#FFDDCC');
-
+  const [phoneNumberBorderColor, setPhoneNumberBorderColor] = useState(default_color);
   const handlePhoneNumberChange = (input) => {
     setPhoneNumber(input);
-
-    if (!/^\d{10}$/.test(input)) {
-      setPhoneNumberValidationMsg("Phone number must be 10 digits.");
-      setPhoneNumberBorderColor('red');
-    } else if (input.length == 0) {
-      setPhoneNumberValidationMsg('');
-      setPhoneNumberBorderColor('#FFDDCC');
+    const validationMsg = validatePhoneNumber(input);
+    if (validationMsg) {
+      setPhoneNumberValidationMsg(validationMsg);
+      setPhoneNumberBorderColor(error_color);
     } else {
       setPhoneNumberValidationMsg('');
-      setPhoneNumberBorderColor('green');
+      setPhoneNumberBorderColor(seccess_color);
     }
   };
 
 
   //password validation
   const [passwordValidationMsg, setPasswordValidationMsg] = useState('');
-  const [passwordBorderColor, setPasswordBorderColor] = useState('#FFDDCC');
+  const [passwordBorderColor, setPasswordBorderColor] = useState(default_color);
 
   const handlePasswordChange = (input) => {
     setPassword(input);
-
-    if (input.length == 0) {
+    const validationMsg = validatePassword(input);
+    if (validationMsg) {
+      setPasswordValidationMsg(validationMsg);
+      setPasswordBorderColor(error_color);
+    } else {
       setPasswordValidationMsg('');
-      setPasswordBorderColor('#FFDDCC');
-    } else if (!/(?=.*\d)(?=.*[a-zA-Z])(?=.*[@#$%^&!*_]).{8,}/.test(input)) {
-      setPasswordValidationMsg("Password must have at least 8 characters, including uppercase, lowercase, digit, and special symbol.");
-      setPasswordBorderColor('red');
-    }
-    else {
-      setPasswordValidationMsg('');
-      setPasswordBorderColor('green');
+      setPasswordBorderColor(seccess_color);
     }
   };
 
-  
+
   const confirmSignup = async () => {
     setLoading(true);
-    
-    DemoSignUp.name = name;
-    DemoSignUp.designation = designation;
-    DemoSignUp.user_type = selectedusertype;
-    DemoSignUp.gender = selectedGender;
-    DemoSignUp.leader_images = [];
-    DemoSignUp.profile_photo_url = removed_bg_Profile;
-    DemoSignUp.leader = '+911111111111';
-    
-    let data = DemoSignUp;
+
+    UserSignUpData.name = name;
+    UserSignUpData.designation = designation;
+    UserSignUpData.user_type = selectedusertype;
+    UserSignUpData.gender = selectedGender;
+    UserSignUpData.leader_images = [];
+    UserSignUpData.profile_photo_url = removed_bg_Profile;
+    UserSignUpData.leader = '+911111111111';
+
+    let data = UserSignUpData;
     data.phone_number = `+91${phoneNumber}`;
     data.password = password;
     data.code = otp;
@@ -232,10 +195,10 @@ const SignupScreen = ({ navigation }) => {
     setLoading(false);
     // api request to server
     if (res.status === "failed") {
-      Alert.alert('Registion failed!', res.message);
+      Alert.alert(reg_failed, res.message);
     }
     if (res.status === "suceess") {
-      Alert.alert('Registion seccesfully!', res.message);
+      Alert.alert(reg_seccess, res.message);
     }
     console.log(res, ' line 100 ');
     if (res.data.token) {
@@ -253,7 +216,7 @@ const SignupScreen = ({ navigation }) => {
       }
     }
   };
-  
+
 
 
 
@@ -293,14 +256,14 @@ const SignupScreen = ({ navigation }) => {
 
           {loading && (
             <View style={styles.loadingContainer}>
-              <Image style={{ width: 70, height: 70 }} source={spinner} />
+              <Image style={styles.spinner} source={spinner} />
             </View>
           )}
           <View style={styles.main}>
 
             <View style={styles.imageContainer}>
               <Image source={logo} style={styles.logoImage} />
-              <Text style={{ fontSize: 24, top: 10, fontWeight: "900", textAlign: "center" }}>SignUp</Text>
+              <Text style={styles.signupheading}>SignUp</Text>
             </View>
 
             <View style={styles.inputFileds}>
@@ -310,8 +273,9 @@ const SignupScreen = ({ navigation }) => {
 
                   {phoneNumberValidationMsg ? <Text style={styles.validationText} > {phoneNumberValidationMsg}</Text> : null}
                   <View style={[styles.inputView, { borderColor: phoneNumberBorderColor }]}>
-                    <Icon color='#333' name='phone' type='font-awesome' size={20} />
-                    <TextInput style={{ flex: 1, paddingHorizontal: 12, }} maxLength={10}
+                    <Icon style={styles.icon} name='phone' type='font-awesome' />
+                    <TextInput style={styles.phone_check}
+                      maxLength={10}
                       onChangeText={handlePhoneNumberChange}
                       autoCorrect={false}
                       value={phoneNumber}
@@ -319,11 +283,10 @@ const SignupScreen = ({ navigation }) => {
                       placeholder="Phone Number" />
                   </View>
                   <TouchableOpacity style={styles.regbtn} onPress={async () => await checkUserexist()}>
-                    <Text style={{ color: "#fff", fontSize: 18 }}>Next</Text>
+                    <Text style={styles.regbtntext}>Next</Text>
                   </TouchableOpacity>
 
                 </View>
-
               )}
               {!userexist && (
                 <View>
@@ -331,7 +294,7 @@ const SignupScreen = ({ navigation }) => {
                   {nameValidationMsg ? <Text style={styles.validationText}>{nameValidationMsg}</Text> : null}
                   <View style={[styles.inputView, { borderColor: nameBorderColor }]}>
 
-                    <Icon color='#333' name='user' type='font-awesome' size={20} />
+                    <Icon style={styles.icon} name='user' type='font-awesome' />
                     <TextInput style={{ flex: 1, paddingHorizontal: 12, }}
                       onChangeText={handleNameChange}
                       autoCorrect={false}
@@ -343,7 +306,7 @@ const SignupScreen = ({ navigation }) => {
                   {/*input for designation  */}
                   {designationValidationMsg ? <Text style={styles.validationText}>{designationValidationMsg}</Text> : null}
                   <View style={[styles.inputView, { borderColor: designationBorderColor }]}>
-                    <Icon color='#333' name='briefcase' type='font-awesome' size={20} />
+                    <Icon style={styles.icon} name='briefcase' type='font-awesome' />
                     <TextInput style={{ flex: 1, paddingHorizontal: 12, }}
                       onChangeText={handleDesignationChange}
                       autoCorrect={false}
@@ -387,7 +350,7 @@ const SignupScreen = ({ navigation }) => {
 
                   {/*input image picker  */}
                   <TouchableOpacity style={styles.selectButton} onPress={() => openImagePicker(setProfile, 1)} >
-                    <Text style={{ color: '#FEA1A1' }}>Upload Profile</Text>
+                    <Text style={btn_text_color}>Upload Profile</Text>
                   </TouchableOpacity>
 
                   {/* Render the upload button for leaders */}
@@ -396,14 +359,15 @@ const SignupScreen = ({ navigation }) => {
                       style={styles.selectButton}
                       onPress={() => openImagePicker(setLeader)}
                     >
-                      <Text style={{ color: '#FEA1A1' }}>Upload Leader Image</Text>
+                      <Text style={btn_text_color}>Upload Leader Image</Text>
                     </TouchableOpacity>
                   )}
 
                   {phoneNumberValidationMsg ? <Text style={styles.validationText}>{phoneNumberValidationMsg}</Text> : null}
                   <View style={[styles.inputView, { borderColor: phoneNumberBorderColor }]}>
-                    <Icon color='#333' name='phone' type='font-awesome' size={20} />
-                    <TextInput style={{ flex: 1, paddingHorizontal: 12, }} maxLength={10}
+                    <Icon style={styles.icon} name='phone' type='font-awesome' />
+                    <TextInput style={styles.phone_check}
+                      maxLength={10}
                       onChangeText={handlePhoneNumberChange}
                       autoCorrect={false}
                       value={phoneNumber}
@@ -414,8 +378,8 @@ const SignupScreen = ({ navigation }) => {
 
                   {passwordValidationMsg ? <Text style={styles.validationText}>{passwordValidationMsg}</Text> : null}
                   <View style={[styles.inputView, { borderColor: passwordBorderColor }]}>
-                    <Icon color='#333' name='lock' type='font-awesome' size={20} />
-                    <TextInput style={{ flex: 1, paddingHorizontal: 12, }}
+                    <Icon style={styles.icon} name='lock' type='font-awesome' />
+                    <TextInput style={styles.phone_check}
                       onChangeText={handlePasswordChange}
                       autoCorrect={false}
                       value={password}
@@ -425,7 +389,7 @@ const SignupScreen = ({ navigation }) => {
 
 
                   <TouchableOpacity style={styles.regbtn} title='Create account' onPress={async () => await sendOtp()}>
-                    <Text style={{ color: "#fff", fontSize: 18 }}>Create Account</Text>
+                    <Text style={styles.regbtntext}>Create Account</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -436,8 +400,8 @@ const SignupScreen = ({ navigation }) => {
               {otpSent && (
                 <View>
                   <View style={[styles.inputView, { top: 40 }]}>
-                    <Icon color='#333' name='lock' type='font-awesome' size={20} />
-                    <TextInput style={{ flex: 1, paddingHorizontal: 12, }}
+                    <Icon style={styles.icon} name='lock' type='font-awesome' />
+                    <TextInput style={styles.phone_check}
                       onChangeText={(e) => {
                         setOtp(e);
                       }}
@@ -448,7 +412,7 @@ const SignupScreen = ({ navigation }) => {
 
                   <TouchableOpacity style={[styles.regbtn, { top: 50 }]} title="Confirm OTP"
                     onPress={async () => await confirmSignup()}>
-                    <Text style={{ color: "#fff", fontSize: 18 }}>Verify OTP</Text>
+                    <Text style={styles.regbtntext}>Verify OTP</Text>
                   </TouchableOpacity>
 
                 </View>
@@ -469,6 +433,28 @@ const styles = StyleSheet.create({
   container: {
     height: height + 200,
     top: 0,
+  },
+  spinner: {
+    width: 70,
+    height: 70
+  },
+  regbtntext: {
+    color: '#fff',
+    fontSize: 18,
+  },
+  phone_check: {
+    flex: 1,
+    paddingHorizontal: 12,
+  },
+  icon: {
+    color: '#333',
+    size: 20,
+  },
+  signupheading: {
+    fontSize: 24,
+    top: 10,
+    fontWeight: 900,
+    textAlign: "center",
   },
   imageContainer: {
     alignItems: 'center',

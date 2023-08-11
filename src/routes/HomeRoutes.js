@@ -24,7 +24,6 @@ const HomeRoute = ({ navigation }) => {
 
 const ProfileRoute = ({}) => {
   const Stack = createStackNavigator();
-
   return (
     <Stack.Navigator>
       <Stack.Screen name="ProfileScreen" component={ProfileScreen} />

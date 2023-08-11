@@ -4,10 +4,11 @@ export const image_bg_remove_api = async (image,phoneNumber) => {
       console.error('No image selected!');
       return;
     }
+    
     const uriParts = image.split('.');
     const fileType = uriParts[uriParts.length - 1];
     const currentTimestamp = new Date().getTime(); // gets the current time in milliseconds
-    const fileName = `+91${phoneNumber}_${currentTimestamp}.${fileType}`;
+    const fileName = `91${phoneNumber}_${currentTimestamp}.${fileType}`;
 
 
     const formData = new FormData();
