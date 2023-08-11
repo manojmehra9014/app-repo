@@ -6,7 +6,6 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import LoginScreen from '../Screens/Authentication/LoginScreen';
 import SignupScreen from '../Screens/Authentication/SignupScreen';
 const Stack = createStackNavigator();
-import ImageScreen from '../Screens/Authentication/ImageScreen';
 const AuthRoute = () => {
   return (
     <Stack.Navigator initialRouteName="Signup">
@@ -17,7 +16,7 @@ const AuthRoute = () => {
       />
       <Stack.Screen
         name="Signup"
-        component={ImageScreen}
+        component={SignupScreen}
         options={{header: () => null}}
       />
     </Stack.Navigator>

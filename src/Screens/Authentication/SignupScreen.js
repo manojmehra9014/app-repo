@@ -3,7 +3,7 @@ import { Alert, Button, SafeAreaView, StyleSheet, Text, Image, TouchableOpacity,
 const colors = ['#FEBBCC', '#FFDDCC', '#F6F4EB'];
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import {image_bg_remove_api, checkUserStatus, registerUser, sendOtpApi } from '../../actions/auth';
+import { image_bg_remove_api, checkUserStatus, registerUser, sendOtpApi } from '../../actions/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('screen');
@@ -26,8 +26,8 @@ const SignupScreen = ({ navigation }) => {
     gender: '', // Initialize with an empty string
     // phoneNumber: '',
     // password: '', // Initialize with an empty string
-    leader_images: ['https://d61uti3sxgkhy.cloudfront.net/rahul.jpg'],
-    profile_photo_url: 'https://d61uti3sxgkhy.cloudfront.net/rahul.jpg',
+    leader_images: ['https://d61uti3sxgkhy.cloudfront.net/rahul.jpg', 'https://d61uti3sxgkhy.cloudfront.net/rahul.jpg', 'https://d61uti3sxgkhy.cloudfront.net/rahul.jpg'],
+    profile_photo_url: '',
   };
 
 
@@ -36,8 +36,8 @@ const SignupScreen = ({ navigation }) => {
   const [designation, setDesignation] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
-  const [profile, setProfile] = useState('https://d61uti3sxgkhy.cloudfront.net/rahul.jpg');
-  const [cover, setCover] = useState('https://d61uti3sxgkhy.cloudfront.net/rahul.jpg');
+  const [removed_bg_Profile, setProfile] = useState('');
+  const [leader, setLeader] = useState('');
 
 
   const [loading, setLoading] = useState(false);
@@ -48,7 +48,7 @@ const SignupScreen = ({ navigation }) => {
       const userstatus = `+91${phoneNumber}`;
       const res = await checkUserStatus(userstatus);
       setLoading(false);
-  
+
       if (res.user === true) {
         Alert.alert(
           'User Already Exist!',
@@ -69,9 +69,9 @@ const SignupScreen = ({ navigation }) => {
       // Handle the error here, you can show an error message to the user if needed
     }
   }
- 
+
   //iamge picker
-  const openImagePicker = async (setImageFunction) => {
+  const openImagePicker = async (setProfile, is_bg_remove) => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (!permissionResult.granted) {
@@ -80,23 +80,33 @@ const SignupScreen = ({ navigation }) => {
     }
 
     const pickerResult = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing:true,
-      aspect:[4,4],
-      quality:1,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
     });
 
-    if (!pickerResult.cancelled) {
-      const phoneNumber = '1234567890'; // Replace with actual phone number
-      const currentDate = new Date();
-      const formattedDate = `${currentDate.getFullYear()}${(currentDate.getMonth() + 1).toString().padStart(2, '0')}${currentDate.getDate().toString().padStart(2, '0')}`;
-      const formattedTime = `${currentDate.getHours().toString().padStart(2, '0')}${currentDate.getMinutes().toString().padStart(2, '0')}${currentDate.getSeconds().toString().padStart(2, '0')}`;
-      const imageFileType = pickerResult.uri.split('.').pop(); // Extract file extension from the URI
-      const imageUrl = `https://+91${phoneNumber}_${formattedDate}_Now_${formattedTime}.${imageFileType}`;
-      
-      setImageFunction(imageUrl);
+    if (!pickerResult.canceled) {
+      setProfile(pickerResult.uri);
+      // console.log(pickerResult.uri," uri result");
+      if (is_bg_remove) {
+        image_bg_remove(removed_bg_Profile, phoneNumber);
+      }
     }
   };
-  
+
+  const image_bg_remove = async (removed_bg_Profile, phoneNumber) => {
+    try {
+      // console.log(removed_bg_Profile , "resquest to api");
+      const res = await image_bg_remove_api(removed_bg_Profile, phoneNumber);
+      setProfile(res);
+      console.log(res, " from api log");
+    }
+    catch (error) {
+      console.error('API Error:', error);
+    }
+  };
+
+
 
 
   let [otpSent, setOtpSent] = useState(false);
@@ -116,19 +126,6 @@ const SignupScreen = ({ navigation }) => {
       Alert.alert('OOps', e);
     }
   };
-
-
-  //bgremove api
-  const image_bg_remove = async (profile) => {
-    try{
-      const res = await image_bg_remove_api(profile);
-      setProfile(res.s3_object_url);
-    }
-    catch(error){
-      console.error('API Error:', error);
-    }
-  };
-
 
   //username validation
   const [nameValidationMsg, setNameValidationMsg] = useState('');
@@ -214,18 +211,18 @@ const SignupScreen = ({ navigation }) => {
     }
   };
 
-
+  
   const confirmSignup = async () => {
     setLoading(true);
-
+    
     DemoSignUp.name = name;
     DemoSignUp.designation = designation;
     DemoSignUp.user_type = selectedusertype;
     DemoSignUp.gender = selectedGender;
-    DemoSignUp.leader_images = [profile];
-    DemoSignUp.profile_photo_url = cover;
+    DemoSignUp.leader_images = [];
+    DemoSignUp.profile_photo_url = removed_bg_Profile;
     DemoSignUp.leader = '+911111111111';
-
+    
     let data = DemoSignUp;
     data.phone_number = `+91${phoneNumber}`;
     data.password = password;
@@ -245,7 +242,6 @@ const SignupScreen = ({ navigation }) => {
       await AsyncStorage.setItem('user-key', res.data.token);
 
       const keyUser = await AsyncStorage.getItem('user-key');
-      // console.log(keyUser);
       if (keyUser !== null) {
         dispatch({
           type: 'LOGGED_IN',
@@ -257,7 +253,7 @@ const SignupScreen = ({ navigation }) => {
       }
     }
   };
-
+  
 
 
 
@@ -270,7 +266,9 @@ const SignupScreen = ({ navigation }) => {
       'other',
     ].sort()
   );
+
   const [selectedusertype, setSelectedtype] = useState('USER');
+  const isLeader = selectedusertype === 'LEADER';
   const [usertypes] = useState(
     [
       'USER',
@@ -278,34 +276,6 @@ const SignupScreen = ({ navigation }) => {
       'OTHER',
     ].sort()
   );
-
-
-
-
-  // image picker
-
-  // const [openPicker ,data , authResponse]=useDrivePicker()
-
-  //   const handleOpenPicker = () => {
-  //     openPicker({
-  //       clientId:"137775640070-s88tlidvuie925ieecjdfg9rs5ggqh45.apps.googleusercontent.com",
-  //       developerKey: "AIzaSyATrzPzorr0EKubCJKLPKOPcak1BHqAefg",
-  //       scope:'https://www.googleapis.com/auth/drive.readonly',
-  //       viewId:"DOCS_IMAGES",
-  //       showUploadView:true,
-  //       showUploadFolders:true,
-  //       supportDrives:true,
-  //       multiselect:true,
-  //     })
-  //   }
-  //   useEffect(() => {
-  //     if (data) {
-  //       console.log("Data received:", data);
-  //       data.docs.map((i) => console.log(i));
-  //     }
-  //   }),[data]
-
-
 
   return (
     <>
@@ -416,13 +386,19 @@ const SignupScreen = ({ navigation }) => {
 
 
                   {/*input image picker  */}
-                  <TouchableOpacity style={styles.selectButton} value={profile} onPress={() => openImagePicker(setProfile)} onBlur={image_bg_remove(profile)}>
+                  <TouchableOpacity style={styles.selectButton} onPress={() => openImagePicker(setProfile, 1)} >
                     <Text style={{ color: '#FEA1A1' }}>Upload Profile</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={styles.selectButton} value={cover} onPress={() => openImagePicker(setCover)}>
-                    <Text style={{ color: '#FEA1A1' }}>Upload Cover</Text>
-                  </TouchableOpacity>
+                  {/* Render the upload button for leaders */}
+                  {isLeader && (
+                    <TouchableOpacity
+                      style={styles.selectButton}
+                      onPress={() => openImagePicker(setLeader)}
+                    >
+                      <Text style={{ color: '#FEA1A1' }}>Upload Leader Image</Text>
+                    </TouchableOpacity>
+                  )}
 
                   {phoneNumberValidationMsg ? <Text style={styles.validationText}>{phoneNumberValidationMsg}</Text> : null}
                   <View style={[styles.inputView, { borderColor: phoneNumberBorderColor }]}>
@@ -580,8 +556,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    width:width,
-    height:height,
+    width: width,
+    height: height,
     backgroundColor: 'rgba(39, 40, 41,0.5)', // Semi-transparent white background
     zIndex: 1, // Place it above other content
     alignItems: "center", justifyContent: "center"

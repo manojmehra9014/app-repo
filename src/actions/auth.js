@@ -1,19 +1,37 @@
-export const image_bg_remove_api = async (profile) => {
+export const image_bg_remove_api = async (image,phoneNumber) => {
   try {
-    console.log("line ye hoga ", profile);
+    if (!image) {
+      console.error('No image selected!');
+      return;
+    }
+    const uriParts = image.split('.');
+    const fileType = uriParts[uriParts.length - 1];
+    const currentTimestamp = new Date().getTime(); // gets the current time in milliseconds
+    const fileName = `+91${phoneNumber}_${currentTimestamp}.${fileType}`;
+
+
     const formData = new FormData();
     formData.append('image', {
-      image: profile
+      uri: image,
+      name: fileName,
+      type: `image/${fileType}`,
     });
-    console.log(formData);
-    const response = await fetch('http://13.200.103.27:5000/api/remove_background', {
-      method: 'POST',
-      body: formData,
-    });
+    const response = await fetch(
+      'http://13.200.103.27:5000/api/remove_background',
+      {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
 
-    const responseData = await response.json();
-    // setProfile(responseData);
-    console.log(responseData);
+
+    const resp = await response.json();
+    // console.log(resp);
+    return resp.s3_object_url;
   } catch (error) {
     console.log(error);
   }
@@ -21,31 +39,7 @@ export const image_bg_remove_api = async (profile) => {
 
 
 
-// export const image_bg_remove_api = async (profile) => {
-//   try {
-//     const data = new FormData('image', 'profile');
-//     console.log("line 4");
-//     // data.append('image', image);
-//     let res = await fetch('http://13.200.103.27:5000/api/remove_background',
-//       {
-//         method: 'post',
-//         body: data,
-//         headers: {
-//           'Content-Type': 'multipart/form-data; ',
-//         },
-//       }
-//     );
-//     console.log("line 15")
-//       const responseJson = await res.json(); // If the response is JSON
-//       console.log('Success:', responseJson);
 
-//     // console.log(data, 'res data from api ');
-//     return responseJson;
-//   } catch (error) {
-//     console.error('Error:', error);
-//     return null;
-//   }
-// }
 
 export const checkUserStatus = async (phone_number) => {
   try {
