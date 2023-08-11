@@ -17,6 +17,17 @@ import { validateName, validateDesignation, validatePassword, validatePhoneNumbe
 
 const SignupScreen = ({ navigation }) => {
 
+  const UserSignUpData = {
+    name: '', // Initialize with an empty string
+    designation: '',
+    user_type: '',
+    gender: '', // Initialize with an empty string
+    // phoneNumber: '',
+    // password: '', // Initialize with an empty string
+    leader_images: [],
+    profile_photo_url: '',
+  };
+
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [designation, setDesignation] = useState('');
