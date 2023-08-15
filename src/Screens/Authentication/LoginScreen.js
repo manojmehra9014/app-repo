@@ -23,21 +23,17 @@ import { checkUserStatus, loginUser } from '../../actions/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Icon } from 'react-native-elements';
 
-
-
-
 const LoginScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const dispatch = useDispatch();
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [password, setPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('9557376881');
+  const [password, setPassword] = useState('hemantjoshi');
 
   const user = useSelector((state) => state.user);
 
   const login = async () => {
     setLoading(true);
-    // loadingani()
     const userPhoneNumber = `+91${phoneNumber}`;
     const userPassword = password;
     try {
@@ -48,7 +44,6 @@ const LoginScreen = ({ navigation }) => {
         Alert.alert('Login Failed', res.message);
       }
       if (res && res.data && res.data.token) {
-        // setLoading(false);
         await AsyncStorage.setItem('user-key', res.data.token);
         const keyUser = await AsyncStorage.getItem('user-key');
         if (keyUser !== null) {
@@ -56,11 +51,11 @@ const LoginScreen = ({ navigation }) => {
             type: 'LOGGED_IN',
             payload: {
               status: 'user-logged-in',
-              user: res.data.user,
+              data: res.data.user,
             },
           });
-        }
-        else {
+          console.log(res.data.user, ' ---------');
+        } else {
         }
       }
     } catch (e) {
@@ -69,20 +64,29 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-
   return (
     <>
       <ScrollView>
-
         <View style={styles.container}>
           {colors.map((x, i) => (
-            <View style={[styles.bgCircle1, {
-              backgroundColor: x,
-              transform: [
-                { translateX: -(width / 1.5) + (i * width / colors.length) },
-                { translateY: -(width * 1.25) - (i / 1.35 * width / colors.length) }
-              ]
-            }]} key={i.toString()} />
+            <View
+              style={[
+                styles.bgCircle1,
+                {
+                  backgroundColor: x,
+                  transform: [
+                    {
+                      translateX: -(width / 1.5) + (i * width) / colors.length,
+                    },
+                    {
+                      translateY:
+                        -(width * 1.25) - ((i / 1.35) * width) / colors.length,
+                    },
+                  ],
+                },
+              ]}
+              key={i.toString()}
+            />
           ))}
           {loading && (
             <View style={styles.loadingContainer}>
@@ -97,8 +101,9 @@ const LoginScreen = ({ navigation }) => {
 
             <View style={styles.inputFileds}>
               <View style={styles.inputView}>
-                <Icon style={styles.icon} name='user' type='font-awesome' />
-                <TextInput style={styles.inpf}
+                <Icon style={styles.icon} name="user" type="font-awesome" />
+                <TextInput
+                  style={styles.inpf}
                   maxLength={10}
                   onChangeText={(e) => {
                     setPhoneNumber(e);
@@ -106,27 +111,33 @@ const LoginScreen = ({ navigation }) => {
                   autoCorrect={false}
                   value={phoneNumber}
                   autoFocus={true}
-                  placeholder="Phone Number" />
+                  placeholder="Phone Number"
+                />
               </View>
               <View style={styles.inputView}>
-                <Icon style={styles.icon} name='lock' type='font-awesome'/>
-                <TextInput style={{ flex: 1, paddingHorizontal: 12, }}
+                <Icon style={styles.icon} name="lock" type="font-awesome" />
+                <TextInput
+                  style={{ flex: 1, paddingHorizontal: 12 }}
                   onChangeText={(e) => {
                     setPassword(e);
                   }}
                   autoCorrect={false}
                   value={password}
-                  autoFocus={true}
-                  placeholder="Password" />
+                  placeholder="Password"
+                />
               </View>
 
-              <TouchableOpacity style={styles.regbtn} title="Login"
+              <TouchableOpacity
+                style={styles.regbtn}
+                title="Login"
                 onPress={async () => await login()}>
                 <Text style={styles.loginBtnText}>Login</Text>
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                <Text style={styles.loginLinkText}>Don't have an account? SingUp</Text>
+                <Text style={styles.loginLinkText}>
+                  Don't have an account? SingUp
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -146,14 +157,14 @@ const styles = StyleSheet.create({
     top: 0,
   },
   loginText: {
-    fontSize: 24, 
-    top: 20, 
-    fontWeight: "900", 
-    textAlign: "center",
+    fontSize: 24,
+    top: 20,
+    fontWeight: '900',
+    textAlign: 'center',
   },
-  loginBtnText:{
-    color: "#fff",
-     fontSize: 18,
+  loginBtnText: {
+    color: '#fff',
+    fontSize: 18,
   },
   spinner: {
     width: 70,
@@ -244,9 +255,9 @@ const styles = StyleSheet.create({
     height: height,
     backgroundColor: 'rgba(39, 40, 41,0.5)', // Semi-transparent white background
     zIndex: 1, // Place it above other content
-    alignItems: "center", justifyContent: "center"
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-
 });
 
 export default LoginScreen;

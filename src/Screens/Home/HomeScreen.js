@@ -1,20 +1,33 @@
 import { Auth } from 'aws-amplify';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
-import { Image, SafeAreaView, Text, View } from 'react-native';
+import {
+  Image,
+  SafeAreaView,
+  Text,
+  View,
+  FlatList,
+  ScrollView,
+  Platform,
+} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
-import { getTodaysEvent } from '../../actions/event';
+import { getPersonalizedEvents, getTodaysEvent } from '../../actions/event';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView } from 'react-native-gesture-handler';
-import ViewShot from 'react-native-view-shot';
+import * as MediaLibrary from 'expo-media-library';
 
-const bgImage = 'https://d61uti3sxgkhy.cloudfront.net/diwali.jpeg';
-const userImage = 'https://d61uti3sxgkhy.cloudfront.net/rahul.png';
+import { getTodaysDate } from '../../utils/getTodaysDate';
+import { Button } from 'react-native-elements';
 
 function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  const events = useSelector((state) => state.todaysEvent);
+  const downloadedEvents = useSelector((state) => state.downloadedEvents);
+
+  let page = 1;
+  const assetsPerPage = 10;
+
   function logout() {
     dispatch({
       type: 'LOGGED_OUT',
@@ -24,11 +37,39 @@ function HomeScreen({ navigation }) {
   useEffect(() => {
     const fetchdata = async () => {
       try {
-        const res = await getTodaysEvent();
-        dispatch({
-          type: '',
-          payload: res.data,
-        });
+        const { user_type } = user.data;
+        const today = getTodaysDate();
+        if (user_type === 'USER') {
+          let {
+            political_party,
+            state_name,
+            district_name,
+            vidhan_shabha_name,
+            leader,
+          } = user.data;
+          leader = leader.mobile_number.replace('+', '');
+          const res = await getPersonalizedEvents({
+            today,
+            political_party,
+            state: state_name,
+            district: district_name,
+            vidhan_shabha: vidhan_shabha_name,
+            leader,
+            date: today,
+          });
+          dispatch({
+            type: 'TODAYS_EVENT',
+            payload: res.data,
+          });
+        }
+
+        if (user_type === 'INDIVIDUAL') {
+          const res = await getTodaysEvent(today);
+          dispatch({
+            type: 'TODAYS_EVENT',
+            payload: res.data,
+          });
+        }
       } catch (e) {
         console.log(e);
       }
@@ -36,321 +77,214 @@ function HomeScreen({ navigation }) {
     fetchdata();
   }, []);
 
+  useEffect(() => {
+    const loadData = async () => {
+      const album = await MediaLibrary.getAlbumAsync('app');
+
+      const assets = await MediaLibrary.getAssetsAsync({
+        first: 4,
+        album,
+        mediaType: 'photo',
+      });
+      console.log(assets.endCursor);
+      eventsWithText = [];
+      for (let asset of assets.assets) {
+        const text = await AsyncStorage.getItem(asset.filename);
+        eventsWithText.push([asset, text]);
+      }
+      dispatch({
+        type: 'SET_DOWNLOADED_EVENTS',
+        payload: {
+          lastFetched: {
+            endCursor: assets.endCursor,
+            hasNextPage: assets.hasNextPage,
+          },
+          eventsWithText,
+        },
+      });
+    };
+    try {
+      if (!downloadedEvents) {
+        loadData();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
   const signOut = async () => {
     await AsyncStorage.removeItem('user-key');
     logout();
   };
   return (
-    <View>
+    <SafeAreaView>
       <StatusBar backgroundColor="#EDEDF1" barStyle={'dark-content'} />
-      <SafeAreaView>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          {/* <ScrollView
-          view={{ height: '100%' }}
-          style={{
-            marginTop: 10,
-            paddingBottom: 30,
-            width: '100%',
-          }}
-          showsVerticalScrollIndicator={false}> */}
-          <Text>HomeScreen</Text>
-          <ScrollView
+      <View style={{ flexGrow: 1 }}>
+        <ScrollView
+          style={{ flexGrow: 1 }}
+          scrollEnabled={true}
+          nestedScrollEnabled={true}>
+          <View
             style={{
-              flexDirection: 'column',
-              padding: 20,
-              paddingLeft: 12,
-              paddingTop: 5,
-              flexGrow: 1,
-            }}
-            showsHorizontalScrollIndicator={false}
-            horizontal={true}>
+              marginTop: 40,
+              width: '100%',
+              height: '100%',
+            }}>
+            <Text>HomeScreen</Text>
+            <TouchableOpacity
+              onPress={async () => {
+                navigation.navigate('EventScreen');
+              }}>
+              <Text>Event Screen</Text>
+            </TouchableOpacity>
+            <Button
+              title={'Logout'}
+              onPress={async () => {
+                await signOut();
+              }}></Button>
+            <View>
+              {events && user && events.length > 0 && (
+                <FlatList
+                  style={{ marginTop: 20 }}
+                  data={events}
+                  horizontal={true}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      activeOpacity={1}
+                      onPress={() => {
+                        dispatch({
+                          type: 'SET_CURRENT_ACTIVE_EVENT',
+                          payload: item,
+                        });
+                        navigation.navigate('EventRoute', {
+                          screen: 'EventScreen',
+                        });
+                      }}
+                      style={{
+                        backgroundColor: 'yellow',
+                        marginLeft: 10,
+                        elevation: 10,
+                        background: 'white',
+                        width: 315,
+                        height: 280,
+                        borderRadius: 14,
+                        shadowColor: 'rgba(0, 0, 0, 0.15)',
+                      }}>
+                      <Image
+                        source={{ uri: item.event.coverImage }}
+                        style={{
+                          height: '100%',
+                          width: '100%',
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          borderRadius: 14,
+                          overflow: 'hidden',
+                        }}
+                        resizeMode="cover"
+                      />
+                      <View
+                        style={{
+                          position: 'absolute',
+                          flexDirection: 'row',
+                          left: '30%',
+                        }}>
+                        {user.data.leader_images.map((e, i) => (
+                          <Image
+                            source={{ uri: e }}
+                            key={i}
+                            style={{
+                              width: 40,
+                              height: 40,
+                              margin: 10,
+                              borderRadius: 50,
+                            }}
+                          />
+                        ))}
+                      </View>
+                      {user.data.user_type == 'USER' && (
+                        <Image
+                          source={{ uri: user.data.leader.profile_photo_url }}
+                          style={{
+                            width: 100,
+                            height: 100,
+                            bottom: 3,
+                            left: 3,
+                            position: 'absolute',
+                          }}
+                        />
+                      )}
+
+                      <Image
+                        source={{ uri: user.data.profile_photo_url }}
+                        style={{
+                          width: 100,
+                          height: 100,
+                          bottom: 3,
+                          right: 3,
+                          position: 'absolute',
+                        }}
+                      />
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          position: 'absolute',
+                          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                          alignContent: 'center',
+                          bottom: 0,
+                        }}>
+                        <Text>{item.event.title}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                  keyExtractor={(item) => item._id}
+                  showsHorizontalScrollIndicator={false}
+                />
+              )}
+            </View>
             <View
               style={{
-                flexDirection: 'row',
-                width: '100%',
-                backgroundColor: 'red',
+                margin: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
               }}>
-              <View
-                style={{
-                  width: '80%',
-                  height: 200,
-                  borderTopLeftRadius: 14,
-                  borderTopRightRadius: 14,
-                  overflow: 'hidden',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <View
-                  style={{
-                    width: '100%',
-                    height: 200,
-                    borderTopLeftRadius: 14,
-                    borderTopRightRadius: 14,
-                    overflow: 'hidden',
-                    // display: 'flex',
-                    // justifyContent: 'center',
-                    // alignItems: 'center',
-                  }}>
-                  <Image
-                    source={{ uri: bgImage }}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      position: 'absolute',
-                    }}
-                  />
-                  <View
-                    style={{
-                      height: '100%',
-                      width: '100%',
-                      position: 'absolute',
-                      bottom: 40,
-                    }}>
-                    <Image
-                      source={{ uri: userImage }}
-                      style={{
-                        position: 'absolute',
-                        right: 0,
-                        bottom: 0,
-                        height: 75,
-                        width: 75,
-                        zIndex: 3,
-                      }}
-                    />
-                    <Image
-                      source={{ uri: userImage }}
-                      style={{
-                        position: 'absolute',
-                        left: 0,
-                        bottom: 0,
-                        height: 75,
-                        width: 75,
-                        zIndex: 3,
-                      }}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      display: 'flex',
-                      flexDirection: 'row',
-                      width: '100%',
-                      justifyContent: 'space-around',
-                    }}>
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontSize: 30,
-                        position: 'relative',
-                      }}>
-                      हेमन्त
-                    </Text>
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontSize: 30,
-                        position: 'relative',
-                      }}>
-                      हेमन्त जोशी
-                    </Text>
-                  </View>
-                </View>
-              </View>
-              <View style={{ marginLeft: 20 }}></View>
-              <View
-                style={{
-                  width: '80%',
-                  height: 200,
-                  borderTopLeftRadius: 14,
-                  borderTopRightRadius: 14,
-                  overflow: 'hidden',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <View
-                  style={{
-                    width: '100%',
-                    height: 200,
-                    borderTopLeftRadius: 14,
-                    borderTopRightRadius: 14,
-                    overflow: 'hidden',
-                  }}>
-                  <Image
-                    source={{ uri: bgImage }}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      position: 'absolute',
-                    }}
-                  />
-                  <View
-                    style={{
-                      height: '100%',
-                      width: '100%',
-                      position: 'absolute',
-                      bottom: 40,
-                    }}>
-                    <Image
-                      source={{ uri: userImage }}
-                      style={{
-                        position: 'absolute',
-                        right: 0,
-                        bottom: 0,
-                        height: 75,
-                        width: 75,
-                        zIndex: 3,
-                      }}
-                    />
-                    <Image
-                      source={{ uri: userImage }}
-                      style={{
-                        position: 'absolute',
-                        left: 0,
-                        bottom: 0,
-                        height: 75,
-                        width: 75,
-                        zIndex: 3,
-                      }}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      display: 'flex',
-                      flexDirection: 'row',
-                      width: '100%',
-                      justifyContent: 'space-around',
-                    }}>
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontSize: 30,
-                        position: 'relative',
-                      }}>
-                      हेमन्त
-                    </Text>
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontSize: 30,
-                        position: 'relative',
-                      }}>
-                      हेमन्त जोशी
-                    </Text>
-                  </View>
-                </View>
-              </View>
-              <View
-                style={{
-                  width: '80%',
-                  height: 200,
-                  borderTopLeftRadius: 14,
-                  borderTopRightRadius: 14,
-                  overflow: 'hidden',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <View
-                  style={{
-                    width: '100%',
-                    height: 200,
-                    borderTopLeftRadius: 14,
-                    borderTopRightRadius: 14,
-                    overflow: 'hidden',
-                    // display: 'flex',
-                    // justifyContent: 'center',
-                    // alignItems: 'center',
-                  }}>
-                  <Image
-                    source={{ uri: bgImage }}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      position: 'absolute',
-                    }}
-                  />
-                  <View
-                    style={{
-                      height: '100%',
-                      width: '100%',
-                      position: 'absolute',
-                      bottom: 40,
-                    }}>
-                    <Image
-                      source={{ uri: userImage }}
-                      style={{
-                        position: 'absolute',
-                        right: 0,
-                        bottom: 0,
-                        height: 75,
-                        width: 75,
-                        zIndex: 3,
-                      }}
-                    />
-                    <Image
-                      source={{ uri: userImage }}
-                      style={{
-                        position: 'absolute',
-                        left: 0,
-                        bottom: 0,
-                        height: 75,
-                        width: 75,
-                        zIndex: 3,
-                      }}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      display: 'flex',
-                      flexDirection: 'row',
-                      width: '100%',
-                      justifyContent: 'space-around',
-                    }}>
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontSize: 30,
-                        position: 'relative',
-                      }}>
-                      हेमन्त
-                    </Text>
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontSize: 30,
-                        position: 'relative',
-                      }}>
-                      हेमन्त जोशी
-                    </Text>
-                  </View>
-                </View>
-              </View>
+              <Text>Downloaded Events</Text>
             </View>
-          </ScrollView>
-          {/* </ScrollView> */}
-          <TouchableOpacity
-            onPress={async () => {
-              navigation.navigate('EventScreen');
-            }}>
-            <Text>Event Screen</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={async () => await signOut()}>
-            <Text>Logout</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </View>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              {downloadedEvents &&
+                downloadedEvents.eventsWithText &&
+                downloadedEvents.eventsWithText.length > 0 &&
+                downloadedEvents.eventsWithText.map((e, i) => {
+                  if (i > 3) return;
+                  return (
+                    <View key={i} style={{ padding: 10 }}>
+                      <View>
+                        <Image
+                          source={{ uri: e[0].uri }}
+                          style={{ height: 120, width: 120 }}
+                        />
+                      </View>
+                    </View>
+                  );
+                })}
+            </View>
+            <View>
+              <Button
+                onPress={() => navigation.navigate('DownloadScreen')}
+                title="Go To Downloads"></Button>
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
 

@@ -60,7 +60,7 @@ const SignupScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [designation, setDesignation] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('9557376881');
   const [password, setPassword] = useState('');
   const [profile, setProfile] = useState('');
   const [leader, setLeader] = useState('');
@@ -197,7 +197,7 @@ const SignupScreen = ({ navigation }) => {
     UserSignUpData.gender = selectedGender;
     UserSignUpData.leader_images = [leader_img, leader_img, leader_img];
     UserSignUpData.profile_photo_url = profile;
-    UserSignUpData.leader = null;
+    UserSignUpData.leader = '+911111111111';
 
     let data = UserSignUpData;
     data.phone_number = `+91${phoneNumber}`;
@@ -206,14 +206,12 @@ const SignupScreen = ({ navigation }) => {
     console.log(data);
     const res = await registerUser(data);
     setLoading(false);
-    // api request to server
     if (res.status === 'failed') {
       Alert.alert(reg_failed, res.message);
     }
     if (res.status === 'suceess') {
       Alert.alert(reg_seccess, res.message);
     }
-    console.log(res, ' line 100 ');
     if (res.data.token) {
       await AsyncStorage.setItem('user-key', res.data.token);
 
@@ -242,13 +240,6 @@ const SignupScreen = ({ navigation }) => {
     set_is_bg_removed(false);
     setProfileUploaded(true);
   };
-
-  // const reuploadimage=()=>{
-  //   setProfileUploaded(false);
-  // } onPress={() =>reuploadimage() }
-  // const set_chnages_on_profile_choose = () => {
-  //   setProfileUploaded(false);
-  // }
 
   return (
     <>

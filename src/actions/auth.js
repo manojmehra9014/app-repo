@@ -1,15 +1,14 @@
-export const image_bg_remove_api = async (image,phoneNumber) => {
+export const image_bg_remove_api = async (image, phoneNumber) => {
   try {
     if (!image) {
       console.error('No image selected!');
       return;
     }
-    
+
     const uriParts = image.split('.');
     const fileType = uriParts[uriParts.length - 1];
     const currentTimestamp = new Date().getTime(); // gets the current time in milliseconds
     const fileName = `91${phoneNumber}_${currentTimestamp}.${fileType}`;
-
 
     const formData = new FormData();
     formData.append('image', {
@@ -29,7 +28,6 @@ export const image_bg_remove_api = async (image,phoneNumber) => {
       }
     );
 
-
     const resp = await response.json();
     // console.log(resp);
     return resp.s3_object_url;
@@ -38,13 +36,9 @@ export const image_bg_remove_api = async (image,phoneNumber) => {
   }
 };
 
-
-
-
-
 export const checkUserStatus = async (phone_number) => {
   try {
-    return await fetch('http://13.200.103.27:8001/api/user-status', {
+    return await fetch('http://192.168.29.89:8001/api/user-status', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -65,7 +59,7 @@ export const checkUserStatus = async (phone_number) => {
 
 export const sendOtpApi = async (phoneNumber) => {
   try {
-    return await fetch('http://13.200.103.27:8001/api/send-otp', {
+    return await fetch('http://192.168.29.89:8001/api/send-otp', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -93,7 +87,7 @@ export const sendOtpApi = async (phoneNumber) => {
 export const registerUser = async (data) => {
   try {
     console.log('line 51');
-    return await fetch('http://13.200.103.27:8001/api/register-user', {
+    return await fetch('http://192.168.29.89:8001/api/register-user', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -102,7 +96,7 @@ export const registerUser = async (data) => {
       body: JSON.stringify(data),
     })
       .then((response) => {
-        console.log(response, "api resp");
+        console.log(response, 'api resp');
         return response.json();
       })
       .catch((e) => {
@@ -121,7 +115,7 @@ export const registerUser = async (data) => {
 
 export const loginUser = async (phoneNumber, password) => {
   try {
-    return await fetch('http://13.200.103.27:8001/api/login', {
+    return await fetch('http://192.168.29.89:8001/api/login', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -169,7 +163,7 @@ export const loginUser = async (phoneNumber, password) => {
 
 export const currentUser = async (authToken) => {
   try {
-    return await fetch('http://13.200.103.27:8001/api/current-user', {
+    return await fetch('http://192.168.29.89:8001/api/current-user', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
