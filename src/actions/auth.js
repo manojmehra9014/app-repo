@@ -1,3 +1,41 @@
+export const image_bg_remove_api = async (image, phoneNumber) => {
+  try {
+    if (!image) {
+      console.error('No image selected!');
+      return;
+    }
+
+    const uriParts = image.split('.');
+    const fileType = uriParts[uriParts.length - 1];
+    const currentTimestamp = new Date().getTime(); // gets the current time in milliseconds
+    const fileName = `91${phoneNumber}_${currentTimestamp}.${fileType}`;
+
+    const formData = new FormData();
+    formData.append('image', {
+      uri: image,
+      name: fileName,
+      type: `image/${fileType}`,
+    });
+    const response = await fetch(
+      'http://13.200.103.27:5000/api/remove_background',
+      {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    const resp = await response.json();
+    // console.log(resp);
+    return resp.s3_object_url;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const checkUserStatus = async (phone_number) => {
   try {
     return await fetch('http://192.168.29.89:8001/api/user-status', {
@@ -30,6 +68,7 @@ export const sendOtpApi = async (phoneNumber) => {
       body: JSON.stringify({ phone_number: phoneNumber }),
     })
       .then((response) => {
+        // console.log(response ,"sendopt api resp")
         return response.json();
       })
       .catch((err) => {
@@ -47,7 +86,7 @@ export const sendOtpApi = async (phoneNumber) => {
 
 export const registerUser = async (data) => {
   try {
-    console.log(data);
+    console.log('line 51');
     return await fetch('http://192.168.29.89:8001/api/register-user', {
       method: 'POST',
       headers: {
@@ -57,6 +96,7 @@ export const registerUser = async (data) => {
       body: JSON.stringify(data),
     })
       .then((response) => {
+        console.log(response, 'api resp');
         return response.json();
       })
       .catch((e) => {
@@ -84,6 +124,7 @@ export const loginUser = async (phoneNumber, password) => {
       body: JSON.stringify({ phone_number: phoneNumber, password: password }),
     })
       .then((response) => {
+        // console.log(response)
         return response.json();
       })
       .catch((e) => {

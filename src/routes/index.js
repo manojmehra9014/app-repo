@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import MainRoute from './HomeRoutes';
 import AuthRoute from './AuthRoutes';
 import { useDispatch, useSelector } from 'react-redux';
-import { Auth } from 'aws-amplify';
 import { Text, View } from 'react-native';
 import { currentUser } from '../actions/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -21,14 +20,15 @@ const RootRoute = () => {
     setLoading(true);
     try {
       const userKey = await AsyncStorage.getItem('user-key');
-
+      console.log(userKey);
       if (userKey !== null) {
         const userData = await currentUser(userKey);
+        // console.log(userData, ' ---------');
         if (userData.data.is_deleted == false) {
           dispatch({
             type: 'LOGGED_IN',
             payload: {
-              data: userData,
+              data: userData.data,
               token: userKey,
             },
           });

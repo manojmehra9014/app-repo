@@ -20,10 +20,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import store from './src/store';
 import { Provider } from 'react-redux';
 import RootRoute from './src/routes';
-import config from './src/aws-exports';
 
-import { Amplify } from 'aws-amplify';
-Amplify.configure(config);
 
 function App() {
   return (
