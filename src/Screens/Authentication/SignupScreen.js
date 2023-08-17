@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Alert,
   StyleSheet,
@@ -19,6 +19,7 @@ import {
   sendOtpApi,
   allStatesname,
   allDistrickName,
+  allvidhanSabhaName,
 } from '../../actions/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
@@ -249,40 +250,77 @@ const SignupScreen = ({ navigation }) => {
 
   //state data get from api server
   const [stateSuggestions, setStateSuggestions] = useState([]);
-  const handleStatesChange = async (text) => {
-    setState(text);
+  const handleStatesChange = async () => {
     const stateData = await allStatesname(); // Fetch state data from API
-    const filteredStateNames = stateData
-      .filter(item => item.name.toLowerCase().startsWith(text.toLowerCase())) // Filter based on the first letter
-      .map(item => item.name);
-    setStateSuggestions(filteredStateNames);
-    console.log(filteredStateNames);
+    const filterstatedata = stateData
+    .map(item => item.name);
+
+    console.log(filterstatedata);
+    setStateSuggestions(filterstatedata);
   }
+
+  const handleStatesTextChange = (text) => {
+    setState(text)
+    if(text.length === 0){
+      handleStatesChange();
+    }
+  }
+
 
   const setStateSelected = (txt) => {
     setState(txt);
     setStateSuggestions([]);
   }
-  const setdistrictSelected = (txt) => {
-    setDistrict(txt);
-    setdistrictSuggestions([]);
-  }
+ 
 
-  const [district , setDistrict] = useState('');
+  const [district, setDistrict] = useState('');
   const [districtSuggestions, setdistrictSuggestions] = useState([]);
 
-  const handleDistrictChange = async(text)=>{
+  const handleDistrictChange = async (text) => {
     setDistrict(text);
+    if(text.length == 0){
+      setdistrictSuggestions([]);
+    }
     const districtData = await allDistrickName(state);
     // console.log(districtData);
     const filteredDistrictNames = districtData
       .filter(item => item.name.toLowerCase().startsWith(text.toLowerCase())) // Filter based on the first letter
       .map(item => item.name);
-      // console.log(filteredDistrictNames)
-      setdistrictSuggestions(filteredDistrictNames)
-      
-
+    // console.log(filteredDistrictNames)
+    setdistrictSuggestions(filteredDistrictNames)
   }
+  const setdistrictSelected = (txt) => {
+    setDistrict(txt);
+    setdistrictSuggestions([]);
+  }
+  
+  const handledistrictTextChange = (text) => {
+    setDistrict(text);
+  }
+
+  const [vidhan_sabha, setvidhan_sabha] = useState('');
+  const [vidhan_sabhaSuggestions, setvidhan_sabhaSuggestions] = useState([]);
+
+  const setvidhanshabhaSelected = (txt) => {
+    setvidhan_sabha(txt);
+    setvidhan_sabhaSuggestions([]);
+  }
+  const handleVidhanShabhaChange = async (text) => {
+    setvidhan_sabha(text);
+    const vidhan_sabhaData = await allvidhanSabhaName(district);
+    const filteredvidhan_shabhaNames = vidhan_sabhaData
+      .filter(item => item.name.toLowerCase().startsWith(text.toLowerCase())) // Filter based on the first letter
+      .map(item => item.name);
+    console.log(filteredvidhan_shabhaNames)
+    setvidhan_sabhaSuggestions(filteredvidhan_shabhaNames)
+  }
+
+  useEffect(() => {
+    handleStatesChange(); // Call the function when the component is loaded
+    
+  
+  }, []);
+
   return (
     <>
       <ScrollView>
@@ -468,34 +506,34 @@ const SignupScreen = ({ navigation }) => {
                     />
                     <TextInput
                       style={{ flex: 1, paddingHorizontal: 12 }}
-                      onChangeText={handleStatesChange}
+                      onChangeText={handleStatesTextChange}
+                      // onPress={handleStatesTextChange}
                       autoCorrect={false}
                       value={state}
                       placeholder="Enter State"
                     />
                   </View>
 
-                  {district.length > 0 && (
-                    <FlatList
-                      data={districtSuggestions}
-                      renderItem={({ item }) => (
-                        <TouchableOpacity
-                          onPress={() => setdistrictSelected(item)}
-                          style={styles.suggestionItem} // Apply your custom styles here
-                        >
-                          <Text style={styles.suggestionText}>{item}</Text>
-                        </TouchableOpacity>
-                      )}
-                      keyExtractor={(item) => item}
-                      style={styles.suggestionList} // Apply your custom styles here
-                      horizontal={false}
-                    />
-                  )}
+                  <FlatList
+                    data={districtSuggestions}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        onPress={() => setdistrictSelected(item)}
+                        style={styles.suggestionItem} // Apply your custom styles here
+                      >
+                        <Text style={styles.suggestionText}>{item}</Text>
+                      </TouchableOpacity>
+                    )}
+                    keyExtractor={(item) => item}
+                    style={styles.suggestionList} // Apply your custom styles here
+                    horizontal={false}
+                  />
+
                   <View
                     style={styles.inputView}>
                     <Icon
                       style={styles.icon}
-                      name ="street-view"
+                      name="street-view"
                       type="font-awesome"
                     />
                     <TextInput
@@ -504,6 +542,37 @@ const SignupScreen = ({ navigation }) => {
                       autoCorrect={false}
                       value={district}
                       placeholder="Enter District"
+                    />
+                  </View>
+
+
+                  <FlatList
+                    data={vidhan_sabhaSuggestions}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        onPress={() => setvidhanshabhaSelected(item)}
+                        style={styles.suggestionItem} // Apply your custom styles here
+                      >
+                        <Text style={styles.suggestionText}>{item}</Text>
+                      </TouchableOpacity>
+                    )}
+                    keyExtractor={(item) => item}
+                    style={styles.suggestionList} // Apply your custom styles here
+                    horizontal={false}
+                  />
+                  <View
+                    style={styles.inputView}>
+                    <Icon
+                      style={styles.icon}
+                      name="navigation"
+                      type="feather"
+                    />
+                    <TextInput
+                      style={{ flex: 1, paddingHorizontal: 12 }}
+                      onChangeText={handleVidhanShabhaChange}
+                      autoCorrect={false}
+                      value={vidhan_sabha}
+                      placeholder="Enter Vidhan-shabha"
                     />
                   </View>
 
@@ -830,6 +899,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderBottomWidth: 1,
     borderColor: '#eee',
+
   },
   suggestionText: {
     fontSize: 16,

@@ -223,3 +223,24 @@ export const allDistrickName = async (state) => {
     console.log(err);
   }
 };
+
+export const allvidhanSabhaName = async (district) => {
+  try {
+    const apiUrl = `http://13.200.103.27:8001/api/get-vidhan_shabhas?district_name=${encodeURIComponent(district)}`;
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
