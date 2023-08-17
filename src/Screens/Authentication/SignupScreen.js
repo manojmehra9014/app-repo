@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
+  FlatList,
 } from 'react-native';
 const colors = ['#FEBBCC', '#FFDDCC', '#F6F4EB'];
 import styled from 'styled-components';
@@ -16,6 +17,7 @@ import {
   checkUserStatus,
   registerUser,
   sendOtpApi,
+  allStatesname,
 } from '../../actions/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
@@ -60,10 +62,11 @@ const SignupScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [designation, setDesignation] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('9557376881');
+  const [phoneNumber, setPhoneNumber] = useState('9557376888');
   const [password, setPassword] = useState('');
   const [profile, setProfile] = useState('');
   const [leader, setLeader] = useState('');
+  const [state, setState] = useState('');
   const [loading, setLoading] = useState(false);
   let [userexist, setUser] = useState(true);
   const [isbgremoved, set_is_bg_removed] = useState(false);
@@ -99,7 +102,9 @@ const SignupScreen = ({ navigation }) => {
       aspect: [1, 1],
       quality: 1,
     });
-
+    const reuploadimage = () => {
+      setProfileUploaded(false);
+    };
     console.log(result);
     if (!result.canceled && is_bg_remove) {
       const resp = await image_bg_remove_api(result.assets[0].uri, phoneNumber);
@@ -241,6 +246,22 @@ const SignupScreen = ({ navigation }) => {
     setProfileUploaded(true);
   };
 
+  //state data get from api server
+  const [stateSuggestions, setStateSuggestions] = useState([]);
+  const handleStatesChange = async (text) => {
+    setState(text);
+    const stateData = await allStatesname(); // Fetch state data from API
+    const filteredStateNames = stateData
+    .filter(item => item.name.toLowerCase().startsWith(text.toLowerCase())) // Filter based on the first letter
+    .map(item => item.name);
+    setStateSuggestions(filteredStateNames);
+    console.log(filteredStateNames);
+  }
+
+  const setStateSelected = (txt) =>{
+    setState(txt);
+    setStateSuggestions([]);
+  }
   return (
     <>
       <ScrollView>
@@ -400,6 +421,39 @@ const SignupScreen = ({ navigation }) => {
                     </Picker>
                   </View>
 
+                  {state.length > 0 && (
+                  <FlatList
+                    data={stateSuggestions}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        onPress={() => setStateSelected(item)}
+                        style={styles.suggestionItem} // Apply your custom styles here
+                      >
+                        <Text style={styles.suggestionText}>{item}</Text>
+                      </TouchableOpacity>
+                    )}
+                    keyExtractor={(item) => item}
+                    style={styles.suggestionList} // Apply your custom styles here
+                  />
+                    )}
+
+                  {/* select state . */}
+                  <View
+                    style={styles.inputView}>
+                    <Icon
+                      style={styles.icon}
+                      name="map-marker"
+                      type="font-awesome"
+                    />
+                    <TextInput
+                      style={{ flex: 1, paddingHorizontal: 12 }}
+                      onChangeText={handleStatesChange}
+                      autoCorrect={false}
+                      value={state}
+                      placeholder="Enter State"
+                    />
+                  </View>
+
                   {!profileuploaded && (
                     <TouchableOpacity
                       style={styles.selectButton}
@@ -409,15 +463,15 @@ const SignupScreen = ({ navigation }) => {
                   )}
                   {profileuploaded && (
                     <View style={styles.imageprevprofile}>
-                      <TouchableOpacity
-                        style={styles.closeButtonprofile}
-                        onPress={() => reuploadimage()}>
-                        <Text style={styles.closeButtonTextprofile}>×</Text>
-                      </TouchableOpacity>
                       <Image
                         source={{ uri: profile }}
                         style={styles.imageprofile}
                       />
+                      <TouchableOpacity
+                        style={styles.closeButtonprofile}
+                        onPress={() => reuploadimage()}>
+                        <Text style={styles.closeButtonTextprofile}>✕</Text>
+                      </TouchableOpacity>
                     </View>
                   )}
                   {/* Render the upload button for leaders */}
@@ -710,6 +764,23 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 34,
     fontWeight: 'bold',
+  },suggestionList: {
+    maxHeight: 150,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+    marginTop: 5,
+    backgroundColor: 'white', // Customize background color
+  },
+  suggestionItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderColor: '#eee',
+  },
+  suggestionText: {
+    fontSize: 16,
+    color: 'black', // Customize text color
   },
 });
 
