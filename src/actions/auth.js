@@ -202,4 +202,24 @@ export const allStatesname = async () => {
     console.log(e);
   }
 };
-// 192.168.29.89:8001/api/user-status
+export const allDistrickName = async (state) => {
+  try {
+    const apiUrl = `http://13.200.103.27:8001/api/get-districts?state_name=${encodeURIComponent(state)}`;
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};

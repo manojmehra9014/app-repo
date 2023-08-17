@@ -18,6 +18,7 @@ import {
   registerUser,
   sendOtpApi,
   allStatesname,
+  allDistrickName,
 } from '../../actions/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
@@ -252,15 +253,35 @@ const SignupScreen = ({ navigation }) => {
     setState(text);
     const stateData = await allStatesname(); // Fetch state data from API
     const filteredStateNames = stateData
-    .filter(item => item.name.toLowerCase().startsWith(text.toLowerCase())) // Filter based on the first letter
-    .map(item => item.name);
+      .filter(item => item.name.toLowerCase().startsWith(text.toLowerCase())) // Filter based on the first letter
+      .map(item => item.name);
     setStateSuggestions(filteredStateNames);
     console.log(filteredStateNames);
   }
 
-  const setStateSelected = (txt) =>{
+  const setStateSelected = (txt) => {
     setState(txt);
     setStateSuggestions([]);
+  }
+  const setdistrictSelected = (txt) => {
+    setDistrict(txt);
+    setdistrictSuggestions([]);
+  }
+
+  const [district , setDistrict] = useState('');
+  const [districtSuggestions, setdistrictSuggestions] = useState([]);
+
+  const handleDistrictChange = async(text)=>{
+    setDistrict(text);
+    const districtData = await allDistrickName(state);
+    // console.log(districtData);
+    const filteredDistrictNames = districtData
+      .filter(item => item.name.toLowerCase().startsWith(text.toLowerCase())) // Filter based on the first letter
+      .map(item => item.name);
+      // console.log(filteredDistrictNames)
+      setdistrictSuggestions(filteredDistrictNames)
+      
+
   }
   return (
     <>
@@ -422,28 +443,28 @@ const SignupScreen = ({ navigation }) => {
                   </View>
 
                   {state.length > 0 && (
-                  <FlatList
-                    data={stateSuggestions}
-                    renderItem={({ item }) => (
-                      <TouchableOpacity
-                        onPress={() => setStateSelected(item)}
-                        style={styles.suggestionItem} // Apply your custom styles here
-                      >
-                        <Text style={styles.suggestionText}>{item}</Text>
-                      </TouchableOpacity>
-                    )}
-                    keyExtractor={(item) => item}
-                    style={styles.suggestionList} // Apply your custom styles here
-                  />
-                    )}
+                    <FlatList
+                      data={stateSuggestions}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          onPress={() => setStateSelected(item)}
+                          style={styles.suggestionItem} // Apply your custom styles here
+                        >
+                          <Text style={styles.suggestionText}>{item}</Text>
+                        </TouchableOpacity>
+                      )}
+                      keyExtractor={(item) => item}
+                      style={styles.suggestionList} // Apply your custom styles here
+                    />
+                  )}
 
                   {/* select state . */}
                   <View
                     style={styles.inputView}>
                     <Icon
                       style={styles.icon}
-                      name="map-marker"
-                      type="font-awesome"
+                      name="room"
+                      type="material"
                     />
                     <TextInput
                       style={{ flex: 1, paddingHorizontal: 12 }}
@@ -451,6 +472,38 @@ const SignupScreen = ({ navigation }) => {
                       autoCorrect={false}
                       value={state}
                       placeholder="Enter State"
+                    />
+                  </View>
+
+                  {district.length > 0 && (
+                    <FlatList
+                      data={districtSuggestions}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          onPress={() => setdistrictSelected(item)}
+                          style={styles.suggestionItem} // Apply your custom styles here
+                        >
+                          <Text style={styles.suggestionText}>{item}</Text>
+                        </TouchableOpacity>
+                      )}
+                      keyExtractor={(item) => item}
+                      style={styles.suggestionList} // Apply your custom styles here
+                      horizontal={false}
+                    />
+                  )}
+                  <View
+                    style={styles.inputView}>
+                    <Icon
+                      style={styles.icon}
+                      name ="street-view"
+                      type="font-awesome"
+                    />
+                    <TextInput
+                      style={{ flex: 1, paddingHorizontal: 12 }}
+                      onChangeText={handleDistrictChange}
+                      autoCorrect={false}
+                      value={district}
+                      placeholder="Enter District"
                     />
                   </View>
 
@@ -764,7 +817,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 34,
     fontWeight: 'bold',
-  },suggestionList: {
+  }, suggestionList: {
     maxHeight: 150,
     borderWidth: 1,
     borderColor: '#ccc',
