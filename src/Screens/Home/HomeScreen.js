@@ -99,7 +99,7 @@ function HomeScreen({ navigation }) {
         const eventsWithText = [];
         for (let asset of assets.assets) {
           const text = await AsyncStorage.getItem(asset.filename);
-          eventsWithText.push({ asset, text });
+          eventsWithText.push([ asset, text ]);
         }
 
         dispatch({
@@ -275,6 +275,7 @@ function HomeScreen({ navigation }) {
                 downloadedEvents.eventsWithText &&
                 downloadedEvents.eventsWithText.length > 0 &&
                 downloadedEvents.eventsWithText.map((e, i) => {
+
                   if (i > 3) return;
                   return (
                     <View key={i} style={{ padding: 10 }}>
