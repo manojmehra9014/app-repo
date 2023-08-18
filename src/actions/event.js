@@ -1,6 +1,6 @@
 export const getTodaysEvent = async (date) => {
   try {
-    return await fetch('http://192.168.29.89:8001/api/get-event', {
+    return await fetch('http://13.200.103.27:8001/api/get-event', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -29,7 +29,7 @@ export const getPersonalizedEvents = async (data) => {
       leader: data.leader,
       date: data.date,
     });
-    const url = `http://192.168.29.89:8001/api/get-personalized-events?${queryParams.toString()}`;
+    const url = `http://13.200.103.27:8001/api/get-personalized-events?${queryParams.toString()}`;
     return await fetch(url, {
       method: 'GET',
       headers: {

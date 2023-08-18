@@ -59,12 +59,16 @@ const SignupScreen = ({ navigation }) => {
     // password: '', // Initialize with an empty string
     leader_images: [],
     profile_photo_url: '',
+    state:'',
+    political_party:'congress',
+    vidhan_shabha:'',
+    district:'',
   };
 
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [designation, setDesignation] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('9557376888');
+  const [phoneNumber, setPhoneNumber] = useState('9368667022');
   const [password, setPassword] = useState('');
   const [profile, setProfile] = useState('');
   const [leader, setLeader] = useState('');
@@ -104,9 +108,7 @@ const SignupScreen = ({ navigation }) => {
       aspect: [1, 1],
       quality: 1,
     });
-    const reuploadimage = () => {
-      setProfileUploaded(false);
-    };
+   
     console.log(result);
     if (!result.canceled && is_bg_remove) {
       const resp = await image_bg_remove_api(result.assets[0].uri, phoneNumber);
@@ -117,6 +119,8 @@ const SignupScreen = ({ navigation }) => {
     }
     setLoading(false);
   };
+
+ 
 
   let [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
@@ -204,7 +208,10 @@ const SignupScreen = ({ navigation }) => {
     UserSignUpData.gender = selectedGender;
     UserSignUpData.leader_images = [leader_img, leader_img, leader_img];
     UserSignUpData.profile_photo_url = profile;
-    UserSignUpData.leader = '+911111111111';
+    UserSignUpData.leader = '+919557376881';
+    UserSignUpData.district = district;
+    UserSignUpData.state = state;
+    UserSignUpData.vidhan_shabha = vidhan_shabha;
 
     let data = UserSignUpData;
     data.phone_number = `+91${phoneNumber}`;
@@ -298,7 +305,7 @@ const SignupScreen = ({ navigation }) => {
     setDistrict(text);
   }
 
-  const [vidhan_sabha, setvidhan_sabha] = useState('');
+  const [vidhan_shabha, setvidhan_sabha] = useState('');
   const [vidhan_sabhaSuggestions, setvidhan_sabhaSuggestions] = useState([]);
 
   const setvidhanshabhaSelected = (txt) => {
@@ -320,7 +327,9 @@ const SignupScreen = ({ navigation }) => {
     
   
   }, []);
-
+  const reuploadimage=()=>{
+    setProfileUploaded(false);
+  };
   return (
     <>
       <ScrollView>
@@ -571,7 +580,7 @@ const SignupScreen = ({ navigation }) => {
                       style={{ flex: 1, paddingHorizontal: 12 }}
                       onChangeText={handleVidhanShabhaChange}
                       autoCorrect={false}
-                      value={vidhan_sabha}
+                      value={vidhan_shabha}
                       placeholder="Enter Vidhan-shabha"
                     />
                   </View>
@@ -703,7 +712,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   container: {
-    height: height + 200,
+    height: height + 400,
     top: 0,
   },
   spinner: {

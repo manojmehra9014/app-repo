@@ -17,7 +17,7 @@ export const image_bg_remove_api = async (image, phoneNumber) => {
       type: `image/${fileType}`,
     });
     const response = await fetch(
-      'htpp://13.200.103.27:8001/api/remove_background',
+      'http://13.200.103.27:5000/api/remove_background',
       {
         method: 'POST',
         body: formData,

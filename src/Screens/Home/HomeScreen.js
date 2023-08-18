@@ -79,37 +79,49 @@ function HomeScreen({ navigation }) {
 
   useEffect(() => {
     const loadData = async () => {
-      const album = await MediaLibrary.getAlbumAsync('app');
+      try {
+        const album = await MediaLibrary.getAlbumAsync('app');
 
-      const assets = await MediaLibrary.getAssetsAsync({
-        first: 4,
-        album,
-        mediaType: 'photo',
-      });
-      console.log(assets.endCursor);
-      eventsWithText = [];
-      for (let asset of assets.assets) {
-        const text = await AsyncStorage.getItem(asset.filename);
-        eventsWithText.push([asset, text]);
-      }
-      dispatch({
-        type: 'SET_DOWNLOADED_EVENTS',
-        payload: {
-          lastFetched: {
-            endCursor: assets.endCursor,
-            hasNextPage: assets.hasNextPage,
+        if (!album) {
+          // Handle the case where the album is not found
+          console.log("Album 'app' not found");
+          return;
+        }
+
+        const assets = await MediaLibrary.getAssetsAsync({
+          first: 4,
+          album,
+          mediaType: 'photo',
+        });
+
+        console.log(assets.endCursor);
+
+        const eventsWithText = [];
+        for (let asset of assets.assets) {
+          const text = await AsyncStorage.getItem(asset.filename);
+          eventsWithText.push({ asset, text });
+        }
+
+        dispatch({
+          type: 'SET_DOWNLOADED_EVENTS',
+          payload: {
+            lastFetched: {
+              endCursor: assets.endCursor,
+              hasNextPage: assets.hasNextPage,
+            },
+            eventsWithText,
           },
-          eventsWithText,
-        },
-      });
-    };
-    try {
-      if (!downloadedEvents) {
-        loadData();
+        });
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
+    };
+
+    // Make sure downloadedEvents is properly defined before using it
+    if (!downloadedEvents) {
+      loadData();
     }
+
   }, []);
 
   const signOut = async () => {
