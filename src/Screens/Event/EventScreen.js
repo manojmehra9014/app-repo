@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef,useState } from 'react';
 import {
   Image,
   Dimensions,
@@ -23,6 +23,7 @@ function EventScreen({ navigation }) {
   const viewShotRef = useRef();
   const user = useSelector((state) => state.user);
   const event = useSelector((state) => state.activeEvent);
+  const downloadscreen = useSelector((state) => state.downloadedEvents);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -58,7 +59,6 @@ function EventScreen({ navigation }) {
             await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
           }
           await storeData(event.event.text, asset.filename);
-
         }
       }
     } catch (e) {
@@ -66,25 +66,21 @@ function EventScreen({ navigation }) {
       console.log(e);
     }
   };
-
+ const [imageURI,setimageURI] = useState('');
   const onShare = async () => {
     try {
-      const result = await Share.share({
-        message: 'here is a message !',
-        url: 'www.google.com',
-        title: "image is here !",
+      await viewShotRef.current.capture().then(uri => {
+        console.log("do something with " ,uri);
+        setimageURI(uri);
       });
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // shared with activity type of result.activityType
-        } else {
-          // shared
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
-      }
+
+      await Share.share({
+        message: event.event.text,
+        url:imageURI,
+      });
+      
     } catch (error) {
-      Alert.alert(error.message);
+      Alert.alert("Share not Working !Try Again");
     }
   };
 
@@ -278,8 +274,8 @@ const styles = StyleSheet.create({
   },
   downloadbtn: {
     backgroundColor: '#279EFF',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 24,
     marginHorizontal: 10,
     flexDirection: "row",
@@ -287,14 +283,14 @@ const styles = StyleSheet.create({
   },
   downloadbtntext: {
     color: "white",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
-
   },
   downloadbtnview: {
     flexDirection: 'row',
     justifyContent: "space-around",
     alignItems: 'center',
+    paddingHorizontal:20,
   },
   backbar: {
     width: '100%',
@@ -307,7 +303,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   btnicon: {
-    marginRight: 10,
+    marginRight: 5,
   },
   date: {
     fontSize: 16,
@@ -321,6 +317,7 @@ const styles = StyleSheet.create({
   },
   sharebtn: {
     paddingVertical: 12,
+    marginLeft:15,
     paddingHorizontal: 12,
     backgroundColor: "white",
     borderRadius: 50,

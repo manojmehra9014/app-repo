@@ -124,7 +124,6 @@ export const loginUser = async (phoneNumber, password) => {
       body: JSON.stringify({ phone_number: phoneNumber, password: password }),
     })
       .then((response) => {
-        // console.log(response)
         return response.json();
       })
       .catch((e) => {

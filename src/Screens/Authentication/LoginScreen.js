@@ -27,11 +27,10 @@ const LoginScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const dispatch = useDispatch();
-  const [phoneNumber, setPhoneNumber] = useState('9557376881');
-  const [password, setPassword] = useState('hemantjoshi');
+  const [phoneNumber, setPhoneNumber] = useState('9368667024');
+  const [password, setPassword] = useState('ManojMehra12@');
 
   const user = useSelector((state) => state.user);
-
   const login = async () => {
     setLoading(true);
     const userPhoneNumber = `+91${phoneNumber}`;

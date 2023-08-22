@@ -68,7 +68,7 @@ const SignupScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [designation, setDesignation] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('9368667022');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [profile, setProfile] = useState('');
   const [leader, setLeader] = useState('');
@@ -208,7 +208,7 @@ const SignupScreen = ({ navigation }) => {
     UserSignUpData.gender = selectedGender;
     UserSignUpData.leader_images = [leader_img, leader_img, leader_img];
     UserSignUpData.profile_photo_url = profile;
-    UserSignUpData.leader = '+919557376881';
+    UserSignUpData.leader = '+919368667022';
     UserSignUpData.district = district;
     UserSignUpData.state = state;
     UserSignUpData.vidhan_shabha = vidhan_shabha;
@@ -262,7 +262,7 @@ const SignupScreen = ({ navigation }) => {
     const filterstatedata = stateData
     .map(item => item.name);
 
-    console.log(filterstatedata);
+    // console.log(filterstatedata);
     setStateSuggestions(filterstatedata);
   }
 

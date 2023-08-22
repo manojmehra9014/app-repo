@@ -22,5 +22,4 @@ const AuthRoute = () => {
     </Stack.Navigator>
   );
 };
-
 export default AuthRoute;
