@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getPersonalizedEvents, getTodaysEvent } from '../../actions/event';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as MediaLibrary from 'expo-media-library';
-
+// import ImageViewScreen from '../Event/ImageViewScreen';
 import { getTodaysDate } from '../../utils/getTodaysDate';
 import { Button } from 'react-native-elements';
 
@@ -99,7 +99,7 @@ function HomeScreen({ navigation }) {
         const eventsWithText = [];
         for (let asset of assets.assets) {
           const text = await AsyncStorage.getItem(asset.filename);
-          eventsWithText.push([ asset, text ]);
+          eventsWithText.push([asset, text]);
         }
 
         dispatch({
@@ -255,6 +255,8 @@ function HomeScreen({ navigation }) {
                 />
               )}
             </View>
+
+
             <View
               style={{
                 margin: 10,
@@ -263,6 +265,12 @@ function HomeScreen({ navigation }) {
               }}>
               <Text>Downloaded Events</Text>
             </View>
+
+            {/* <TouchableOpacity onPress={() => {
+              navigation.navigate('DownloadScreen', {
+                screen: 'DownloadScreen',
+              });
+            }}> */}
             <View
               style={{
                 display: 'flex',
@@ -275,20 +283,28 @@ function HomeScreen({ navigation }) {
                 downloadedEvents.eventsWithText &&
                 downloadedEvents.eventsWithText.length > 0 &&
                 downloadedEvents.eventsWithText.map((e, i) => {
-
                   if (i > 3) return;
                   return (
                     <View key={i} style={{ padding: 10 }}>
                       <View>
-                        <Image
-                          source={{ uri: e[0].uri }}
-                          style={{ height: 120, width: 120 }}
-                        />
+                        <TouchableOpacity onPress={() => {
+                          navigation.navigate('ImageViewScreen', {
+                            data: e,
+                          });
+                        }}>
+
+                          < Image
+                            source={{ uri: e[0].uri }}
+                            style={{ height: 120, width: 120 }}
+                          />
+                        </TouchableOpacity>
                       </View>
                     </View>
                   );
                 })}
             </View>
+            {/* </TouchableOpacity> */}
+
             <View>
               <Button
                 onPress={() => navigation.navigate('DownloadScreen')}
@@ -296,8 +312,8 @@ function HomeScreen({ navigation }) {
             </View>
           </View>
         </ScrollView>
-      </View>
-    </SafeAreaView>
+      </View >
+    </SafeAreaView >
   );
 }
 

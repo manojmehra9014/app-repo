@@ -8,7 +8,7 @@ import ProfileScreen from '../Screens/Profile/ProfileScreen';
 import CreateEventScreen from '../Screens/Event/CreateEvent';
 import SettingScreen from '../Screens/Profile/SettingScreen';
 import AllEventsScreen from '../Screens/Event/AllEventsScreen';
-
+import ImageViewScreen from '../Screens/Event/ImageViewScreen';
 const HomeRoute = () => {
   const Stack = createStackNavigator();
 
@@ -22,6 +22,11 @@ const HomeRoute = () => {
       <Stack.Screen
         name="DownloadScreen"
         component={DownloadScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="ImageViewScreen"
+        component={ImageViewScreen}
         options={{ header: () => null }}
       />
     </Stack.Navigator>
@@ -48,11 +53,16 @@ const EventRoutes = () => {
         component={CreateEventScreen}
         options={{ header: () => null }}
       />
+      <Stack.Screen
+        name="ImageViewScreen"
+        component={ImageViewScreen}
+        options={{ header: () => null }}
+      />
     </Stack.Navigator>
   );
 };
 
-const ProfileRoute = ({}) => {
+const ProfileRoute = ({ }) => {
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator>

@@ -326,9 +326,7 @@ const styles = StyleSheet.create({
     flex: 1,
 
   },
-  shareicon: {
-
-  }
+  
 
 })
 export default EventScreen;
