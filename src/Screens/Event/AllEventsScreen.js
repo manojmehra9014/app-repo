@@ -57,6 +57,7 @@ function AllEventsScreen() {
     <SafeAreaView>
       <StatusBar />
       <View style={styles.container}>
+        
         <View>
           {events && user && events.length > 0 && (
             <FlatList

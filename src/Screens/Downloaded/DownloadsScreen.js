@@ -1,226 +1,206 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
-import { FlatList, Image, SafeAreaView, Text, View, StyleSheet, TouchableOpacity, ScrollView, Dimensions, } from 'react-native';
+import { SafeAreaView, Text, View, FlatList, TouchableOpacity, Image, StyleSheet, Dimensions } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import * as MediaLibrary from 'expo-media-library';
-import { Icon } from 'react-native-elements';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import HomeScreen from '../Home/HomeScreen';
-import { useState } from 'react';
+import { getPersonalizedEvents, getTodaysEvent } from '../../actions/event';
+import { getTodaysDate } from '../../utils/getTodaysDate';
 const { width, height } = Dimensions.get('screen');
+import { Icon } from 'react-native-elements';
 
-function DownloadScreen({ navigation }) {
+function DownloadScreen() {
   const dispatch = useDispatch();
-  const downloadedEvents = useSelector((state) => state.downloadedEvents);
   const user = useSelector((state) => state.user);
   const events = useSelector((state) => state.todaysEvent);
 
-  const [text, setText] = useState('');
-  // console.log(downloadedEvents, "ye hn download event");
-  // console.log(user.data.profile_photo_url, "user data");
+  console.log(events)
   useEffect(() => {
-    const loadData = async () => {
-      // console.log('Running in Downloads screen');
-      const album = await MediaLibrary.getAlbumAsync('app');
+    const fetchdata = async () => {
+      try {
+        const { user_type } = user.data;
+        const today = getTodaysDate();
+        if (user_type === 'USER') {
+          let {
+            political_party,
+            state_name,
+            district_name,
+            vidhan_shabha_name,
+            leader,
+          } = user.data;
+          leader = leader.mobile_number.replace('+', '');
+          const res = await getPersonalizedEvents({
+            today,
+            political_party,
+            state: state_name,
+            district: district_name,
+            vidhan_shabha: vidhan_shabha_name,
+            leader,
+            date: today,
+          });
+          dispatch({
+            type: 'TODAYS_EVENT',
+            payload: res.data,
+          });
+        }
 
-      const assets = await MediaLibrary.getAssetsAsync({
-        first: 6,
-        album,
-        mediaType: 'photo',
-      });
-      // console.log(assets.endCursor);
-      eventsWithText = [];
-      for (let asset of assets.assets) {
-        const text = await AsyncStorage.getItem(asset.filename);
-        eventsWithText.push([asset, text]);
+        if (user_type === 'INDIVIDUAL') {
+          const res = await getTodaysEvent(today);
+          dispatch({
+            type: 'TODAYS_EVENT',
+            payload: res.data,
+          });
+        }
+      } catch (e) {
+        console.log(e);
       }
-      page += 1;
-      dispatch({
-        type: 'SET_DOWNLOADED_EVENTS',
-        payload: {
-          lastFetched: {
-            endCursor: assets.endCursor,
-            hasNextPage: assets.hasNextPage,
-          },
-          eventsWithText,
-        },
-      });
     };
-
-    const loadNext = async () => {
-      const album = await MediaLibrary.getAlbumAsync('app');
-      const assets = await MediaLibrary.getAssetsAsync({
-        after: downloadedEvents.lastFetched.endCursor,
-        album,
-        mediaType: 'photo',
-      });
-      eventsWithText = [];
-      for (let i = 0; i < downloadedEvents.eventsWithText.length; i++) {
-        eventsWithText.push(downloadedEvents.eventsWithText[i]);
-      }
-      for (let asset of assets.assets) {
-        const text = await AsyncStorage.getItem(asset.filename);
-        eventsWithText.push([asset, text]);
-      }
-      // console.log(eventsWithText);
-      dispatch({
-        type: 'SET_DOWNLOADED_EVENTS',
-        payload: {
-          lastFetched: {
-            endCursor: assets.endCursor,
-            hasNextPage: assets.hasNextPage,
-          },
-          eventsWithText,
-        },
-      });
-    };
-    try {
-      if (!downloadedEvents) {
-        loadData();
-      } else {
-        loadNext();
-      }
-    } catch (e) {
-      console.log(e);
-    }
+    fetchdata();
   }, []);
-
-  const currentDate = new Date();
-  const formattedDate = currentDate.toDateString();
-
   return (
-    <>
-      <ScrollView>
-        <SafeAreaView>
-          <StatusBar />
-          <View style={styles.container}>
-            <View>
-            </View>
-            <View style={styles.backbar}>
-              <TouchableOpacity style={styles.backbtn} onPress={() => navigation.navigate('HomeScreen')}>
-                <Icon
-                  name="arrow-left"
-                  type="font-awesome"
-                  color="blue"
-                  size={20}
-                  style={styles.icon}
-                />
-              </TouchableOpacity>
-              <Text style={styles.date}>{formattedDate}</Text>
-            </View>
-            <View>
-              <Text style={styles.downloaditemnum}>Total Downloaded Pictures - {downloadedEvents.eventsWithText.length}</Text>
-            </View>
-            <View style={styles.mainContainer}>
-              <View
-                style={{
-                  alignItems: 'center',
-                }}>
-                <FlatList
-                  style={{ marginTop: 20 }}
-                  data={downloadedEvents.eventsWithText}
-                  horizontal={false}
-                  // keyExtractor={(item) => item._id}
-                  showsVerticalScrollIndicator={false}
-                  renderItem={({ item }) => {
-                    // console.log(item[0].uri);
-                    return (
-                      <View style={styles.card}>
-                        <View style={styles.header}>
-                          <Image style={styles.profileimg} source={{ uri: user.data.profile_photo_url }} />
-                          <Text style={styles.username}>{user.data.name}</Text>
-                        </View>
+    <SafeAreaView>
+      <StatusBar />
+      <View style={styles.container}>
+        <View style={styles.backbar}>
+          <TouchableOpacity style={styles.backbtn} onPress={() => navigation.navigate('HomeScreen')}>
+            <Icon
+              name="arrow-left"
+              type="font-awesome"
+              color="black"
+              size={20}
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+        </View>
+        <View>
+          {events && user && events.length > 0 && (
+            <FlatList
+              style={{ marginTop: 20 }}
+              data={events}
+              horizontal={false}
+              renderItem={({ item }) => (
+                <View style={styles.fullimg}>
+                  <View style={styles.header}>
+                    <Image style={styles.profileimg} source={{ uri: user.data.profile_photo_url }} />
+                    <Text style={styles.username}>{user.data.name}</Text>
+                  </View>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.mainImage}>
+                    <Image
+                      source={{ uri: item.event.coverImage }}
+                      style={styles.mainimgbg}
+                      resizeMode="cover"
+                    />
+                    <View
+                      style={{
+                        position: 'absolute',
+                        flexDirection: 'row',
+                        left: '20%',
+                      }}>
+                      {user.data.leader_images.map((e, i) => (
                         <Image
-                          style={styles.cardimg}
-                          source={{ uri: item[0].uri }}
+                          source={{ uri: e }}
+                          key={i}
+                          style={styles.leaderimg}
                         />
-                        <Text style={styles.cardText}>{item[1]}</Text>
-                        <View style={styles.btnview}>
-                          <TouchableOpacity style={styles.downloadbtn} onPress={() => handleCopyText(event.event.text)}>
-                            <Icon style={styles.btnicon} color='white' size={20} name="copy" type="font-awesome" />
-                            <Text style={styles.downloadbtntext}>Copy Text</Text>
-                          </TouchableOpacity>
+                      ))}
+                    </View>
+                    {user.data.user_type == 'USER' && (
+                      <Image
+                        source={{ uri: user.data.leader.profile_photo_url }}
+                        style={styles.mainleaderimg}
+                      />
+                    )}
 
-                          <TouchableOpacity style={styles.sharebtn} onPress={async () => await onShare()}>
-                            <Icon style={styles.shareicon} color="black" name="share" size={20} type="font-awesome" />
-                            <Text style={styles.downloadbtntextshare}>Share</Text>
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-                    );
-                  }}
-                />
-              </View>
-            </View>
-          </View>
-        </SafeAreaView >
-      </ScrollView>
-    </>
+                    <Image
+                      source={{ uri: user.data.profile_photo_url }}
+                      style={styles.userimg}
+                    />
+
+                  </TouchableOpacity>
+                  <Text style={styles.imgtitle}>{item.event.title}</Text>
+                  <Text style={styles.eventtext}>{item.event.text}</Text>
+                  <View style={styles.btnview}>
+                    <TouchableOpacity style={styles.downloadbtn} onPress={() => handleCopyText(event.event.text)}>
+                      <Icon style={styles.btnicon} color='white' size={20} name="copy" type="font-awesome" />
+                      <Text style={styles.downloadbtntext}>Copy Text</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.sharebtn} onPress={async () => await onShare()}>
+                      <Icon style={styles.shareicon} color="black" name="share" size={20} type="font-awesome" />
+                      <Text style={styles.downloadbtntextshare}>Share</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                </View>
+              )}
+            />
+          )}
+
+        </View>
+      </View>
+
+    </SafeAreaView>
   );
 }
 
 export default DownloadScreen;
-
-
 const styles = StyleSheet.create({
-
-  mainContainer: {
-    flex: 1, // Make sure the container takes up the full available space
-  },
   container: {
-    marginTop: 40,
-    textAlign: "center",
+    marginTop: 20,
     backgroundColor: "white",
   },
-  backbar: {
+  mainImage: {
+    backgroundColor: 'skyblue',
+    elevation: 10,
+    background: 'white',
+    width: width - 70,
+    height: width - 70,
+    borderRadius: 9,
+    shadowColor: 'rgba(0, 0, 0, 0.25)',
+  },
+  mainimgbg: {
+    height: '100%',
     width: '100%',
-    color: "white",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    borderBottomColor: 'white',
-    borderBottomWidth: 0.3,
-    paddingBottom: 10,
-    marginTop: 15,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    borderRadius: 9,
+    overflow: 'hidden',
   },
-  btnicon: {
-    marginRight: 5,
+  leaderimg: {
+    width: 40,
+    height: 40,
+    margin: 10,
+    borderRadius: 50,
   },
-  date: {
+  mainleaderimg: {
+    width: 100,
+    height: 100,
+    bottom: 3,
+    left: 3,
+    position: 'absolute',
+  },
+  userimg: {
+    width: 100,
+    height: 100,
+    bottom: 3,
+    right: 3,
+    position: 'absolute',
+  },
+  imgtitle: {
+    flexDirection: 'row',
     fontSize: 16,
-  },
-  backbtn: {
-    borderRadius: 40,
-    borderWidth: 0.6,
-    borderColor: 'lightblue',
-    paddingHorizontal: 9,
-    paddingVertical: 6,
-  },
-  card: {
-    // justifyContent: "center",
-    textAlign: "center",
-    paddingHorizontal: 5,
-    paddingBottom: 30,
-    borderColor: "gray",
-    borderWidth: 1,
-    margin: 10,
-    borderRadius: 10,
-  },
-  cardimg: {
-    width: width - 50,
-    height: width - 50,
-    alignSelf: "center",
+    color: "#0C356A",
     margin: 10,
   },
-  cardText: {
-    textAlign: "center",
-    marginHorizontal: 15,
-    marginVertical: 10,
-    fontSize: 12,
 
-  },
-  downloaditemnum: {
-    textAlign: "center",
+  fullimg: {
+    alignItems: "center",
+    margin: 20,
+    borderColor: "black",
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
   },
   header: {
     flex: 1,
@@ -247,10 +227,40 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
   },
+  eventtext: {
+    textAlign: "center",
+    fontSize: 14,
+    color: "#4D3C77",
+    margin: 5,
+  },
+  backbar: {
+    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    borderBottomColor: 'black',
+    borderBottomWidth: 0.3,
+    paddingBottom: 10,
+    marginTop: 25,
+  },
+  btnicon: {
+    marginRight: 5,
+  },
+  date: {
+    fontSize: 16,
+  },
+  backbtn: {
+    borderRadius: 40,
+    borderWidth: 0.6,
+    borderColor: 'blue',
+    paddingHorizontal: 9,
+    paddingVertical: 6,
+  },
   btnview: {
     flexDirection: 'row',
     justifyContent: "space-around",
     alignItems: 'center',
+    margin:20,
   },
   downloadbtn: {
     backgroundColor: '#279EFF',
@@ -266,10 +276,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 
-  downloadbtntextshare:{
-    marginLeft:5,
+  downloadbtntextshare: {
+    marginLeft: 5,
   },
-  sharebtn:{
+  sharebtn: {
     backgroundColor: '#279EFF',
     paddingVertical: 10,
     paddingHorizontal: 20,
