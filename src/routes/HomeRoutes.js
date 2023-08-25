@@ -53,11 +53,7 @@ const EventRoutes = () => {
         component={CreateEventScreen}
         options={{ header: () => null }}
       />
-      <Stack.Screen
-        name="ImageViewScreen"
-        component={ImageViewScreen}
-        options={{ header: () => null }}
-      />
+
     </Stack.Navigator>
   );
 };
@@ -82,7 +78,6 @@ const ProfileRoute = ({ }) => {
 
 const MainRoute = ({ navigation }) => {
   const Tab = createBottomTabNavigator();
-
   return (
     <Tab.Navigator>
       <Tab.Screen

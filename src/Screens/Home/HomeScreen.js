@@ -289,6 +289,7 @@ function HomeScreen({ navigation }) {
                       <View>
                         <TouchableOpacity onPress={() => {
                           navigation.navigate('ImageViewScreen', {
+                            name: 'ImageViewScreen',
                             data: e,
                           });
                         }}>

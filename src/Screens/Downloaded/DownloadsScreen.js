@@ -10,9 +10,11 @@ import { useState } from 'react';
 const { width, height } = Dimensions.get('screen');
 
 function DownloadScreen({ navigation }) {
+  const dispatch = useDispatch();
   const downloadedEvents = useSelector((state) => state.downloadedEvents);
   const user = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+  const events = useSelector((state) => state.todaysEvent);
+
   const [text, setText] = useState('');
   // console.log(downloadedEvents, "ye hn download event");
   // console.log(user.data.profile_photo_url, "user data");

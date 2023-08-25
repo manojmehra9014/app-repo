@@ -12,12 +12,14 @@ import {
     TouchableOpacity,
     Clipboard,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import { Icon } from 'react-native-elements';
 const { width, height } = Dimensions.get('screen');
-function ImageViewScreen({ route }) {
+function ImageViewScreen({ route  }) {
     const { data } = route.params;
     console.log(data);
+    const navigation = useNavigation();
 
     const handleCopyText = async (text) => {
         try {
@@ -31,7 +33,7 @@ function ImageViewScreen({ route }) {
         <>
             <View style={{ marginTop: 50 }}>
                 <View style={styles.backbar}>
-                    <TouchableOpacity style={styles.backbtn} onPress={() => navigation.navigate('HomeScreen')}>
+                    <TouchableOpacity style={styles.backbtn} onPress={()=>{navigation.navigate('HomeScreen') }}>
                         <Icon
                             name="arrow-left"
                             type="font-awesome"
@@ -152,21 +154,21 @@ const styles = StyleSheet.create({
     backbar: {
         width: '100%',
         flexDirection: "row",
-        marginTop:20,
+        marginTop: 20,
         justifyContent: "space-between",
         paddingHorizontal: 20,
         borderBottomColor: 'blue',
         borderBottomWidth: 0.3,
         paddingBottom: 10,
-      },
-      btnicon: {
+    },
+    btnicon: {
         marginRight: 5,
-      },
-      backbtn: {
+    },
+    backbtn: {
         borderRadius: 40,
         borderWidth: 0.6,
         borderColor: 'blue',
         paddingHorizontal: 9,
         paddingVertical: 6,
-      },
+    },
 })
