@@ -149,7 +149,6 @@ function HomeScreen({ navigation }) {
           <BackgroundImage
             source={appbg}
           >
-            {/* <StatusBar backgroundColor="#EDEDF1" barStyle={'dark-content'} /> */}
             <View style={styles.container}>
               <View style={styles.header}>
                 <View style={styles.logosection}>
@@ -160,6 +159,10 @@ function HomeScreen({ navigation }) {
                   onPress={async () => {
                     await signOut();
                   }}><Text style={styles.logouttext}>Logout</Text></TouchableOpacity>
+              </View>
+              <View>
+                <Text style={styles.h1}>Find Your</Text>
+                <Text style={styles.h2}>Events Post & UI</Text>
               </View>
               <View>
                 {events && user && events.length > 0 && (
@@ -270,14 +273,10 @@ function HomeScreen({ navigation }) {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Text>Downloaded Events</Text>
+                <Text style={styles.downloadtext}>Downloaded Events</Text>
               </View>
 
-              {/* <TouchableOpacity onPress={() => {
-              navigation.navigate('DownloadScreen', {
-                screen: 'DownloadScreen',
-              });
-            }}> */}
+
               <View
                 style={{
                   display: 'flex',
@@ -300,7 +299,6 @@ function HomeScreen({ navigation }) {
                               data: e,
                             });
                           }}>
-
                             < Image
                               source={{ uri: e[0].uri }}
                               style={{ height: 120, width: 120 }}

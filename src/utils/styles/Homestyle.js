@@ -7,7 +7,7 @@ export default styles = StyleSheet.create({
     flexGrow: 1,
   },
   container: {
-    marginTop: 40,
+    marginTop: 30,
     width: '100%',
     height: height,
   },
@@ -18,13 +18,15 @@ export default styles = StyleSheet.create({
     alignSelf: "center",
   },
   header: {
-    marginTop: 15,
+    marginTop: 20,
     color: "white",
     flexDirection: "row",
-    height: 60,
+    height: 80,
     alignItems: "center",
     justifyContent: "space-between",
-
+    borderColor: "white",
+    borderBottomWidth: 1,
+    paddingBottom: 20,
   },
   logo: {
     width: 50,
@@ -49,6 +51,22 @@ export default styles = StyleSheet.create({
     color: "white",
     fontSize: 14,
   },
-
-
+  downloadtext: {
+    color: "white",
+    fontSize: 16,
+  },
+  h1: {
+    fontSize: 28,
+    fontWeight: "900",
+    color: "white",
+    marginHorizontal: 20,
+    marginVertical: 5,
+  },
+  h2: {
+    fontSize: 20,
+    color: "white",
+    fontWeight: "700",
+    marginHorizontal: 20,
+    marginVertical: 5,
+  }
 })
