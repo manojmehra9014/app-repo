@@ -37,7 +37,7 @@ const EventRoutes = () => {
   const Stack = createStackNavigator();
 
   return (
-    <Stack.Navigator initialRouteName="AllEventsScreen">
+    <Stack.Navigator>
       <Stack.Screen
         name="AllEventsScreen"
         component={AllEventsScreen}
