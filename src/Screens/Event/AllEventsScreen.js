@@ -16,7 +16,6 @@ function AllEventsScreen({ navigation }) {
         <View>
           {events && user && events.length > 0 && (
             <FlatList
-              style={{ marginTop: 20 }}
               data={events}
               horizontal={false}
               renderItem={({ item }) => (

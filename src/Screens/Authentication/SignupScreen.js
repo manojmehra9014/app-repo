@@ -343,7 +343,7 @@ const SignupScreen = ({ navigation }) => {
             </View>
 
             <View style={styles.inputFileds}>
-              {userexist && (
+              {/* {userexist && (
                 <View style={styles.firstscr}>
                   {phoneNumberValidationMsg ? (
                     <Text style={styles.validationText}>
@@ -377,8 +377,8 @@ const SignupScreen = ({ navigation }) => {
                     <Text style={styles.regbtntext}>Next</Text>
                   </TouchableOpacity>
                 </View>
-              )}
-              {!userexist && (
+              )} */}
+              {/* {!userexist && ( */}
                 <View>
                   {/*input for username  */}
                   {nameValidationMsg ? (
@@ -468,7 +468,7 @@ const SignupScreen = ({ navigation }) => {
                       keyExtractor={(item) => item}
                       style={styles.suggestionList} // Apply your custom styles here
                     />
-                  )}
+                )}
 
                   {/* select state . */}
                   <View
@@ -640,7 +640,7 @@ const SignupScreen = ({ navigation }) => {
                     </Text>
                   </TouchableOpacity>
                 </View>
-              )}
+              {/* )} */}
               {otpSent && (
                 <View>
                   <View style={[styles.inputView, { top: 40 }]}>
