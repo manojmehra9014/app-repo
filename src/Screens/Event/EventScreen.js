@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useRef,useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Image,
   Dimensions,
@@ -20,7 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const screenWidth = Dimensions.get('window').width - 30;
 import HomeScreen from '../Home/HomeScreen';
 function EventScreen({ navigation }) {
-  const viewShotRef = useRef();
+  const viewShotRef = useRef(null);
   const user = useSelector((state) => state.user);
   const event = useSelector((state) => state.activeEvent);
   const downloadscreen = useSelector((state) => state.downloadedEvents);
@@ -66,21 +66,32 @@ function EventScreen({ navigation }) {
       console.log(e);
     }
   };
- const [imageURI,setimageURI] = useState('');
-  const onShare = async () => {
+
+
+  const captureViewShot = async () => {
     try {
-      await viewShotRef.current.capture().then(uri => {
-        console.log("do something with " ,uri);
-        setimageURI(uri);
+      if (viewShotRef.current) {
+        const uri = await viewShotRef.current.capture();
+        console.log(uri);
+        shareImage(uri);
+
+      }
+    } catch (error) {
+      console.error('Error capturing view:', error.message);
+    }
+  };
+
+  const shareImage = async (imageUri) => {
+    try {
+      const result = await Share.share({
+        message: event.event.text, 
+        url: imageUri,
       });
 
-      await Share.share({
-        message: event.event.text,
-        url:imageURI,
-      });
-      
+      if (result.action === Share.sharedAction) {
+      }
     } catch (error) {
-      Alert.alert("Share not Working !Try Again");
+      console.error('Error sharing image:', error.message);
     }
   };
 
@@ -125,7 +136,7 @@ function EventScreen({ navigation }) {
             {event && user && (
               <ViewShot
                 ref={viewShotRef}
-                options={{ format: 'png', quality: 1, fileName: `${Date.now()}`, height: 1000, width: 1000, }}>
+                options={{ format: 'png', quality: 1, height: 1000, width: 1000, }}>
                 <Image source={{ uri: event.event.coverImage }}
                   style={styles.maindownloadimg}
                   resizeMode="contain"
@@ -171,8 +182,9 @@ function EventScreen({ navigation }) {
               <Text style={styles.downloadbtntext}>Download</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.sharebtn} onPress={async () => await onShare()}>
-              <Icon style={styles.shareicon} color="black" name="share" size={20} type="font-awesome" />
+            <TouchableOpacity style={styles.sharebtn} onPress={async () => await captureViewShot()}>
+              <Icon style={styles.shareicon} color="black" name="share" size={14} type="font-awesome" />
+              <Text style={styles.iconsharetext}>Share</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -237,16 +249,17 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   eventtextcontainer: {
-    width: screenWidth - 10,
-    backgroundColor: 'white',
-    width: '100%',
+    backgroundColor: '#DCD6F7',
+    width: '95%',
+    marginHorizontal:20,
     padding: 10,
     borderRadius: 9,
-
+    
   },
   eventtext: {
     textAlign: "center",
-    fontSize: 11,
+    fontSize: 13,
+    fontStyle:"italic",
   },
   imagecomponent: {
     position: 'absolute',
@@ -290,7 +303,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: "space-around",
     alignItems: 'center',
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
   },
   backbar: {
     width: '100%',
@@ -316,17 +329,21 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   sharebtn: {
-    paddingVertical: 12,
-    marginLeft:15,
+    paddingVertical: 9,
+    marginLeft: 12,
     paddingHorizontal: 12,
     backgroundColor: "white",
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    flex: 1,
+    flexDirection:"row",
 
   },
-  
+  iconsharetext:{
+color:"gray",
+marginHorizontal:4,
+  }
+
 
 })
 export default EventScreen;

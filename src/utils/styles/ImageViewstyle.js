@@ -75,6 +75,8 @@ export default styles = StyleSheet.create({
 
     downloadbtntextshare: {
         marginLeft: 5,
+        color:"white",
+        fontWeight:"600",
     },
     sharebtn: {
         backgroundColor: '#279EFF',

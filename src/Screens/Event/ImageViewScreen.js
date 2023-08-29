@@ -19,7 +19,7 @@ import { Icon } from 'react-native-elements';
 const { width, height } = Dimensions.get('screen');
 function ImageViewScreen({ route }) {
     const { data } = route.params;
-    console.log(data);
+    // console.log(data);
     const navigation = useNavigation();
 
     const handleCopyText = async (text) => {
@@ -56,8 +56,8 @@ function ImageViewScreen({ route }) {
                             <Text style={styles.downloadbtntext}>Copy Text</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.sharebtn} onPress={async () => await onShare()}>
-                            <Icon style={styles.shareicon} color="black" name="share" size={20} type="font-awesome" />
+                        <TouchableOpacity style={styles.sharebtn} >
+                            <Icon style={styles.shareicon} color="white" name="share" size={17} type="font-awesome" />
                             <Text style={styles.downloadbtntextshare}>Share</Text>
                         </TouchableOpacity>
                     </View>
