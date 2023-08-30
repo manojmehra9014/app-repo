@@ -8,6 +8,7 @@ function AllEventsScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const events = useSelector((state) => state.todaysEvent);
+  console.log(events);
   return (
     <SafeAreaView>
       <StatusBar backgroundColor="#EDEDF1" barStyle={'dark-content'} />

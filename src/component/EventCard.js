@@ -12,8 +12,8 @@ function EventCard({ item, navigation }) {
       type: 'SET_CURRENT_ACTIVE_EVENT',
       payload: item,
     });
-    navigation.navigate('EventRoute', {
-      screen: 'EventScreen',
+    navigation.navigate('HomeRoute', {
+      screen: 'AlbumList',
     });
   };
 
@@ -25,7 +25,7 @@ function EventCard({ item, navigation }) {
         onPress={handleEventPress}>
         {/* Cover Image */}
         <Image
-          source={{ uri: item.event.coverImage }}
+          source={{ uri: item.event.coverImages[0] }}
           style={styles.mainimgbg}
           resizeMode="cover"
         />

@@ -120,7 +120,7 @@ function EventScreen({ navigation }) {
         <View style={styles.container}>
           
           <View style={styles.backbar}>
-            <TouchableOpacity style={styles.backbtn} onPress={() => navigation.navigate('HomeScreen')}>
+            <TouchableOpacity style={styles.backbtn} onPress={() => navigation.navigate('AlbumList')}>
               <Icon
                 name="arrow-left"
                 type="font-awesome"
