@@ -10,6 +10,7 @@ export const getTodaysEvent = async (date) => {
       body: JSON.stringify({ date }),
     })
       .then((response) => {
+        console.log(response)
         return response.json();
       })
       .catch((err) => {

@@ -1,6 +1,6 @@
 import { Auth } from 'aws-amplify';
 import React, { useState } from 'react';
-import {  Alert,  Button,  Dimensions,  SafeAreaView,  StyleSheet,  Text,  Image,  ActivityIndicator, TextInput,View,} from 'react-native';
+import { Alert, Button, Dimensions, SafeAreaView, StyleSheet, Text, Image, ActivityIndicator, TextInput, View, } from 'react-native';
 import { logo } from '../../const';
 import { spinner } from '../../const';
 import styles from '../../utils/styles/LoginPagestyle';
@@ -115,23 +115,26 @@ const LoginScreen = ({ navigation }) => {
                 />
               </View>
 
-              <TouchableOpacity
-                style={styles.regbtn}
-                title="Login"
-                onPress={async () => await login()}>
-                <Text style={styles.loginBtnText}>Login</Text>
-              </TouchableOpacity>
+              <View style={{ marginTop: 10, marginBottom: 10 }}>
 
+              </View>
+              <View>
 
-              <TouchableOpacity
-                style={styles.signupbtn}
-                title="SignUp"
-                onPress={() => navigation.navigate('Signup')}>
-                <Text style={styles.signupbtntext}>SignUp</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.regbtn}
+                  title="Login"
+                  onPress={async () => await login()}>
+                  <Text style={styles.loginBtnText}>Login</Text>
+                </TouchableOpacity>
+<View style={{marginTop:100}}></View>
+                <TouchableOpacity
+                  style={styles.signupbtn}
+                  title="SignUp"
+                  onPress={() => navigation.navigate('Signup')}>
+                  <Text style={styles.signupbtntext}>SignUp</Text>
+                </TouchableOpacity>
 
-
-              
+              </View>
             </View>
           </View>
         </View>

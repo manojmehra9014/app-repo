@@ -14,24 +14,7 @@ export default styles = StyleSheet.create({
         height: screenWidth,
         elevation: 10,
     },
-    bigCircle: {
-        width: Dimensions.get('window').height * 0.8,
-        height: Dimensions.get('window').height * 0.5,
-        backgroundColor: '#19A7CE',
-        borderRadius: 1000,
-        position: 'absolute',
-        right: Dimensions.get('window').width * 0.25,
-        top: -150,
-    },
-    smallCircle: {
-        width: Dimensions.get('window').height * 0.4,
-        height: Dimensions.get('window').height * 0.4,
-        backgroundColor: '#FF6666',
-        borderRadius: 1000,
-        position: 'absolute',
-        bottom: Dimensions.get('window').width * -0.4,
-        right: Dimensions.get('window').width * -0.3,
-    },
+    
     eventheadingetxt: {
         fontSize: 25,
         fontWeight: '800',
@@ -131,13 +114,15 @@ export default styles = StyleSheet.create({
     backbtn: {
         borderRadius: 40,
         borderWidth: 0.6,
-        borderColor: 'white',
+        borderColor: 'black',
         paddingHorizontal: 9,
         paddingVertical: 6,
     },
     sharebtn: {
         paddingVertical: 9,
         marginLeft: 12,
+        borderColor:"black",
+        borderWidth:0.5,
         paddingHorizontal: 12,
         backgroundColor: "white",
         borderRadius: 50,

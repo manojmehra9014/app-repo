@@ -25,6 +25,7 @@ import styled from 'styled-components/native';
 import { Button } from 'react-native-elements';
 import { appbg, logo, appname } from '../../const';
 
+
 function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -39,7 +40,6 @@ function HomeScreen({ navigation }) {
       type: 'LOGGED_OUT',
       payload: null,
     });
-
   }
   useEffect(() => {
     const fetchdata = async () => {
@@ -64,6 +64,7 @@ function HomeScreen({ navigation }) {
             leader,
             date: today,
           });
+          // console.log(res);
           dispatch({
             type: 'TODAYS_EVENT',
             payload: res.data,
@@ -147,184 +148,187 @@ function HomeScreen({ navigation }) {
           style={{ flexGrow: 1 }}
           scrollEnabled={true}
           nestedScrollEnabled={true}>
+          {user && user.data &&
 
-          <View style={styles.container}>
-            <View style={styles.header}>
-              <View style={styles.logosection}>
-                <Image style={styles.logo} source={{ uri: user.data.leader.profile_photo_url }} />
-                <Text style={styles.appname}>{user.data.name}</Text>
+
+            <View style={styles.container}>
+              <View style={styles.header}>
+                <View style={styles.logosection}>
+                  <Image style={styles.logo} source={{ uri: user.data.leader.profile_photo_url }} />
+                  <Text style={styles.appname}>{user.data.name}</Text>
+                </View>
+
+                <TouchableOpacity style={styles.logoutbtn}
+                  onPress={async () => {
+                    await signOut();
+                  }}><Text style={styles.logouttext}>Logout</Text></TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => { navigation.navigate('SettingScreen') }}
+                >
+                  <Icon style={styles.icon} color="black" name="bars" type="font-awesome" />
+                </TouchableOpacity>
               </View>
-
-              <TouchableOpacity style={styles.logoutbtn}
-                onPress={async () => {
-                  await signOut();
-                }}><Text style={styles.logouttext}>Logout</Text></TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => { navigation.navigate('SettingScreen') }}
-              >
-                <Icon style={styles.icon} color="black" name="bars" type="font-awesome" />
-              </TouchableOpacity>
-            </View>
-            <View>
-              <Text style={styles.h1}>Find Your</Text>
-              <Text style={styles.h2}>Events Post & UI</Text>
-            </View>
-            <View>
-              {events && user && events.length > 0 && (
-                <FlatList
-                  style={{ marginTop: 20 }}
-                  data={events}
-                  horizontal={true}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity
-                      activeOpacity={1}
-                      onPress={() => {
-                        dispatch({
-                          type: 'SET_CURRENT_ACTIVE_EVENT',
-                          payload: item,
-                        });
-                        navigation.navigate('EventRoute', {
-                          screen: 'EventScreen',
-                        });
-                      }}
-                      style={{
-                        backgroundColor: 'yellow',
-                        marginLeft: 10,
-                        elevation: 10,
-                        background: 'white',
-                        width: 315,
-                        height: 280,
-                        borderRadius: 14,
-                        shadowColor: 'rgba(0, 0, 0, 0.15)',
-                      }}>
-                      <Image
-                        source={{ uri: item.event.coverImage }}
-                        style={{
-                          height: '100%',
-                          width: '100%',
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          borderRadius: 14,
-                          overflow: 'hidden',
+              <View>
+                <Text style={styles.h1}>Find Your</Text>
+                <Text style={styles.h2}>Events Post & UI</Text>
+              </View>
+              <View>
+                {events && user && events.length > 0 && (
+                  <FlatList
+                    style={{ marginTop: 20 }}
+                    data={events}
+                    horizontal={true}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={() => {
+                          dispatch({
+                            type: 'SET_CURRENT_ACTIVE_EVENT',
+                            payload: item,
+                          });
+                          navigation.navigate('HomeRoute', {
+                            screen: 'AlbumList',
+                          });
                         }}
-                        resizeMode="cover"
-                      />
-                      <View
                         style={{
-                          position: 'absolute',
-                          flexDirection: 'row',
-                          left: '30%',
+                          backgroundColor: 'yellow',
+                          marginLeft: 10,
+                          elevation: 10,
+                          background: 'white',
+                          width: 315,
+                          height: 280,
+                          borderRadius: 14,
+                          shadowColor: 'rgba(0, 0, 0, 0.15)',
                         }}>
-                        {user.data.leader_images.map((e, i) => (
+                        <Image
+                          source={{ uri: item.event.coverImages[0] }}
+                          style={{
+                            height: '100%',
+                            width: '100%',
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            borderRadius: 14,
+                            overflow: 'hidden',
+                          }}
+                          resizeMode="cover"
+                        />
+                        <View
+                          style={{
+                            position: 'absolute',
+                            flexDirection: 'row',
+                            left: '30%',
+                          }}>
+                          {user.data.leader_images.map((e, i) => (
+                            <Image
+                              source={{ uri: e }}
+                              key={i}
+                              style={{
+                                width: 40,
+                                height: 40,
+                                margin: 10,
+                                borderRadius: 50,
+                              }}
+                            />
+                          ))}
+                        </View>
+                        {user.data.user_type == 'USER' && (
                           <Image
-                            source={{ uri: e }}
-                            key={i}
+                            source={{ uri: user.data.leader.profile_photo_url }}
                             style={{
-                              width: 40,
-                              height: 40,
-                              margin: 10,
-                              borderRadius: 50,
+                              width: 100,
+                              height: 100,
+                              bottom: 3,
+                              left: 3,
+                              position: 'absolute',
                             }}
                           />
-                        ))}
-                      </View>
-                      {user.data.user_type == 'USER' && (
+                        )}
+
                         <Image
-                          source={{ uri: user.data.leader.profile_photo_url }}
+                          source={{ uri: user.data.profile_photo_url }}
                           style={{
                             width: 100,
                             height: 100,
                             bottom: 3,
-                            left: 3,
+                            right: 3,
                             position: 'absolute',
                           }}
                         />
-                      )}
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            position: 'absolute',
+                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                            alignContent: 'center',
+                            bottom: 0,
+                          }}>
+                          <Text>{item.event.title}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    )}
+                    keyExtractor={(item) => item._id}
+                    showsHorizontalScrollIndicator={false}
+                  />
+                )}
+              </View>
 
-                      <Image
-                        source={{ uri: user.data.profile_photo_url }}
-                        style={{
-                          width: 100,
-                          height: 100,
-                          bottom: 3,
-                          right: 3,
-                          position: 'absolute',
-                        }}
-                      />
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          position: 'absolute',
-                          backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                          alignContent: 'center',
-                          bottom: 0,
-                        }}>
-                        <Text>{item.event.title}</Text>
+
+              <View
+                style={{
+                  margin: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text style={styles.downloadtext}>Downloaded Events</Text>
+              </View>
+
+
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                {downloadedEvents &&
+                  downloadedEvents.eventsWithText &&
+                  downloadedEvents.eventsWithText.length > 0 &&
+                  downloadedEvents.eventsWithText.map((e, i) => {
+                    if (i > 3) return;
+                    return (
+                      <View key={i} style={{ padding: 10 }}>
+                        <View>
+                          <TouchableOpacity onPress={() => {
+                            navigation.navigate('ImageViewScreen', {
+                              name: 'ImageViewScreen',
+                              data: e,
+                            });
+                          }}>
+                            < Image
+                              source={{ uri: e[0].uri }}
+                              style={{ height: 120, width: 120 }}
+                            />
+                          </TouchableOpacity>
+                        </View>
                       </View>
-                    </TouchableOpacity>
-                  )}
-                  keyExtractor={(item) => item._id}
-                  showsHorizontalScrollIndicator={false}
-                />
-              )}
+                    );
+                  })}
+              </View>
+
+              {/* </TouchableOpacity> */}
+              <View style={{ marginTop: 10 }}>
+                <Button
+                  onPress={() => navigation.navigate('DownloadScreen')}
+                  title="Go To Downloads">
+                </Button>
+              </View>
+
+
             </View>
-
-
-            <View
-              style={{
-                margin: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text style={styles.downloadtext}>Downloaded Events</Text>
-            </View>
-
-
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              {downloadedEvents &&
-                downloadedEvents.eventsWithText &&
-                downloadedEvents.eventsWithText.length > 0 &&
-                downloadedEvents.eventsWithText.map((e, i) => {
-                  if (i > 3) return;
-                  return (
-                    <View key={i} style={{ padding: 10 }}>
-                      <View>
-                        <TouchableOpacity onPress={() => {
-                          navigation.navigate('ImageViewScreen', {
-                            name: 'ImageViewScreen',
-                            data: e,
-                          });
-                        }}>
-                          < Image
-                            source={{ uri: e[0].uri }}
-                            style={{ height: 120, width: 120 }}
-                          />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  );
-                })}
-            </View>
-
-            {/* </TouchableOpacity> */}
-            <View style={{ marginTop: 10 }}>
-              <Button
-                onPress={() => navigation.navigate('DownloadScreen')}
-                title="Go To Downloads">
-              </Button>
-            </View>
-
-
-          </View>
+          }
         </ScrollView>
       </SafeAreaView >
     </>

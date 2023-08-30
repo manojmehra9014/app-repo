@@ -9,7 +9,6 @@ import {
   Alert,
   StyleSheet,
   Clipboard,
-  Share,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from '../../utils/styles/EventScreenstyle';
@@ -18,15 +17,18 @@ import * as MediaLibrary from 'expo-media-library';
 import { Icon } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Share from 'expo-sharing';
 const screenWidth = Dimensions.get('window').width - 30;
 import HomeScreen from '../Home/HomeScreen';
+import { Linking } from 'react-native';
+
+
 function EventScreen({ navigation }) {
   const viewShotRef = useRef(null);
   const user = useSelector((state) => state.user);
   const event = useSelector((state) => state.activeEvent);
   const downloadscreen = useSelector((state) => state.downloadedEvents);
   const dispatch = useDispatch();
-
   useEffect(() => {
     if (!event) {
       dispatch({
@@ -69,30 +71,35 @@ function EventScreen({ navigation }) {
   };
 
 
-  const captureViewShot = async () => {
+  const shareImage = async () => {
     try {
-      if (viewShotRef.current) {
-        const uri = await viewShotRef.current.capture();
-        console.log(uri);
-        shareImage(uri);
-
+      const uri = await viewShotRef.current.capture(); // Replace with your image capture method
+      const message = event.event.text; // Replace with your actual message text
+      
+      if (await Share.isAvailableAsync()) {
+        // Share the image first
+        await Share.shareAsync(uri, {
+          mimeType: 'image/jpeg',
+          dialogTitle: 'Share this image',
+          UTI: 'image/jpeg',
+        });
+        
+        // Prompt the user to proceed to the next step
+        const proceed = window.confirm("Press OK to share the text");
+        
+        if (proceed) {
+          if (Linking.canOpenURL("whatsapp://send")) {
+            // Now share the text
+            Linking.openURL(`whatsapp://send?text=${message}`);
+          } else {
+            alert('WhatsApp is not installed');
+          }
+        }
+      } else {
+        alert('Sharing is not available on this platform');
       }
     } catch (error) {
-      console.error('Error capturing view:', error.message);
-    }
-  };
-
-  const shareImage = async (imageUri) => {
-    try {
-      const result = await Share.share({
-        message: event.event.text, 
-        url: imageUri,
-      });
-
-      if (result.action === Share.sharedAction) {
-      }
-    } catch (error) {
-      console.error('Error sharing image:', error.message);
+      console.log(error);
     }
   };
 
@@ -109,17 +116,15 @@ function EventScreen({ navigation }) {
   const formattedDate = currentDate.toDateString();
   return (
     <SafeAreaView>
-      <StatusBar />
       <View>
         <View style={styles.container}>
-          <View style={styles.bigCircle}></View>
-          <View style={styles.smallCircle}></View>
+          
           <View style={styles.backbar}>
             <TouchableOpacity style={styles.backbtn} onPress={() => navigation.navigate('HomeScreen')}>
               <Icon
                 name="arrow-left"
                 type="font-awesome"
-                color="white"
+                color="black"
                 size={20}
                 style={styles.icon}
               />
@@ -183,7 +188,7 @@ function EventScreen({ navigation }) {
               <Text style={styles.downloadbtntext}>Download</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.sharebtn} onPress={async () => await captureViewShot()}>
+            <TouchableOpacity style={styles.sharebtn} onPress={async () => await shareImage()}>
               <Icon style={styles.shareicon} color="black" name="share" size={14} type="font-awesome" />
               <Text style={styles.iconsharetext}>Share</Text>
             </TouchableOpacity>

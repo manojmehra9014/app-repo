@@ -82,30 +82,8 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  regbtn: {
-    paddingHorizontal: 4,
-    paddingVertical: 8,
-    width: '90%',
-    borderColor: '#11009E',
-    textAlign: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#11009E',
-    height: 44,
-    left: 20,
-    top: 100,
-    bottom: 50,
-    borderWidth: 1.8,
-    borderRadius: 19,
-    marginBottom: 75,
-  },
-  loginLinkText: {
-    fontSize: 18,
-    textAlign: 'center',
-    color: 'blue',
-    marginTop: 50,
-    textDecorationLine: 'underline',
-  },
+
+
   loadingContainer: {
     position: 'absolute',
     justifyContent: 'center',
@@ -117,27 +95,34 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  signupbtn: {
-    paddingHorizontal: 4,
-    paddingVertical: 8,
-    width: '90%',
-    borderColor: '#11009E',
-    textAlign: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    color:"#11009E",
-    height: 44,
-    left: 20,
-    top: 45,
-    bottom: 50,
-    borderWidth: 1.8,
-    borderRadius: 19,
-    marginBottom: 75,
+  regbtn:{
+    marginTop:100,
+    backgroundColor:"blue",
+    padding:10,
+    justifyContent:"center",
+    borderRadius:29,
+    alignItems:"center",
+
+  },
+  loginBtnText:{
+    textAlign:"center",
+    fontWeight:"600",
+    color:"white",
+    fontSize:16,
+  },
+  signupbtn:{
+    backgroundColor:"white",
+    padding:10,
+    justifyContent:"center",
+    borderRadius:29,
+    alignItems:"center",
   },
   signupbtntext:{
-    color:"#11009E",
-    fontWeight:'700',
-    fontSize: 18,
+    textAlign:"center",
+    fontWeight:"600",
+    color:"blue",
+    fontSize:16,
   }
+
+
 })
