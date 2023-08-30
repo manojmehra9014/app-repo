@@ -115,18 +115,18 @@ const LoginScreen = ({ navigation }) => {
                 />
               </View>
 
-              <View style={{ marginTop: 10, marginBottom: 10 }}>
-
-              </View>
+              <View style={{ marginTop: 10, marginBottom: 10 }}></View>
               <View>
 
                 <TouchableOpacity
-                  style={styles.regbtn}
+                  style={styles.signupbtn}
                   title="Login"
                   onPress={async () => await login()}>
-                  <Text style={styles.loginBtnText}>Login</Text>
+                  <Text style={styles.signupbtntext}>Login</Text>
                 </TouchableOpacity>
-<View style={{marginTop:100}}></View>
+
+                <View style={{ marginTop: 30 }}></View>
+                
                 <TouchableOpacity
                   style={styles.signupbtn}
                   title="SignUp"

@@ -1,14 +1,16 @@
 import React from 'react';
-import { SafeAreaView, FlatList, Image, Text, View, StyleSheet } from 'react-native';
+import { SafeAreaView, FlatList, Image, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import { Icon } from 'react-native-elements';
 
-const AlbumList = () => {
+const AlbumList = ({ navigation }) => {
 
     const events = useSelector((state) => state.activeEvent);
     const dispatch = useDispatch();
 
     // console.log(events.event.coverImages);
-
+    const currentDate = new Date();
+    const formattedDate = currentDate.toDateString();
     const renderImageItem = ({ item }) => (
         <Image source={{ uri: item }} style={styles.image} resizeMode="cover" />
     );
@@ -17,6 +19,18 @@ const AlbumList = () => {
         <SafeAreaView>
             <View>
                 <View style={styles.statusbar}></View>
+                <View style={styles.backbar}>
+                    <TouchableOpacity style={styles.backbtn} onPress={() => navigation.navigate('HomeScreen')}>
+                        <Icon
+                            name="arrow-left"
+                            type="font-awesome"
+                            color="black"
+                            size={20}
+                            style={styles.icon}
+                        />
+                    </TouchableOpacity>
+                    <Text style={styles.date}>{formattedDate}</Text>
+                </View>
                 <View style={styles.topview}>
                     <Text style={styles.toptext}>Select Your Event Image </Text>
                 </View>
@@ -39,7 +53,7 @@ export default AlbumList;
 
 const styles = StyleSheet.create({
     statusbar: {
-        height: 40,
+        height: 50,
     },
     topview: {
         marginTop: 15,
@@ -55,10 +69,32 @@ const styles = StyleSheet.create({
         margin: 10,
         borderRadius: 10,
     },
-    gallery:{
-        marginTop:15,
-        justifyContent:"center",
-        alignItems:"center",
+    gallery: {
+        marginTop: 15,
+        justifyContent: "center",
+        alignItems: "center",
     },
-    
+    backbar: {
+        width: '100%',
+        color: "white",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingHorizontal: 20,
+        borderBottomColor: 'white',
+        borderBottomWidth: 0.3,
+        paddingBottom: 10,
+    },
+    btnicon: {
+        marginRight: 5,
+    },
+    date: {
+        fontSize: 16,
+    },
+    backbtn: {
+        borderRadius: 40,
+        borderWidth: 0.6,
+        borderColor: 'black',
+        paddingHorizontal: 9,
+        paddingVertical: 6,
+    },
 });
