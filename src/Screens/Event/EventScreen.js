@@ -143,7 +143,7 @@ function EventScreen({ navigation }) {
               <ViewShot
                 ref={viewShotRef}
                 options={{ format: 'png', quality: 1, height: 1000, width: 1000, }}>
-                <Image source={{ uri: event.event.coverImage }}
+                <Image source={{ uri: event.updatedCover }}
                   style={styles.maindownloadimg}
                   resizeMode="contain"
                 />

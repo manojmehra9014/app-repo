@@ -7,12 +7,33 @@ const AlbumList = ({ navigation }) => {
 
     const events = useSelector((state) => state.activeEvent);
     const dispatch = useDispatch();
-
-    // console.log(events.event.coverImages);
+    
     const currentDate = new Date();
     const formattedDate = currentDate.toDateString();
+    
+    const currentActiveEvent = useSelector((state) => state.activeEvent);
+    console.log(currentActiveEvent);
+    const addImageToCurrentActiveEvent = (imageUrl) => {
+        console.log(currentActiveEvent);
+        const currentCoverImages = currentActiveEvent.event.coverImages;
+        const updatedCoverImages = imageUrl;
+        
+        dispatch({
+            type: 'SET_CURRENT_ACTIVE_EVENT',
+            payload: {
+                ...currentActiveEvent,
+                updatedCover: updatedCoverImages,
+            }
+        });
+        navigation.navigate('HomeRoute', {
+            screen: 'EventScreen',
+          });
+    };
+
     const renderImageItem = ({ item }) => (
-        <Image source={{ uri: item }} style={styles.image} resizeMode="cover" />
+        <TouchableOpacity onPress={() => addImageToCurrentActiveEvent(item)}>
+            <Image source={{ uri: item }} style={styles.image} resizeMode="cover" />
+        </TouchableOpacity>
     );
 
     return (
@@ -35,13 +56,14 @@ const AlbumList = ({ navigation }) => {
                     <Text style={styles.toptext}>Select Your Event Image </Text>
                 </View>
                 <View style={styles.gallery}>
-
                     <FlatList
                         data={events.event.coverImages}
                         renderItem={renderImageItem}
                         keyExtractor={(item, index) => index.toString()}
                         numColumns={2}
                     />
+
+
                 </View>
             </View>
         </SafeAreaView>

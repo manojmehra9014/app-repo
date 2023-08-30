@@ -14,12 +14,11 @@ import {
 } from 'react-native';
 import styles from '../../utils/styles/ImageViewstyle';
 import { useNavigation } from '@react-navigation/native';
-
 import { Icon } from 'react-native-elements';
 const { width, height } = Dimensions.get('screen');
+
 function ImageViewScreen({ route }) {
     const { data } = route.params;
-    // console.log(data);
     const navigation = useNavigation();
 
     const handleCopyText = async (text) => {
@@ -30,6 +29,7 @@ function ImageViewScreen({ route }) {
             console.error('Error copying text:', error);
         }
     };
+    
     return (
         <>
             <View style={{ marginTop: 50 }}>
