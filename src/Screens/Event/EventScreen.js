@@ -178,18 +178,18 @@ function EventScreen({ navigation }) {
               </View>
               <View style={styles.downloadbtnview}>
                 <TouchableOpacity style={styles.downloadbtn} onPress={async () => await onCapture()}>
-                  <Icon style={styles.btnicon} color='white' size={20} name="download" type="font-awesome" />
+                  <Icon style={styles.btnicon} color='white' size={15} name="download" type="font-awesome" />
                   <Text style={styles.downloadbtntext}>Download</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.downloadbtn} onPress={() => handleCopyText(event.event.text)}>
-                  <Icon style={styles.btnicon} color='white' size={20} name="copy" type="font-awesome" />
+                  <Icon style={styles.btnicon} color='white' size={15} name="copy" type="font-awesome" />
                   <Text style={styles.downloadbtntext}>Copy Text</Text>
                 </TouchableOpacity>
 
 
                 <TouchableOpacity style={styles.sharebtn} onPress={async () => await shareImage()}>
-                  <Icon style={styles.shareicon} color="black" name="share" size={14} type="font-awesome" />
+                  <Icon style={styles.shareicon} color="black" name="share" size={15} type="font-awesome" />
                   <Text style={styles.iconsharetext}>Share</Text>
                 </TouchableOpacity>
               </View>
@@ -204,6 +204,7 @@ function EventScreen({ navigation }) {
                 <TouchableOpacity style={styles.layerchoose}></TouchableOpacity>
 
               </View>
+              <View style={styles.statusbar}></View>
 
 
             </View>

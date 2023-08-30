@@ -77,8 +77,8 @@ export default styles = StyleSheet.create({
     },
     downloadbtn: {
         backgroundColor: '#279EFF',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingVertical: 9,
+        paddingHorizontal: 15,
         borderRadius: 24,
         marginHorizontal: 10,
         flexDirection: "row",
@@ -86,14 +86,14 @@ export default styles = StyleSheet.create({
     },
     downloadbtntext: {
         color: "white",
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: "600",
     },
     downloadbtnview: {
         flexDirection: 'row',
-        justifyContent:"space-between",
         alignItems: 'center',
-        marginHorizontal:5,
+        borderColor:"black",
+        marginHorizontal:15,
     },
     backbar: {
         width: '100%',
@@ -118,11 +118,11 @@ export default styles = StyleSheet.create({
         paddingVertical: 6,
     },
     sharebtn: {
-        paddingVertical: 9,
+        paddingVertical: 7,
         marginLeft: 12,
         borderColor:"black",
         borderWidth:0.5,
-        paddingHorizontal: 12,
+        paddingHorizontal: 10,
         backgroundColor: "white",
         borderRadius: 50,
         justifyContent: 'center',
@@ -135,7 +135,8 @@ export default styles = StyleSheet.create({
         marginHorizontal: 4,
     },
     statusbar:{
-        marginTop:60,
+        height:60,
+        backgroundColor:"white",
     },
     layer:{
         width:'100%',
