@@ -24,17 +24,13 @@ import { getTodaysDate } from '../../utils/getTodaysDate';
 import styled from 'styled-components/native';
 import { Button } from 'react-native-elements';
 import { appbg, logo, appname } from '../../const';
-
-
 function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const events = useSelector((state) => state.todaysEvent);
   const downloadedEvents = useSelector((state) => state.downloadedEvents);
-
   let page = 1;
   const assetsPerPage = 10;
-
   function logout() {
     dispatch({
       type: 'LOGGED_OUT',
@@ -64,13 +60,11 @@ function HomeScreen({ navigation }) {
             leader,
             date: today,
           });
-          // console.log(res);
           dispatch({
             type: 'TODAYS_EVENT',
             payload: res.data,
           });
         }
-
         if (user_type === 'INDIVIDUAL') {
           const res = await getTodaysEvent(today);
           dispatch({
@@ -84,32 +78,25 @@ function HomeScreen({ navigation }) {
     };
     fetchdata();
   }, []);
-
   useEffect(() => {
     const loadData = async () => {
       try {
         const album = await MediaLibrary.getAlbumAsync('app');
-
         if (!album) {
           // Handle the case where the album is not found
           console.log("Album 'app' not found");
           return;
         }
-
         const assets = await MediaLibrary.getAssetsAsync({
           first: 4,
           album,
           mediaType: 'photo',
         });
-
-        console.log(assets.endCursor);
-
         const eventsWithText = [];
         for (let asset of assets.assets) {
           const text = await AsyncStorage.getItem(asset.filename);
           eventsWithText.push([asset, text]);
         }
-
         dispatch({
           type: 'SET_DOWNLOADED_EVENTS',
           payload: {
@@ -124,23 +111,17 @@ function HomeScreen({ navigation }) {
         console.log(e);
       }
     };
-
     // Make sure downloadedEvents is properly defined before using it
     if (!downloadedEvents) {
       loadData();
     }
-
   }, []);
-
   const signOut = async () => {
     await AsyncStorage.removeItem('user-key');
     logout();
   };
 
-  const BackgroundImage = styled.ImageBackground`
-  resizeMode: cover;
-
-`;
+ 
   return (
     <>
       <SafeAreaView>
@@ -149,28 +130,19 @@ function HomeScreen({ navigation }) {
           scrollEnabled={true}
           nestedScrollEnabled={true}>
           {user && user.data &&
-
-
             <View style={styles.container}>
               <View style={styles.header}>
                 <View style={styles.logosection}>
                   <Image style={styles.logo} source={{ uri: user.data.leader.profile_photo_url }} />
                   <Text style={styles.appname}>{user.data.name}</Text>
                 </View>
-
                 <TouchableOpacity style={styles.logoutbtn}
                   onPress={async () => {
                     await signOut();
                   }}><Text style={styles.logouttext}>Logout</Text></TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => { navigation.navigate('SettingScreen') }}
-                >
+                <TouchableOpacity onPress={() => { navigation.navigate('SettingScreen') }}>
                   <Icon style={styles.icon} color="black" name="bars" type="font-awesome" />
                 </TouchableOpacity>
-              </View>
-              <View>
-                <Text style={styles.h1}>Find Your</Text>
-                <Text style={styles.h2}>Events Post & UI</Text>
               </View>
               <View>
                 {events && user && events.length > 0 && (
@@ -190,80 +162,34 @@ function HomeScreen({ navigation }) {
                             screen: 'AlbumList',
                           });
                         }}
-                        style={{
-                          backgroundColor: 'yellow',
-                          marginLeft: 10,
-                          elevation: 10,
-                          background: 'white',
-                          width: 315,
-                          height: 280,
-                          borderRadius: 14,
-                          shadowColor: 'rgba(0, 0, 0, 0.15)',
-                        }}>
+                        style={styles.eventposter}>
                         <Image
                           source={{ uri: item.event.coverImages[0] }}
-                          style={{
-                            height: '100%',
-                            width: '100%',
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            borderRadius: 14,
-                            overflow: 'hidden',
-                          }}
+                          style={styles.eventposterimg}
                           resizeMode="cover"
                         />
                         <View
-                          style={{
-                            position: 'absolute',
-                            flexDirection: 'row',
-                            left: '30%',
-                          }}>
+                          style={styles.leaderimageview}>
                           {user.data.leader_images.map((e, i) => (
                             <Image
                               source={{ uri: e }}
                               key={i}
-                              style={{
-                                width: 40,
-                                height: 40,
-                                margin: 10,
-                                borderRadius: 50,
-                              }}
+                              style={styles.leadertopimg}
                             />
                           ))}
                         </View>
                         {user.data.user_type == 'USER' && (
                           <Image
                             source={{ uri: user.data.leader.profile_photo_url }}
-                            style={{
-                              width: 100,
-                              height: 100,
-                              bottom: 3,
-                              left: 3,
-                              position: 'absolute',
-                            }}
+                            style={styles.leaderimgtopview}
                           />
                         )}
-
                         <Image
                           source={{ uri: user.data.profile_photo_url }}
-                          style={{
-                            width: 100,
-                            height: 100,
-                            bottom: 3,
-                            right: 3,
-                            position: 'absolute',
-                          }}
+                          style={styles.userimgtopview}
                         />
                         <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            position: 'absolute',
-                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                            alignContent: 'center',
-                            bottom: 0,
-                          }}>
+                          style={styles.eventtitleview}>
                           <Text>{item.event.title}</Text>
                         </View>
                       </TouchableOpacity>
@@ -273,26 +199,12 @@ function HomeScreen({ navigation }) {
                   />
                 )}
               </View>
-
-
               <View
-                style={{
-                  margin: 10,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
+                style={styles.downloadtextview}>
                 <Text style={styles.downloadtext}>Downloaded Events</Text>
               </View>
-
-
               <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
+                style={styles.downloadedimageview}>
                 {downloadedEvents &&
                   downloadedEvents.eventsWithText &&
                   downloadedEvents.eventsWithText.length > 0 &&
@@ -309,7 +221,7 @@ function HomeScreen({ navigation }) {
                           }}>
                             < Image
                               source={{ uri: e[0].uri }}
-                              style={{ height: 120, width: 120 }}
+                              style={styles.downloadedimg}
                             />
                           </TouchableOpacity>
                         </View>
@@ -317,16 +229,12 @@ function HomeScreen({ navigation }) {
                     );
                   })}
               </View>
-
-              {/* </TouchableOpacity> */}
               <View style={{ marginTop: 10 }}>
                 <Button
                   onPress={() => navigation.navigate('DownloadScreen')}
                   title="Go To Downloads">
                 </Button>
               </View>
-
-
             </View>
           }
         </ScrollView>
@@ -334,5 +242,4 @@ function HomeScreen({ navigation }) {
     </>
   );
 }
-
 export default HomeScreen;

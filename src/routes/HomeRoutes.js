@@ -10,7 +10,6 @@ import SettingScreen from '../Screens/Profile/SettingScreen';
 import AllEventsScreen from '../Screens/Event/AllEventsScreen';
 import ImageViewScreen from '../Screens/Event/ImageViewScreen';
 import AlbumList from '../Screens/EventsAlbums/AlbumList';
-import EventView from '../Screens/Event/EventView';
 const HomeRoute = () => {
   const Stack = createStackNavigator();
 
@@ -36,11 +35,7 @@ const HomeRoute = () => {
         component={AlbumList}
         options={{ header: () => null }}
       />
-        <Stack.Screen
-        name="EventView"
-        component={EventView}
-        options={{ header: () => null }}
-      />
+      
       <Stack.Screen
         name="EventScreen"
         component={EventScreen}

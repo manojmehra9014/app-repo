@@ -84,7 +84,7 @@ const LoginScreen = ({ navigation }) => {
           <View style={styles.main}>
             <View style={styles.imageContainer}>
               <Image source={logo} style={styles.logoImage} />
-              <Text style={styles.loginText}>Login</Text>
+              <Text style={styles.loginText}>LOGIN</Text>
             </View>
 
             <View style={styles.inputFileds}>
@@ -115,17 +115,15 @@ const LoginScreen = ({ navigation }) => {
                 />
               </View>
 
-              <View style={{ marginTop: 10, marginBottom: 10 }}></View>
-              <View>
+              <View style={styles.btnview}>
 
                 <TouchableOpacity
-                  style={styles.signupbtn}
+                  style={styles.regbtn}
                   title="Login"
                   onPress={async () => await login()}>
-                  <Text style={styles.signupbtntext}>Login</Text>
+                  <Text style={styles.loginBtnText}>Login</Text>
                 </TouchableOpacity>
 
-                <View style={{ marginTop: 30 }}></View>
                 
                 <TouchableOpacity
                   style={styles.signupbtn}

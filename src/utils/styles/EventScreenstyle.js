@@ -1,12 +1,12 @@
 import { StyleSheet, Dimensions } from 'react-native';
 const screenWidth = Dimensions.get('window').width - 30;
+const { height } = Dimensions.get('screen');
 
 export default styles = StyleSheet.create({
     container: {
-        justifyContent: 'center',
         alignItems: 'center',
         gap: 20,
-        height: '100%',
+        height: height-50,
         backgroundColor: 'white',
     },
     containerview: {
@@ -91,9 +91,9 @@ export default styles = StyleSheet.create({
     },
     downloadbtnview: {
         flexDirection: 'row',
-        justifyContent: "space-around",
+        justifyContent:"space-between",
         alignItems: 'center',
-        paddingHorizontal: 20,
+        marginHorizontal:5,
     },
     backbar: {
         width: '100%',
@@ -103,7 +103,6 @@ export default styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderBottomColor: 'white',
         borderBottomWidth: 0.3,
-        paddingBottom: 10,
     },
     btnicon: {
         marginRight: 5,
@@ -134,6 +133,9 @@ export default styles = StyleSheet.create({
     iconsharetext: {
         color: "gray",
         marginHorizontal: 4,
+    },
+    statusbar:{
+        marginTop:60,
     }
 
 })

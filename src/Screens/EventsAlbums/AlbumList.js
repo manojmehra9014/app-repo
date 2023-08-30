@@ -2,7 +2,8 @@ import React from 'react';
 import { SafeAreaView, FlatList, Image, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from 'react-native-elements';
-
+import { ScrollView } from 'react-native-gesture-handler';
+import styles from '../../utils/styles/AlbumListstyle';
 const AlbumList = ({ navigation }) => {
 
     const events = useSelector((state) => state.activeEvent);
@@ -12,9 +13,9 @@ const AlbumList = ({ navigation }) => {
     const formattedDate = currentDate.toDateString();
     
     const currentActiveEvent = useSelector((state) => state.activeEvent);
-    console.log(currentActiveEvent);
+    // console.log(currentActiveEvent);
     const addImageToCurrentActiveEvent = (imageUrl) => {
-        console.log(currentActiveEvent);
+        // console.log(currentActiveEvent);
         const currentCoverImages = currentActiveEvent.event.coverImages;
         const updatedCoverImages = imageUrl;
         
@@ -37,7 +38,9 @@ const AlbumList = ({ navigation }) => {
     );
 
     return (
+
         <SafeAreaView>
+            <ScrollView>
             <View>
                 <View style={styles.statusbar}></View>
                 <View style={styles.backbar}>
@@ -66,57 +69,9 @@ const AlbumList = ({ navigation }) => {
 
                 </View>
             </View>
+            </ScrollView>
         </SafeAreaView>
     );
 };
 
 export default AlbumList;
-
-
-const styles = StyleSheet.create({
-    statusbar: {
-        height: 50,
-    },
-    topview: {
-        marginTop: 15,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    toptext: {
-        fontSize: 22,
-    },
-    image: {
-        width: 150,
-        height: 150,
-        margin: 10,
-        borderRadius: 10,
-    },
-    gallery: {
-        marginTop: 15,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    backbar: {
-        width: '100%',
-        color: "white",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        paddingHorizontal: 20,
-        borderBottomColor: 'white',
-        borderBottomWidth: 0.3,
-        paddingBottom: 10,
-    },
-    btnicon: {
-        marginRight: 5,
-    },
-    date: {
-        fontSize: 16,
-    },
-    backbtn: {
-        borderRadius: 40,
-        borderWidth: 0.6,
-        borderColor: 'black',
-        paddingHorizontal: 9,
-        paddingVertical: 6,
-    },
-});

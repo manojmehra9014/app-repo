@@ -8,19 +8,18 @@ export default styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    height: height + 200,
-    top: 0,
-    backgroundColor:'#CEE6F3'
+    height: height,
+    backgroundColor:'#CEE6F3',
   },
   loginText: {
     fontSize: 24,
-    top: 20,
+    top: 70,
     fontWeight: '900',
     textAlign: 'center',
   },
   loginBtnText: {
     color: '#fff',
-    fontWeight:'700',
+    fontWeight:'800',
     fontSize: 18,
   },
   spinner: {
@@ -40,6 +39,7 @@ export default styles = StyleSheet.create({
     size: 20,
   },
   logoImage: {
+    top:50,
     width: 100,
     height: 100,
     borderRadius: 50,
@@ -54,7 +54,7 @@ export default styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    margin: 12,
+    margin: 15,
     borderWidth: 1,
     padding: 10,
   },
@@ -64,7 +64,7 @@ export default styles = StyleSheet.create({
    
   },
   inputFileds: {
-    top: 70,
+    top: 120,
 
   },
 
@@ -96,7 +96,6 @@ export default styles = StyleSheet.create({
     justifyContent: 'center',
   },
   regbtn:{
-    marginTop:100,
     backgroundColor:"blue",
     padding:10,
     justifyContent:"center",
@@ -106,7 +105,7 @@ export default styles = StyleSheet.create({
   },
   loginBtnText:{
     textAlign:"center",
-    fontWeight:"600",
+    fontWeight:"800",
     color:"white",
     fontSize:16,
   },
@@ -122,7 +121,12 @@ export default styles = StyleSheet.create({
     fontWeight:"600",
     color:"blue",
     fontSize:16,
-  }
+  },
+  btnview:{
+    top:120,
+    height:120,
+    justifyContent:"space-between",
+  },
 
 
 })

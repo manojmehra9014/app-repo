@@ -7,8 +7,8 @@ import {
   Text,
   View,
   Alert,
-  StyleSheet,
   Clipboard,
+  ScrollView,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from '../../utils/styles/EventScreenstyle';
@@ -75,7 +75,7 @@ function EventScreen({ navigation }) {
     try {
       const uri = await viewShotRef.current.capture(); // Replace with your image capture method
       const message = event.event.text; // Replace with your actual message text
-      
+
       if (await Share.isAvailableAsync()) {
         // Share the image first
         await Share.shareAsync(uri, {
@@ -83,10 +83,10 @@ function EventScreen({ navigation }) {
           dialogTitle: 'Share this image',
           UTI: 'image/jpeg',
         });
-        
+
         // Prompt the user to proceed to the next step
         const proceed = window.confirm("Press OK to share the text");
-        
+
         if (proceed) {
           if (Linking.canOpenURL("whatsapp://send")) {
             // Now share the text
@@ -115,87 +115,94 @@ function EventScreen({ navigation }) {
   const currentDate = new Date();
   const formattedDate = currentDate.toDateString();
   return (
-    <SafeAreaView>
-      <View>
-        <View style={styles.container}>
-          
-          <View style={styles.backbar}>
-            <TouchableOpacity style={styles.backbtn} onPress={() => navigation.navigate('AlbumList')}>
-              <Icon
-                name="arrow-left"
-                type="font-awesome"
-                color="black"
-                size={20}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-            <Text style={styles.date}>{formattedDate}</Text>
-          </View>
-          <View style={styles.eventheadingetxtview}>
-            <Text style={styles.eventheadingetxt}>
-              {event.event.title}
-            </Text>
-          </View>
+    <>
+      <SafeAreaView>
+        <ScrollView>
+          <View>
+            <View style={styles.statusbar}></View>
+            <View style={styles.container}>
+              <View style={styles.backbar}>
+                <TouchableOpacity style={styles.backbtn} onPress={() => navigation.navigate('AlbumList')}>
+                  <Icon
+                    name="arrow-left"
+                    type="font-awesome"
+                    color="black"
+                    size={20}
+                    style={styles.icon}
+                  />
+                </TouchableOpacity>
+                <Text style={styles.date}>{formattedDate}</Text>
+              </View>
+              <View style={styles.eventheadingetxtview}>
+                <Text style={styles.eventheadingetxt}>
+                  {event.event.title}
+                </Text>
+              </View>
 
-          <View
-            style={styles.containerview}>
-            {event && user && (
-              <ViewShot
-                ref={viewShotRef}
-                options={{ format: 'png', quality: 1, height: 1000, width: 1000, }}>
-                <Image source={{ uri: event.updatedCover }}
-                  style={styles.maindownloadimg}
-                  resizeMode="contain"
-                />
-                <View style={styles.imagecomponent2}>
-                  {user.data.user_type === 'USER' &&
-                    user.data.leader_images.map((e, i) => {
-                      return (
-                        <Image source={{ uri: e }} key={i} style={styles.aboveleaderimg} />
-                      );
-                    })}
-                </View>
-                <View style={styles.imagecomponent}>
-
-                  {/* User PROFILE IMAGE + NAME */}
-                  <View style={styles.userprofileinfo}>
-                    <Image source={{ uri: user.data.profile_photo_url }} style={styles.userimage} />
-                    <Text style={styles.username}>{user.data.name}</Text>
-                  </View>
-
-                  {/* leader PROFILE IMAGE +NAME STYLES SAME AS USER(ABOVE) */}
-                  {user.data.user_type === 'USER' && (
-                    <View style={styles.userprofileinfo}>
-                      <Image source={{ uri: user.data.leader.profile_photo_url }} style={styles.userimage} />
-                      <Text style={styles.username}>{user.data.leader.name}</Text>
+              <View
+                style={styles.containerview}>
+                {event && user && (
+                  <ViewShot
+                    ref={viewShotRef}
+                    options={{ format: 'png', quality: 1, height: 1000, width: 1000, }}>
+                    <Image source={{ uri: event.updatedCover }}
+                      style={styles.maindownloadimg}
+                      resizeMode="contain"
+                    />
+                    <View style={styles.imagecomponent2}>
+                      {user.data.user_type === 'USER' &&
+                        user.data.leader_images.map((e, i) => {
+                          return (
+                            <Image source={{ uri: e }} key={i} style={styles.aboveleaderimg} />
+                          );
+                        })}
                     </View>
-                  )}
-                </View>
-              </ViewShot>
-            )}
-          </View>
-          <View style={styles.eventtextcontainer}>
-            <Text style={styles.eventtext}>{event.event.text}</Text>
-          </View>
+                    <View style={styles.imagecomponent}>
 
-          <View style={styles.downloadbtnview}>
-            <TouchableOpacity style={styles.downloadbtn} onPress={() => handleCopyText(event.event.text)}>
-              <Icon style={styles.btnicon} color='white' size={20} name="copy" type="font-awesome" />
-              <Text style={styles.downloadbtntext}>Copy Text</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.downloadbtn} onPress={async () => await onCapture()}>
-              <Icon style={styles.btnicon} color='white' size={20} name="download" type="font-awesome" />
-              <Text style={styles.downloadbtntext}>Download</Text>
-            </TouchableOpacity>
+                      {/* User PROFILE IMAGE + NAME */}
+                      <View style={styles.userprofileinfo}>
+                        <Image source={{ uri: user.data.profile_photo_url }} style={styles.userimage} />
+                        <Text style={styles.username}>{user.data.name}</Text>
+                      </View>
 
-            <TouchableOpacity style={styles.sharebtn} onPress={async () => await shareImage()}>
-              <Icon style={styles.shareicon} color="black" name="share" size={14} type="font-awesome" />
-              <Text style={styles.iconsharetext}>Share</Text>
-            </TouchableOpacity>
+                      {/* leader PROFILE IMAGE +NAME STYLES SAME AS USER(ABOVE) */}
+                      {user.data.user_type === 'USER' && (
+                        <View style={styles.userprofileinfo}>
+                          <Image source={{ uri: user.data.leader.profile_photo_url }} style={styles.userimage} />
+                          <Text style={styles.username}>{user.data.leader.name}</Text>
+                        </View>
+                      )}
+                    </View>
+                  </ViewShot>
+                )}
+              </View>
+              <View style={styles.downloadbtnview}>
+                <TouchableOpacity style={styles.downloadbtn} onPress={async () => await onCapture()}>
+                  <Icon style={styles.btnicon} color='white' size={20} name="download" type="font-awesome" />
+                  <Text style={styles.downloadbtntext}>Download</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.downloadbtn} onPress={() => handleCopyText(event.event.text)}>
+                  <Icon style={styles.btnicon} color='white' size={20} name="copy" type="font-awesome" />
+                  <Text style={styles.downloadbtntext}>Copy Text</Text>
+                </TouchableOpacity>
+
+
+                <TouchableOpacity style={styles.sharebtn} onPress={async () => await shareImage()}>
+                  <Icon style={styles.shareicon} color="black" name="share" size={14} type="font-awesome" />
+                  <Text style={styles.iconsharetext}>Share</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.eventtextcontainer}>
+                <Text style={styles.eventtext}>{event.event.text}</Text>
+              </View>
+
+
+            </View>
           </View>
-        </View>
-      </View>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </>
   );
 }
 
