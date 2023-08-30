@@ -197,6 +197,14 @@ function EventScreen({ navigation }) {
                 <Text style={styles.eventtext}>{event.event.text}</Text>
               </View>
 
+              <View style={styles.layer}>
+                <TouchableOpacity style={styles.layerchoose}></TouchableOpacity>
+                <TouchableOpacity style={styles.layerchoose}></TouchableOpacity>
+                <TouchableOpacity style={styles.layerchoose}></TouchableOpacity>
+                <TouchableOpacity style={styles.layerchoose}></TouchableOpacity>
+
+              </View>
+
 
             </View>
           </View>

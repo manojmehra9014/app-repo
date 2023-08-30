@@ -136,6 +136,22 @@ export default styles = StyleSheet.create({
     },
     statusbar:{
         marginTop:60,
+    },
+    layer:{
+        width:'100%',
+        height:60,
+        flexDirection:"row",
+        paddingVertical:5,
+        paddingHorizontal:10,
+        justifyContent:"center",
+        backgroundColor:'gray'
+    },
+    layerchoose:{
+        width:50,
+        height:50,
+        marginHorizontal:5,
+        backgroundColor:"white",
+
     }
 
 })
