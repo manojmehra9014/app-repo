@@ -9,7 +9,8 @@ import CreateEventScreen from '../Screens/Event/CreateEvent';
 import SettingScreen from '../Screens/Profile/SettingScreen';
 import AllEventsScreen from '../Screens/Event/AllEventsScreen';
 import ImageViewScreen from '../Screens/Event/ImageViewScreen';
-import AlbumList from '../Screens/EventsAlbums/AlbumList';
+import AlbumList from '../Screens/Event/AlbumList';
+
 const HomeRoute = () => {
   const Stack = createStackNavigator();
 
@@ -30,18 +31,6 @@ const HomeRoute = () => {
         component={ImageViewScreen}
         options={{ header: () => null }}
       />
-      <Stack.Screen
-        name="AlbumList"
-        component={AlbumList}
-        options={{ header: () => null }}
-      />
-      
-      <Stack.Screen
-        name="EventScreen"
-        component={EventScreen}
-        options={{ header: () => null }}
-      />
-
     </Stack.Navigator>
   );
 };
@@ -54,6 +43,11 @@ const EventRoutes = () => {
       <Stack.Screen
         name="AllEventsScreen"
         component={AllEventsScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="AlbumList"
+        component={AlbumList}
         options={{ header: () => null }}
       />
       <Stack.Screen
@@ -70,7 +64,7 @@ const EventRoutes = () => {
   );
 };
 
-const ProfileRoute = ({ }) => {
+const ProfileRoute = ({}) => {
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator>

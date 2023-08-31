@@ -10,21 +10,22 @@ export default styles = StyleSheet.create({
     marginTop: 30,
     width: '100%',
     height: height,
+    backgroundColor: '#e3e1e1',
   },
   appname: {
-    color: "black",
+    color: 'black',
     fontSize: 24,
     marginLeft: 10,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   header: {
     marginTop: 20,
-    color: "white",
-    flexDirection: "row",
+    color: 'white',
+    flexDirection: 'row',
     height: 80,
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderColor: "white",
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderColor: 'white',
     borderBottomWidth: 1,
     paddingBottom: 20,
   },
@@ -32,7 +33,7 @@ export default styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 50,
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
   logoutbtn: {
     width: 60,
@@ -43,26 +44,26 @@ export default styles = StyleSheet.create({
     top: 15,
     paddingHorizontal: 4,
     paddingVertical: 5,
-    backgroundColor: "blue",
-    color: "white",
+    backgroundColor: 'blue',
+    color: 'white',
   },
   icon: {
     marginHorizontal: 5,
     padding: 3,
   },
   logosection: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   logouttext: {
-    textAlign: "center",
-    color: "white",
+    textAlign: 'center',
+    color: 'white',
     fontSize: 16,
     fontWeight: '600',
   },
   downloadtext: {
-    color: "black",
+    color: 'black',
     fontSize: 16,
-    fontWeight:'600',
+    fontWeight: '600',
   },
   eventposter: {
     backgroundColor: 'yellow',
@@ -128,9 +129,9 @@ export default styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  downloadedimg:{
+  downloadedimg: {
     height: 120,
-    width: 120 
+    width: 120,
   },
   textContainer: {
     alignItems: 'center',
@@ -138,8 +139,8 @@ export default styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-    color:"blue",
-    fontWeight:"600",
+    color: 'blue',
+    fontWeight: '600',
     marginBottom: 10,
   },
   cursor: {
@@ -147,14 +148,12 @@ export default styles = StyleSheet.create({
     marginBottom: 10,
     opacity: 0.6,
     position: 'absolute',
-    right: -5
+    right: -5,
   },
-  animation:{
-    height:100,
-    justifyContent:"center",
-    alignContent:"center",
+  animation: {
+    height: 100,
+    justifyContent: 'center',
+    alignContent: 'center',
   },
-  textanimation:{
-
-  }
-})
+  textanimation: {},
+});

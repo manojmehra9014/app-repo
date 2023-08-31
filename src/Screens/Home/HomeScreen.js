@@ -14,28 +14,23 @@ import {
   Dimensions,
   TouchableOpacity,
   Animated,
-
 } from 'react-native';
 import { Icon } from 'react-native-elements';
-import styles from "../../utils/styles/Homestyle"
+import styles from '../../utils/styles/Homestyle';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPersonalizedEvents, getTodaysEvent } from '../../actions/event';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as MediaLibrary from 'expo-media-library';
 import { getTodaysDate } from '../../utils/getTodaysDate';
 import { Button } from 'react-native-elements';
-import { appbg, logo, appname } from '../../const';
+
 function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
-  const { user, events, downloadedEvents, eventLoading } = useSelector((state) => {
-    return {
-      user: state.user,
-      events: state.todaysEvent,
-      downloadedEvents: state.downloadedEvents,
-      eventLoading: state.eventLoading
-    }
-  });
-  console.log(eventLoading);
+  const user = useSelector((state) => state.user);
+  const downloadedEvents = useSelector((state) => state.downloadedEvents);
+  const events = useSelector((state) => state.todaysEvent);
+  const eventLoading = useSelector((state) => state.eventLoading);
+  console.log(events);
   let page = 1;
   const assetsPerPage = 10;
   function logout() {
@@ -50,11 +45,10 @@ function HomeScreen({ navigation }) {
         const { user_type } = user.data;
         // const today = getTodaysDate();
         const today = '30-aug-2023';
-        console.log(today);
         dispatch({
           type: 'SET_LOADING_EVENT_TRUE',
           payload: true,
-        })
+        });
         if (user_type === 'USER') {
           let {
             political_party,
@@ -89,7 +83,7 @@ function HomeScreen({ navigation }) {
         dispatch({
           type: 'SET_LOADING_EVENT_FALSE',
           payload: false,
-        })
+        });
       } catch (e) {
         console.log(e);
       }
@@ -134,6 +128,7 @@ function HomeScreen({ navigation }) {
       loadData();
     }
   }, []);
+
   const signOut = async () => {
     await AsyncStorage.removeItem('user-key');
     logout();
@@ -151,7 +146,7 @@ function HomeScreen({ navigation }) {
 
     useEffect(() => {
       const cursorInterval = setInterval(() => {
-        setShowCursor(prevState => !prevState);
+        setShowCursor((prevState) => !prevState);
       }, 500);
       return () => {
         clearInterval(cursorInterval);
@@ -163,19 +158,18 @@ function HomeScreen({ navigation }) {
       let index = 0;
 
       const typingInterval = setInterval(() => {
-        setAnimatedText(prevState => prevState + currentSentence[index]);
+        setAnimatedText((prevState) => prevState + currentSentence[index]);
         index++;
 
         if (index === currentSentence.length) {
           clearInterval(typingInterval);
           setTimeout(() => {
-            setCurrentSentenceIndex(prevState => prevState + 1);
+            setCurrentSentenceIndex((prevState) => prevState + 1);
             setAnimatedText('');
           }, delay);
         }
       }, speed);
     };
-
 
     return (
       <View style={style}>
@@ -192,22 +186,34 @@ function HomeScreen({ navigation }) {
           style={{ flexGrow: 1 }}
           scrollEnabled={true}
           nestedScrollEnabled={true}>
-
           <StatusBar backgroundColor="#EDEDF1" barStyle={'dark-content'} />
-
-          {user && user.data &&
+          {user && user.data && (
             <View style={styles.container}>
               <View style={styles.header}>
                 <View style={styles.logosection}>
-                  <Image style={styles.logo} source={{ uri: user.data.profile_photo_url }} />
+                  <Image
+                    style={styles.logo}
+                    source={{ uri: user.data.profile_photo_url }}
+                  />
                   <Text style={styles.appname}>{user.data.name}</Text>
                 </View>
-                <TouchableOpacity style={styles.logoutbtn}
+                <TouchableOpacity
+                  style={styles.logoutbtn}
                   onPress={async () => {
                     await signOut();
-                  }}><Text style={styles.logouttext}>Logout</Text></TouchableOpacity>
-                <TouchableOpacity onPress={() => { navigation.navigate('SettingScreen') }}>
-                  <Icon style={styles.icon} color="black" name="bars" type="font-awesome" />
+                  }}>
+                  <Text style={styles.logouttext}>Logout</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('SettingScreen');
+                  }}>
+                  <Icon
+                    style={styles.icon}
+                    color="black"
+                    name="bars"
+                    type="font-awesome"
+                  />
                 </TouchableOpacity>
               </View>
               <View>
@@ -224,7 +230,7 @@ function HomeScreen({ navigation }) {
                             type: 'SET_CURRENT_ACTIVE_EVENT',
                             payload: item,
                           });
-                          navigation.navigate('HomeRoute', {
+                          navigation.navigate('EventRoute', {
                             screen: 'AlbumList',
                           });
                         }}
@@ -234,8 +240,7 @@ function HomeScreen({ navigation }) {
                           style={styles.eventposterimg}
                           resizeMode="cover"
                         />
-                        <View
-                          style={styles.leaderimageview}>
+                        <View style={styles.leaderimageview}>
                           {user.data.leader_images.map((e, i) => (
                             <Image
                               source={{ uri: e }}
@@ -254,8 +259,7 @@ function HomeScreen({ navigation }) {
                           source={{ uri: user.data.profile_photo_url }}
                           style={styles.userimgtopview}
                         />
-                        <View
-                          style={styles.eventtitleview}>
+                        <View style={styles.eventtitleview}>
                           <Text>{item.event.title}</Text>
                         </View>
                       </TouchableOpacity>
@@ -265,9 +269,7 @@ function HomeScreen({ navigation }) {
                   />
                 )}
 
-                {eventLoading && (
-                  <Text>loading</Text>
-                )}
+                {eventLoading && <Text>loading</Text>}
 
                 {!events && !eventLoading && (
                   <View style={styles.animation}>
@@ -285,20 +287,12 @@ function HomeScreen({ navigation }) {
                 )}
               </View>
 
-
-
-
-
-
               {/* <Text>hhh hey here</Text> */}
 
-
-              <View
-                style={styles.downloadtextview}>
+              <View style={styles.downloadtextview}>
                 <Text style={styles.downloadtext}>Downloaded Events</Text>
               </View>
-              <View
-                style={styles.downloadedimageview}>
+              <View style={styles.downloadedimageview}>
                 {downloadedEvents &&
                   downloadedEvents.eventsWithText &&
                   downloadedEvents.eventsWithText.length > 0 &&
@@ -307,13 +301,14 @@ function HomeScreen({ navigation }) {
                     return (
                       <View key={i} style={{ padding: 10 }}>
                         <View>
-                          <TouchableOpacity onPress={() => {
-                            navigation.navigate('ImageViewScreen', {
-                              name: 'ImageViewScreen',
-                              data: e,
-                            });
-                          }}>
-                            < Image
+                          <TouchableOpacity
+                            onPress={() => {
+                              navigation.navigate('ImageViewScreen', {
+                                name: 'ImageViewScreen',
+                                data: e,
+                              });
+                            }}>
+                            <Image
                               source={{ uri: e[0].uri }}
                               style={styles.downloadedimg}
                             />
@@ -323,16 +318,27 @@ function HomeScreen({ navigation }) {
                     );
                   })}
               </View>
-              <View style={{ marginTop: 10 }}>
-                <Button
-                  onPress={() => navigation.navigate('DownloadScreen')}
-                  title="Go To Downloads">
-                </Button>
+              <View style={{ marginTop: 10, marginLeft: '20%' }}>
+                <TouchableOpacity
+                  style={{
+                    padding: 10,
+                    color: '#000000',
+                    backgroundColor: '#ffffff',
+                    borderTopLeftRadius: 10,
+                    borderBottomLeftRadius: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => navigation.navigate('DownloadScreen')}>
+                  <Text style={{ fontWeight: '700', fontSize: 20 }}>
+                    Go To Downloads
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
-          }
+          )}
         </ScrollView>
-      </SafeAreaView >
+      </SafeAreaView>
     </>
   );
 }
