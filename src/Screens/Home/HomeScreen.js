@@ -23,14 +23,19 @@ import { getPersonalizedEvents, getTodaysEvent } from '../../actions/event';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as MediaLibrary from 'expo-media-library';
 import { getTodaysDate } from '../../utils/getTodaysDate';
-import styled from 'styled-components/native';
 import { Button } from 'react-native-elements';
 import { appbg, logo, appname } from '../../const';
 function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
-  const events = useSelector((state) => state.todaysEvent);
-  const downloadedEvents = useSelector((state) => state.downloadedEvents);
+  const { user, events, downloadedEvents, eventLoading } = useSelector((state) => {
+    return {
+      user: state.user,
+      events: state.todaysEvent,
+      downloadedEvents: state.downloadedEvents,
+      eventLoading: state.eventLoading
+    }
+  });
+  console.log(eventLoading);
   let page = 1;
   const assetsPerPage = 10;
   function logout() {
@@ -46,6 +51,10 @@ function HomeScreen({ navigation }) {
         // const today = getTodaysDate();
         const today = '30-aug-2023';
         console.log(today);
+        dispatch({
+          type: 'SET_LOADING_EVENT_TRUE',
+          payload: true,
+        })
         if (user_type === 'USER') {
           let {
             political_party,
@@ -64,6 +73,7 @@ function HomeScreen({ navigation }) {
             leader,
             date: today,
           });
+
           dispatch({
             type: 'TODAYS_EVENT',
             payload: res.data,
@@ -76,6 +86,10 @@ function HomeScreen({ navigation }) {
             payload: res.data,
           });
         }
+        dispatch({
+          type: 'SET_LOADING_EVENT_FALSE',
+          payload: false,
+        })
       } catch (e) {
         console.log(e);
       }
@@ -178,6 +192,9 @@ function HomeScreen({ navigation }) {
           style={{ flexGrow: 1 }}
           scrollEnabled={true}
           nestedScrollEnabled={true}>
+
+          <StatusBar backgroundColor="#EDEDF1" barStyle={'dark-content'} />
+
           {user && user.data &&
             <View style={styles.container}>
               <View style={styles.header}>
@@ -248,22 +265,24 @@ function HomeScreen({ navigation }) {
                   />
                 )}
 
+                {eventLoading && (
+                  <Text>loading</Text>
+                )}
 
-                  {!events && (
-                    <View style={styles.animation}>
-                      <AnimatedTypewriterText
-                        sentences={[
-                          'There is no event today.',
-                          'Please try again after a moment.',
-                          'Enjoy your day!',
-                        ]}
-                        delay={1000}
-                        speed={70}
-                        style={styles.textContainer}
-                      />
-                    </View>
-                  )}
-
+                {!events && !eventLoading && (
+                  <View style={styles.animation}>
+                    <AnimatedTypewriterText
+                      sentences={[
+                        'There is no event today.',
+                        'Please try again after a moment.',
+                        'Enjoy your day!',
+                      ]}
+                      delay={1000}
+                      speed={70}
+                      style={styles.textContainer}
+                    />
+                  </View>
+                )}
               </View>
 
 
@@ -271,6 +290,7 @@ function HomeScreen({ navigation }) {
 
 
 
+              {/* <Text>hhh hey here</Text> */}
 
 
               <View

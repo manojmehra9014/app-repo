@@ -179,18 +179,37 @@ function EventScreen({ navigation }) {
           <View style={styles.userprofileinfo}>
             <Image source={{ uri: user.data.profile_photo_url }} style={styles.frame3userimage} />
             <View style={styles.frame3bottombanner}>
-            </View>            
+            </View>
           </View>
         </View>
       </>
     );
   };
+
+  const Frame4 = () => {
+    return (
+      <>
+        <View style={styles.frame4container}>
+          <View style={styles.frame4bottombanner}>
+            <View style={styles.frame4userimage}>
+              {/* <Text>{data.user.name}</Text> */}
+              <Image source={{ uri: user.data.profile_photo_url }} style={styles.frame3userimage} />
+            </View>
+          </View>
+        </View>
+      </>
+    );
+  };
+
   return (
     <>
-      <SafeAreaView>
-        <ScrollView>
+          <StatusBar backgroundColor="#EDEDF1" barStyle={'dark-content'} translucent={false} />
+
+      <ScrollView>
+        <SafeAreaView>
+
           <View>
-            <View style={styles.statusbar}></View>
+            {/* <View style={styles.statusbar}></View> */}
             <View style={styles.container}>
               <View style={styles.backbar}>
                 <TouchableOpacity style={styles.backbtn} onPress={() => navigation.navigate('AlbumList')}>
@@ -223,6 +242,7 @@ function EventScreen({ navigation }) {
                       {layout === 'layout1' && <Frame1 />}
                       {layout === 'layout2' && <Frame2 />}
                       {layout === 'layout3' && <Frame3 />}
+                      {layout === 'layout4' && <Frame4 />}
                     </ImageBackground>
 
                   </ViewShot>
@@ -255,15 +275,14 @@ function EventScreen({ navigation }) {
                 <TouchableOpacity style={styles.layerchoose} onPress={() => switchLayout('layout1')}><Text>F1</Text></TouchableOpacity>
                 <TouchableOpacity style={styles.layerchoose} onPress={() => switchLayout('layout2')}><Text>F2</Text></TouchableOpacity>
                 <TouchableOpacity style={styles.layerchoose} onPress={() => switchLayout('layout3')}><Text>F3</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.layerchoose} onPress={() => switchLayout('layout4')}><Text>F4</Text></TouchableOpacity>
 
               </View>
               <View style={styles.statusbar}></View>
-
-
             </View>
           </View>
-        </ScrollView>
-      </SafeAreaView>
+        </SafeAreaView>
+      </ScrollView>
     </>
   );
 }

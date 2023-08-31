@@ -6,7 +6,7 @@ export default styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         gap: 20,
-        height: height - 50,
+        height: height,
         backgroundColor: 'white',
     },
     containerview: {
@@ -91,6 +91,7 @@ export default styles = StyleSheet.create({
         marginHorizontal: 4,
     },
     statusbar: {
+        top: 60,
         height: 60,
         backgroundColor: "white",
     },
@@ -118,7 +119,7 @@ export default styles = StyleSheet.create({
     frame1username: {
         fontSize: screenWidth / 23,
         fontWeight: 700,
-        display:"none",
+        display: "none",
     },
     frame1userprofileinfo: {
         justifyContent: 'center',
@@ -163,8 +164,8 @@ export default styles = StyleSheet.create({
     },
 
     frame3userprofileinfo: {
-        flex:1,
-        flexDirection:"row",
+        flex: 1,
+        flexDirection: "row",
     },
 
     frame3userimage: {
@@ -173,8 +174,33 @@ export default styles = StyleSheet.create({
     },
     frame3bottombanner: {
         height: 50,
-        width:50,
+        width: 50,
         backgroundColor: 'red',
+    },
+    frame4container: {
+        width: screenWidth - 10,
+        height: screenWidth - 10,
+        margin: 5,
+        borderWidth: 1,
+        borderColor: "black",
+    },
+    frame4bottombanner: {
+        top: screenWidth - 62,
+        position: "relative",
+        height: 50,
+        borderTopLeftRadius: 50,
+        backgroundColor: "#FFBB5C",
+    },
+    frame4userimage: {
+
+        width: screenWidth / 3.5,
+        height: screenWidth / 3.5,
+    },
+    frame4userimage: {
+        // position: "absolute",
+        top: -60,
+        width: screenWidth / 3.5,
+        height: screenWidth / 3.5,
     },
 
 })
