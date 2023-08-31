@@ -21,12 +21,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Share from 'expo-sharing';
 const screenWidth = Dimensions.get('window').width - 30;
 import HomeScreen from '../Home/HomeScreen';
+import fstyle from '../../utils/styles/frame1style';
 import { Linking } from 'react-native';
 
 
-const Frame1 = () => <Text style={{ color: 'white' }}>Frame 1</Text>;
-const Frame2 = () => <Text style={{ color: 'yellow' }}>Frame 2</Text>;
-const Frame3 = () => <Text style={{ color: 'blue' }}>Frame 3</Text>;
+// const Frame1 = () => <Text style={{ color: 'white' }}>Frame 1</Text>;
+// const Frame2 = () => <Text style={{ color: 'yellow' }}>Frame 2</Text>;
+// const Frame3 = () => <Text style={{ color: 'blue' }}>Frame 3</Text>;
 
 function EventScreen({ navigation }) {
   const viewShotRef = useRef(null);
@@ -125,6 +126,65 @@ function EventScreen({ navigation }) {
   const switchLayout = (newLayout) => {
     setLayout(newLayout);
   };
+
+  const Frame1 = () => {
+    return (
+      <>
+        <View style={styles.imagecomponent}>
+          {/* User PROFILE IMAGE + NAME */}
+          <View style={styles.frame1userprofileinfo}>
+            <Image source={{ uri: user.data.profile_photo_url }} style={styles.frame1userimage} />
+            <Text style={styles.frame1username}>{user.data.name}</Text>
+          </View>
+
+          {/* leader PROFILE IMAGE +NAME STYLES SAME AS USER(ABOVE) */}
+          {user.data.user_type === 'USER' && (
+            <View style={styles.userprofileinfo}>
+              <Image source={{ uri: user.data.leader.profile_photo_url }} style={styles.frame1userimage} />
+              <Text style={styles.frame1username}>{user.data.leader.name}</Text>
+            </View>
+          )}
+        </View>
+      </>
+    );
+  };
+  const Frame2 = () => {
+    return (
+      <>
+        <View style={styles.imagecomponent}>
+
+
+          {/* leader PROFILE IMAGE +NAME STYLES SAME AS USER(ABOVE) */}
+          {user.data.user_type === 'USER' && (
+            <View style={styles.userprofileinfo}>
+              <Image source={{ uri: user.data.leader.profile_photo_url }} style={styles.frame1userimage} />
+              <Text style={styles.frame1username}>{user.data.leader.name}</Text>
+            </View>
+          )}
+          {/* User PROFILE IMAGE + NAME */}
+          <View style={styles.frame1userprofileinfo}>
+            <Image source={{ uri: user.data.profile_photo_url }} style={styles.frame1userimage} />
+            <Text style={styles.frame1username}>{user.data.name}</Text>
+          </View>
+        </View>
+      </>
+    );
+  };
+
+  const Frame3 = () => {
+    return (
+      <>
+        <View style={styles.frame3userprofileinfo}>
+          {/* User PROFILE IMAGE + NAME */}
+          <View style={styles.userprofileinfo}>
+            <Image source={{ uri: user.data.profile_photo_url }} style={styles.frame3userimage} />
+            <View style={styles.frame3bottombanner}>
+            </View>            
+          </View>
+        </View>
+      </>
+    );
+  };
   return (
     <>
       <SafeAreaView>
@@ -192,9 +252,9 @@ function EventScreen({ navigation }) {
               </View>
 
               <View style={styles.layer}>
-                <TouchableOpacity style={styles.layerchoose} onPress={() => switchLayout('layout1')}></TouchableOpacity>
-                <TouchableOpacity style={styles.layerchoose} onPress={() => switchLayout('layout2')}></TouchableOpacity>
-                <TouchableOpacity style={styles.layerchoose} onPress={() => switchLayout('layout3')}></TouchableOpacity>
+                <TouchableOpacity style={styles.layerchoose} onPress={() => switchLayout('layout1')}><Text>F1</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.layerchoose} onPress={() => switchLayout('layout2')}><Text>F2</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.layerchoose} onPress={() => switchLayout('layout3')}><Text>F3</Text></TouchableOpacity>
 
               </View>
               <View style={styles.statusbar}></View>

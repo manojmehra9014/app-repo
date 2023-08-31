@@ -1,33 +1,23 @@
 import { StyleSheet, Dimensions } from 'react-native';
-
 const { screenWidth, height } = Dimensions.get('screen');
-
-export default styles = StyleSheet.create({
-    userimage: {
+export default fstyles = StyleSheet.create({
+    htext:{
+        fontSize:20,
+        color:'black',
+    },
+    
+    frame1userimage: {
         width: screenWidth / 3,
         height: screenWidth / 3,
         zIndex: 0,
     },
-    username: {
+    frame1username: {
         fontSize: screenWidth / 23,
-        fontWeight: 700
+        fontWeight: 700,
     },
-    userprofileinfo: {
+    frame1userprofileinfo: {
         justifyContent: 'center',
-        alignItems: 'center'
-    },
-    eventtextcontainer: {
-        backgroundColor: '#DCD6F7',
-        width: '95%',
-        marginHorizontal: 20,
-        padding: 10,
-        borderRadius: 9,
-
-    },
-    eventtext: {
-        textAlign: "center",
-        fontSize: 13,
-        fontStyle: "italic",
+        alignItems: 'center',
     },
     imagecomponent: {
         position: 'absolute',
@@ -36,16 +26,11 @@ export default styles = StyleSheet.create({
         bottom: 1,
         width: '100%',
     },
-    imagecomponent2: {
-        position: 'absolute',
-        flexDirection: 'row',
-        gap: 3,
-        padding: 10,
-    },
-    aboveleaderimg: {
-        width: screenWidth / 10,
-        height: screenWidth / 10,
-        zIndex: 10,
-        borderRadius: 50,
-    },
+    frame1leaderimage:{
+        width: screenWidth / 3,
+        height: screenWidth / 3,
+        zIndex: 0,
+    }
+
+
 })
