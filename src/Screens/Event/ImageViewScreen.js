@@ -56,8 +56,8 @@ function ImageViewScreen({ route }) {
     }, [colorAnim]);
 
     const backgroundColor = colorAnim.interpolate({
-        inputRange: [0,1],
-        outputRange: ['#FFEADD', '#FFECEC'],
+        inputRange: [0,1,2],
+        outputRange: ['#FFEADD', '#CAEDFF','#FFEADD'],
     });
     const shareImage = async () => {
         try {

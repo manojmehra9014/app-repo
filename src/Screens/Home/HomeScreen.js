@@ -1,6 +1,6 @@
 import { Auth } from 'aws-amplify';
 import { StatusBar } from 'expo-status-bar';
-import React, {useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Image,
   SafeAreaView,
@@ -43,7 +43,9 @@ function HomeScreen({ navigation }) {
     const fetchdata = async () => {
       try {
         const { user_type } = user.data;
-        const today = getTodaysDate();
+        // const today = getTodaysDate();
+        const today = '30-aug-2023';
+        console.log(today);
         if (user_type === 'USER') {
           let {
             political_party,
@@ -127,12 +129,12 @@ function HomeScreen({ navigation }) {
     const [animatedText, setAnimatedText] = useState('');
     const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
     const [showCursor, setShowCursor] = useState(true);
-  
+
     useEffect(() => {
       if (sentences.length !== currentSentenceIndex) startTypingAnimation();
       else setCurrentSentenceIndex(0);
     }, [currentSentenceIndex]);
-  
+
     useEffect(() => {
       const cursorInterval = setInterval(() => {
         setShowCursor(prevState => !prevState);
@@ -141,15 +143,15 @@ function HomeScreen({ navigation }) {
         clearInterval(cursorInterval);
       };
     }, []);
-  
+
     const startTypingAnimation = () => {
       const currentSentence = sentences[currentSentenceIndex];
       let index = 0;
-  
+
       const typingInterval = setInterval(() => {
         setAnimatedText(prevState => prevState + currentSentence[index]);
         index++;
-  
+
         if (index === currentSentence.length) {
           clearInterval(typingInterval);
           setTimeout(() => {
@@ -159,8 +161,8 @@ function HomeScreen({ navigation }) {
         }
       }, speed);
     };
-  
-  
+
+
     return (
       <View style={style}>
         <Text style={styles.text}>{animatedText}</Text>
@@ -168,10 +170,6 @@ function HomeScreen({ navigation }) {
       </View>
     );
   };
-  
-
-
-
 
   return (
     <>
@@ -184,7 +182,7 @@ function HomeScreen({ navigation }) {
             <View style={styles.container}>
               <View style={styles.header}>
                 <View style={styles.logosection}>
-                  <Image style={styles.logo} source={{ uri: user.data.leader.profile_photo_url }} />
+                  <Image style={styles.logo} source={{ uri: user.data.profile_photo_url }} />
                   <Text style={styles.appname}>{user.data.name}</Text>
                 </View>
                 <TouchableOpacity style={styles.logoutbtn}
@@ -249,20 +247,27 @@ function HomeScreen({ navigation }) {
                     showsHorizontalScrollIndicator={false}
                   />
                 )}
+
+
+                  {!events && (
+                    <View style={styles.animation}>
+                      <AnimatedTypewriterText
+                        sentences={[
+                          'There is no event today.',
+                          'Please try again after a moment.',
+                          'Enjoy your day!',
+                        ]}
+                        delay={1000}
+                        speed={70}
+                        style={styles.textContainer}
+                      />
+                    </View>
+                  )}
+
               </View>
 
-              <View style={styles.animation}>
-                <AnimatedTypewriterText
-                  sentences={[
-                    'There is no event today.',
-                    'Please try again after a moment.',
-                    'Enjoy your day!',
-                  ]}
-                  delay={1000}
-                  speed={70}
-                  style={styles.textContainer}
-                />
-              </View>
+
+
 
 
 

@@ -149,30 +149,7 @@ function EventScreen({ navigation }) {
                       style={styles.maindownloadimg}
                       resizeMode="contain"
                     />
-                    <View style={styles.imagecomponent2}>
-                      {user.data.user_type === 'USER' &&
-                        user.data.leader_images.map((e, i) => {
-                          return (
-                            <Image source={{ uri: e }} key={i} style={styles.aboveleaderimg} />
-                          );
-                        })}
-                    </View>
-                    <View style={styles.imagecomponent}>
-
-                      {/* User PROFILE IMAGE + NAME */}
-                      <View style={styles.userprofileinfo}>
-                        <Image source={{ uri: user.data.profile_photo_url }} style={styles.userimage} />
-                        <Text style={styles.username}>{user.data.name}</Text>
-                      </View>
-
-                      {/* leader PROFILE IMAGE +NAME STYLES SAME AS USER(ABOVE) */}
-                      {user.data.user_type === 'USER' && (
-                        <View style={styles.userprofileinfo}>
-                          <Image source={{ uri: user.data.leader.profile_photo_url }} style={styles.userimage} />
-                          <Text style={styles.username}>{user.data.leader.name}</Text>
-                        </View>
-                      )}
-                    </View>
+                    
                   </ViewShot>
                 )}
               </View>
