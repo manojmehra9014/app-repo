@@ -1,6 +1,5 @@
-import { Auth } from 'aws-amplify';
 import { StatusBar } from 'expo-status-bar';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Image,
   SafeAreaView,
@@ -8,12 +7,7 @@ import {
   View,
   FlatList,
   ScrollView,
-  Platform,
-  ImageBackground,
-  StyleSheet,
-  Dimensions,
   TouchableOpacity,
-  Animated,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import styles from '../../utils/styles/Homestyle';
@@ -22,7 +16,6 @@ import { getPersonalizedEvents, getTodaysEvent } from '../../actions/event';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as MediaLibrary from 'expo-media-library';
 import { getTodaysDate } from '../../utils/getTodaysDate';
-import { Button } from 'react-native-elements';
 
 function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -30,7 +23,6 @@ function HomeScreen({ navigation }) {
   const downloadedEvents = useSelector((state) => state.downloadedEvents);
   const events = useSelector((state) => state.todaysEvent);
   const eventLoading = useSelector((state) => state.eventLoading);
-  console.log(events);
   let page = 1;
   const assetsPerPage = 10;
   function logout() {
@@ -67,7 +59,6 @@ function HomeScreen({ navigation }) {
             leader,
             date: today,
           });
-
           dispatch({
             type: 'TODAYS_EVENT',
             payload: res.data,
@@ -128,6 +119,57 @@ function HomeScreen({ navigation }) {
       loadData();
     }
   }, []);
+
+  // useEffect(() => {
+  //   const fetchdata = async () => {
+  //     try {
+  //       const { user_type } = user.data;
+  //       // const today = getTodaysDate();
+  //       const today = '3-aug-2023';
+  //       dispatch({
+  //         type: 'SET_LOADING_EVENT_TRUE',
+  //         payload: true,
+  //       });
+  //       if (user_type === 'USER') {
+  //         let {
+  //           political_party,
+  //           state_name,
+  //           district_name,
+  //           vidhan_shabha_name,
+  //           leader,
+  //         } = user.data;
+  //         leader = leader.mobile_number.replace('+', '');
+  //         const res = await getPersonalizedEvents({
+  //           today,
+  //           political_party,
+  //           state: state_name,
+  //           district: district_name,
+  //           vidhan_shabha: vidhan_shabha_name,
+  //           leader,
+  //           date: today,
+  //         });
+  //         dispatch({
+  //           type: 'TODAYS_EVENT',
+  //           payload: res.data,
+  //         });
+  //       }
+  //       if (user_type === 'INDIVIDUAL') {
+  //         const res = await getTodaysEvent(today);
+  //         dispatch({
+  //           type: 'TODAYS_EVENT',
+  //           payload: res.data,
+  //         });
+  //       }
+  //       dispatch({
+  //         type: 'SET_LOADING_EVENT_FALSE',
+  //         payload: false,
+  //       });
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   };
+  //   fetchdata();
+  // }, []);
 
   const signOut = async () => {
     await AsyncStorage.removeItem('user-key');
@@ -268,23 +310,22 @@ function HomeScreen({ navigation }) {
                     showsHorizontalScrollIndicator={false}
                   />
                 )}
-
                 {eventLoading && <Text>loading</Text>}
-
-                {!events && !eventLoading && (
-                  <View style={styles.animation}>
-                    <AnimatedTypewriterText
-                      sentences={[
-                        'There is no event today.',
-                        'Please try again after a moment.',
-                        'Enjoy your day!',
-                      ]}
-                      delay={1000}
-                      speed={70}
-                      style={styles.textContainer}
-                    />
-                  </View>
-                )}
+                {!events ||
+                  (events.length == 0 && (
+                    <View style={styles.animation}>
+                      <AnimatedTypewriterText
+                        sentences={[
+                          'There is no event today.',
+                          'Please try again after a moment.',
+                          'Enjoy your day!',
+                        ]}
+                        delay={1000}
+                        speed={70}
+                        style={styles.textContainer}
+                      />
+                    </View>
+                  ))}
               </View>
 
               {/* <Text>hhh hey here</Text> */}
