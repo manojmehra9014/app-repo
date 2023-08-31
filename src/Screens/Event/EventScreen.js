@@ -9,6 +9,7 @@ import {
   Alert,
   Clipboard,
   ScrollView,
+  ImageBackground,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from '../../utils/styles/EventScreenstyle';
@@ -22,6 +23,10 @@ const screenWidth = Dimensions.get('window').width - 30;
 import HomeScreen from '../Home/HomeScreen';
 import { Linking } from 'react-native';
 
+
+const Frame1 = () => <Text style={{ color: 'white' }}>Frame 1</Text>;
+const Frame2 = () => <Text style={{ color: 'yellow' }}>Frame 2</Text>;
+const Frame3 = () => <Text style={{ color: 'blue' }}>Frame 3</Text>;
 
 function EventScreen({ navigation }) {
   const viewShotRef = useRef(null);
@@ -114,6 +119,12 @@ function EventScreen({ navigation }) {
   };
   const currentDate = new Date();
   const formattedDate = currentDate.toDateString();
+
+  const [layout, setLayout] = useState('layout1');
+
+  const switchLayout = (newLayout) => {
+    setLayout(newLayout);
+  };
   return (
     <>
       <SafeAreaView>
@@ -145,11 +156,15 @@ function EventScreen({ navigation }) {
                   <ViewShot
                     ref={viewShotRef}
                     options={{ format: 'png', quality: 1, height: 1000, width: 1000, }}>
-                    <Image source={{ uri: event.updatedCover }}
+                    <ImageBackground source={{ uri: event.updatedCover }}
                       style={styles.maindownloadimg}
                       resizeMode="contain"
-                    />
-                    
+                    >
+                      {layout === 'layout1' && <Frame1 />}
+                      {layout === 'layout2' && <Frame2 />}
+                      {layout === 'layout3' && <Frame3 />}
+                    </ImageBackground>
+
                   </ViewShot>
                 )}
               </View>
@@ -177,10 +192,9 @@ function EventScreen({ navigation }) {
               </View>
 
               <View style={styles.layer}>
-                <TouchableOpacity style={styles.layerchoose}></TouchableOpacity>
-                <TouchableOpacity style={styles.layerchoose}></TouchableOpacity>
-                <TouchableOpacity style={styles.layerchoose}></TouchableOpacity>
-                <TouchableOpacity style={styles.layerchoose}></TouchableOpacity>
+                <TouchableOpacity style={styles.layerchoose} onPress={() => switchLayout('layout1')}></TouchableOpacity>
+                <TouchableOpacity style={styles.layerchoose} onPress={() => switchLayout('layout2')}></TouchableOpacity>
+                <TouchableOpacity style={styles.layerchoose} onPress={() => switchLayout('layout3')}></TouchableOpacity>
 
               </View>
               <View style={styles.statusbar}></View>
