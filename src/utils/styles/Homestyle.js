@@ -18,15 +18,14 @@ export default styles = StyleSheet.create({
     alignSelf: 'center',
   },
   header: {
-    marginTop: 20,
+    marginTop: 1,
     color: 'white',
     flexDirection: 'row',
-    height: 80,
+    height: '7%',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderColor: 'white',
     borderBottomWidth: 1,
-    paddingBottom: 20,
   },
   logo: {
     width: 50,
