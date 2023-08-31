@@ -254,7 +254,7 @@ function HomeScreen({ navigation }) {
               <View style={styles.animation}>
                 <AnimatedTypewriterText
                   sentences={[
-                    'There is no event today',
+                    'There is no event today.',
                     'Please try again after a moment.',
                     'Enjoy your day!',
                   ]}
