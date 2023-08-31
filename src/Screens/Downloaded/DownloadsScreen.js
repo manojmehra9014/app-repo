@@ -25,7 +25,6 @@ function DownloadScreen() {
         const text = await AsyncStorage.getItem(asset.filename);
         eventsWithText.push([asset, text]);
       }
-      page += 1;
       dispatch({
         type: 'SET_DOWNLOADED_EVENTS',
         payload: {
@@ -78,36 +77,35 @@ function DownloadScreen() {
   }, []);
 
   return (
-    <SafeAreaView>
-      <StatusBar />
-      <View style={{ marginTop: 40 }}>
-        <Text>Download Screen</Text>
-      </View>
+    <>
+      <StatusBar translucent={false} />
       <View>
-        <Text>{downloadedEvents.eventsWithText.length}</Text>
+        <Text>Download Screen</Text>
       </View>
       <View
         style={{
           alignItems: 'center',
         }}>
-        <FlatList
-          style={{ marginTop: 20 }}
-          data={downloadedEvents.eventsWithText}
-          horizontal={false}
-          // keyExtractor={(item) => item._id}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => {
-            console.log(item[0].uri);
-            return (
-              <Image
-                source={{ uri: item[0].uri }}
-                style={{ width: 200, height: 200 }}
-              />
-            );
-          }}
-        />
+        {downloadedEvents && downloadedEvents.eventsWithText && (
+          <FlatList
+            style={{ marginTop: 20 }}
+            data={downloadedEvents.eventsWithText}
+            horizontal={false}
+            // keyExtractor={(item) => item._id}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => {
+              console.log(item[0].uri);
+              return (
+                <Image
+                  source={{ uri: item[0].uri }}
+                  style={{ width: 200, height: 200 }}
+                />
+              );
+            }}
+          />
+        )}
       </View>
-    </SafeAreaView>
+    </>
   );
 }
 

@@ -4,7 +4,7 @@ import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 
 function ProfileScreen({ navigation }) {
   return (
-    <SafeAreaView>
+    <>
       <StatusBar />
       <View>
         <Text>Profile Screen</Text>
@@ -21,7 +21,7 @@ function ProfileScreen({ navigation }) {
         }}>
         <Text>Setting Screen</Text>
       </TouchableOpacity>
-    </SafeAreaView>
+    </>
   );
 }
 

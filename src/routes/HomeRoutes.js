@@ -8,6 +8,8 @@ import ProfileScreen from '../Screens/Profile/ProfileScreen';
 import CreateEventScreen from '../Screens/Event/CreateEvent';
 import SettingScreen from '../Screens/Profile/SettingScreen';
 import AllEventsScreen from '../Screens/Event/AllEventsScreen';
+import ImageViewScreen from '../Screens/Event/ImageViewScreen';
+import AlbumList from '../Screens/Event/AlbumList';
 
 const HomeRoute = () => {
   const Stack = createStackNavigator();
@@ -24,6 +26,11 @@ const HomeRoute = () => {
         component={DownloadScreen}
         options={{ header: () => null }}
       />
+      <Stack.Screen
+        name="ImageViewScreen"
+        component={ImageViewScreen}
+        options={{ header: () => null }}
+      />
     </Stack.Navigator>
   );
 };
@@ -32,10 +39,15 @@ const EventRoutes = () => {
   const Stack = createStackNavigator();
 
   return (
-    <Stack.Navigator initialRouteName="AllEventsScreen">
+    <Stack.Navigator>
       <Stack.Screen
         name="AllEventsScreen"
         component={AllEventsScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="AlbumList"
+        component={AlbumList}
         options={{ header: () => null }}
       />
       <Stack.Screen
@@ -72,9 +84,17 @@ const ProfileRoute = ({}) => {
 
 const MainRoute = ({ navigation }) => {
   const Tab = createBottomTabNavigator();
-
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        cardStyleInterpolator: ({ current, next, layouts }) => {
+          return {
+            cardStyle: {
+              opacity: current.progress,
+            },
+          };
+        },
+      }}>
       <Tab.Screen
         name="HomeRoute"
         component={HomeRoute}

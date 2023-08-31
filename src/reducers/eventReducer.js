@@ -8,6 +8,16 @@ export function todaysEventReducer(state = null, action) {
       return state;
   }
 }
+export function eventloadingReducer(state = null, action) {
+  switch (action.type) {
+    case 'SET_LOADING_EVENT_TRUE':
+      return action.payload;
+    case 'SET_LOADING_EVENT_FALSE':
+      return action.payload;
+    default:
+      return state;
+  }
+}
 
 export function currentActiveEventReducer(state = null, action) {
   switch (action.type) {

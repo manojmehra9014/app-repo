@@ -4,6 +4,7 @@ import {
   currentActiveEventReducer,
   downloadedEventReducer,
   todaysEventReducer,
+  eventloadingReducer,
 } from './eventReducer';
 
 const rootReducer = combineReducers({
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   todaysEvent: todaysEventReducer,
   activeEvent: currentActiveEventReducer,
   downloadedEvents: downloadedEventReducer,
+  eventLoading:eventloadingReducer,
 });
 
 export default rootReducer;

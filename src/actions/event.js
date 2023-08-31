@@ -1,6 +1,7 @@
+import { API_ENDPOINTS, getPersonalizedEventsaApi } from './Api_enpoint';
 export const getTodaysEvent = async (date) => {
   try {
-    return await fetch('http://192.168.29.89:8001/api/get-event', {
+    return await fetch(API_ENDPOINTS.GET_EVENTS, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -9,6 +10,7 @@ export const getTodaysEvent = async (date) => {
       body: JSON.stringify({ date }),
     })
       .then((response) => {
+        console.log(response)
         return response.json();
       })
       .catch((err) => {
@@ -29,7 +31,7 @@ export const getPersonalizedEvents = async (data) => {
       leader: data.leader,
       date: data.date,
     });
-    const url = `http://192.168.29.89:8001/api/get-personalized-events?${queryParams.toString()}`;
+    const url = `${API_ENDPOINTS.GET_PERSONALIZED_EVENT}?${queryParams.toString()}`;
     return await fetch(url, {
       method: 'GET',
       headers: {
