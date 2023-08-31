@@ -45,7 +45,7 @@ const AlbumList = ({ navigation }) => {
   );
 
   return (
-    <SafeAreaView>
+    <>
       <ScrollView>
         <View>
           <View style={styles.statusbar}></View>
@@ -76,7 +76,7 @@ const AlbumList = ({ navigation }) => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </>
   );
 };
 

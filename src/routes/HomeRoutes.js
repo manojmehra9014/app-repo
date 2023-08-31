@@ -85,7 +85,16 @@ const ProfileRoute = ({}) => {
 const MainRoute = ({ navigation }) => {
   const Tab = createBottomTabNavigator();
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        cardStyleInterpolator: ({ current, next, layouts }) => {
+          return {
+            cardStyle: {
+              opacity: current.progress,
+            },
+          };
+        },
+      }}>
       <Tab.Screen
         name="HomeRoute"
         component={HomeRoute}

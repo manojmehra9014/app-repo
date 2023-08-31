@@ -7,7 +7,6 @@ export default styles = StyleSheet.create({
     flexGrow: 1,
   },
   container: {
-    marginTop: 30,
     width: '100%',
     height: height,
     backgroundColor: '#e3e1e1',

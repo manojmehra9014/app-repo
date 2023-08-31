@@ -1,6 +1,17 @@
 import { Auth } from 'aws-amplify';
 import React, { useState } from 'react';
-import { Alert, Button, Dimensions, SafeAreaView, StyleSheet, Text, Image, ActivityIndicator, TextInput, View, } from 'react-native';
+import {
+  Alert,
+  Button,
+  Dimensions,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  Image,
+  ActivityIndicator,
+  TextInput,
+  View,
+} from 'react-native';
 import { logo } from '../../const';
 import { spinner } from '../../const';
 import styles from '../../utils/styles/LoginPagestyle';
@@ -98,7 +109,7 @@ const LoginScreen = ({ navigation }) => {
                   }}
                   autoCorrect={false}
                   value={phoneNumber}
-                  autoFocus={true}
+                  // autoFocus={true}
                   placeholder="Phone Number"
                 />
               </View>
@@ -116,7 +127,6 @@ const LoginScreen = ({ navigation }) => {
               </View>
 
               <View style={styles.btnview}>
-
                 <TouchableOpacity
                   style={styles.regbtn}
                   title="Login"
@@ -124,14 +134,12 @@ const LoginScreen = ({ navigation }) => {
                   <Text style={styles.loginBtnText}>Login</Text>
                 </TouchableOpacity>
 
-                
                 <TouchableOpacity
                   style={styles.signupbtn}
                   title="SignUp"
                   onPress={() => navigation.navigate('Signup')}>
                   <Text style={styles.signupbtntext}>SignUp</Text>
                 </TouchableOpacity>
-
               </View>
             </View>
           </View>

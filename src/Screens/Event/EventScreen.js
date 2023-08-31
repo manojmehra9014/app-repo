@@ -222,7 +222,7 @@ function EventScreen({ navigation }) {
       />
 
       <ScrollView>
-        <SafeAreaView>
+        <>
           <View>
             {/* <View style={styles.statusbar}></View> */}
             <View style={styles.container}>
@@ -336,7 +336,7 @@ function EventScreen({ navigation }) {
               <View style={styles.statusbar}></View>
             </View>
           </View>
-        </SafeAreaView>
+        </>
       </ScrollView>
     </>
   );

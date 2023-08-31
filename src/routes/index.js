@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import MainRoute from './HomeRoutes';
 import AuthRoute from './AuthRoutes';
 import { useDispatch, useSelector } from 'react-redux';
-import { Text, View } from 'react-native';
+import { SafeAreaView, Text, View } from 'react-native';
 import { currentUser } from '../actions/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
