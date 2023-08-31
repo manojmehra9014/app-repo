@@ -8,27 +8,25 @@ export default styles = StyleSheet.create({
         paddingHorizontal: 5,
         paddingBottom: 30,
         borderColor: "gray",
-        borderWidth: 1,
-        margin: 10,
+        borderWidth: 0.5,
+        marginHorizontal: 10,
         borderRadius: 10,
-        marginTop: 50,
+        marginTop: 20,
     },
     cardimg: {
         width: width - 50,
         height: width - 50,
         alignSelf: "center",
-        margin: 10,
+        margin:10,
     },
     cardText: {
         textAlign: "center",
         marginHorizontal: 15,
-        marginVertical: 10,
-        fontSize: 12,
-
+        marginVertical: 20,
+        fontSize: 14,
+        fontWeight:"500",        
     },
-    downloaditemnum: {
-        textAlign: "center",
-    },
+    
     header: {
         flex: 1,
         height: 50,
@@ -106,4 +104,12 @@ export default styles = StyleSheet.create({
         paddingHorizontal: 9,
         paddingVertical: 6,
     },
+    textview:{
+        marginHorizontal:6,
+        marginVertical:20,
+        textAlign: "center",
+    },
+    textbox:{
+        borderRadius:8,
+    }
 })
