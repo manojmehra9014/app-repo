@@ -1,6 +1,6 @@
 import { Auth } from 'aws-amplify';
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect } from 'react';
+import React, {useState, useEffect, useRef } from 'react';
 import {
   Image,
   SafeAreaView,
@@ -13,6 +13,8 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  Animated,
+
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import styles from "../../utils/styles/Homestyle"
@@ -121,7 +123,56 @@ function HomeScreen({ navigation }) {
     logout();
   };
 
- 
+  const AnimatedTypewriterText = ({ sentences, delay, speed, style }) => {
+    const [animatedText, setAnimatedText] = useState('');
+    const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
+    const [showCursor, setShowCursor] = useState(true);
+  
+    useEffect(() => {
+      if (sentences.length !== currentSentenceIndex) startTypingAnimation();
+      else setCurrentSentenceIndex(0);
+    }, [currentSentenceIndex]);
+  
+    useEffect(() => {
+      const cursorInterval = setInterval(() => {
+        setShowCursor(prevState => !prevState);
+      }, 500);
+      return () => {
+        clearInterval(cursorInterval);
+      };
+    }, []);
+  
+    const startTypingAnimation = () => {
+      const currentSentence = sentences[currentSentenceIndex];
+      let index = 0;
+  
+      const typingInterval = setInterval(() => {
+        setAnimatedText(prevState => prevState + currentSentence[index]);
+        index++;
+  
+        if (index === currentSentence.length) {
+          clearInterval(typingInterval);
+          setTimeout(() => {
+            setCurrentSentenceIndex(prevState => prevState + 1);
+            setAnimatedText('');
+          }, delay);
+        }
+      }, speed);
+    };
+  
+  
+    return (
+      <View style={style}>
+        <Text style={styles.text}>{animatedText}</Text>
+        {showCursor && <Text style={styles.cursor}>|</Text>}
+      </View>
+    );
+  };
+  
+
+
+
+
   return (
     <>
       <SafeAreaView>
@@ -199,6 +250,24 @@ function HomeScreen({ navigation }) {
                   />
                 )}
               </View>
+
+              <View style={styles.animation}>
+                <AnimatedTypewriterText
+                  sentences={[
+                    'There is no event today',
+                    'Please try again after a moment.',
+                    'Enjoy your day!',
+                  ]}
+                  delay={1000}
+                  speed={70}
+                  style={styles.textContainer}
+                />
+              </View>
+
+
+
+
+
               <View
                 style={styles.downloadtextview}>
                 <Text style={styles.downloadtext}>Downloaded Events</Text>

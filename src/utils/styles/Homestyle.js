@@ -62,6 +62,7 @@ export default styles = StyleSheet.create({
   downloadtext: {
     color: "black",
     fontSize: 16,
+    fontWeight:'600',
   },
   eventposter: {
     backgroundColor: 'yellow',
@@ -130,5 +131,30 @@ export default styles = StyleSheet.create({
   downloadedimg:{
     height: 120,
     width: 120 
+  },
+  textContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  text: {
+    fontSize: 18,
+    color:"blue",
+    fontWeight:"600",
+    marginBottom: 10,
+  },
+  cursor: {
+    fontSize: 18,
+    marginBottom: 10,
+    opacity: 0.6,
+    position: 'absolute',
+    right: -5
+  },
+  animation:{
+    height:100,
+    justifyContent:"center",
+    alignContent:"center",
+  },
+  textanimation:{
+
   }
 })

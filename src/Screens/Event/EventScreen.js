@@ -177,6 +177,7 @@ function EventScreen({ navigation }) {
                 )}
               </View>
               <View style={styles.downloadbtnview}>
+
                 <TouchableOpacity style={styles.downloadbtn} onPress={async () => await onCapture()}>
                   <Icon style={styles.btnicon} color='white' size={15} name="download" type="font-awesome" />
                   <Text style={styles.downloadbtntext}>Download</Text>
@@ -192,6 +193,7 @@ function EventScreen({ navigation }) {
                   <Icon style={styles.shareicon} color="black" name="share" size={15} type="font-awesome" />
                   <Text style={styles.iconsharetext}>Share</Text>
                 </TouchableOpacity>
+
               </View>
               <View style={styles.eventtextcontainer}>
                 <Text style={styles.eventtext}>{event.event.text}</Text>
